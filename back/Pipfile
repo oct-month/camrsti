@@ -1,0 +1,17 @@
+[[source]]
+url = "https://mirrors.aliyun.com/pypi/simple"
+verify_ssl = true
+name = "custom"
+
+[packages]
+flask = "*"
+flask-cors = "*"
+flask-sqlalchemy = "*"
+mysqlclient = "*"
+
+[dev-packages]
+mypy = "*"
+autopep8 = "*"
+
+[requires]
+python_version = "3.8"

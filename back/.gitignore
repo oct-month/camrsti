@@ -1,0 +1,9 @@
+.DS_Store
+.idea/
+__pycache__/
+.mypy_cache/
+.venv/
+
+static/
+!.keep
+
