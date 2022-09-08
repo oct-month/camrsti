@@ -1,7 +1,7 @@
 <template>
-  <div id="AboutView">
-    <h1>This is an about page</h1>
-  </div>
+    <div id="SearchView">
+        信息检索页面
+    </div>
 </template>
 
 <style scoped>
@@ -10,6 +10,6 @@
 
 <script>
 export default {
-  name: 'AboutView'
+  name: 'SearchView'
 }
 </script>

@@ -11,8 +11,14 @@ module.exports = defineConfig({
     https: false,
     open: false,
     proxy: {
+      '/api/image': {
+        target: 'http://localhost:8082',
+        ws: false,
+        secure: false,
+        changeOrigin: true
+      },
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'http://localhost:8081',
         ws: true,
         secure: false,
         changeOrigin: true

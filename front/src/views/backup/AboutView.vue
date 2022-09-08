@@ -1,12 +1,9 @@
 <template>
   <div id="AboutView">
     <h1>This is an about page</h1>
+    <button @click="click">test</button>
   </div>
 </template>
-
-<style scoped>
-
-</style>
 
 <script>
 export default {
