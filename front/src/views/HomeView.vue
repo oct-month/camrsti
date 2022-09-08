@@ -49,8 +49,8 @@
       <el-table-column prop="explain" label="样品制备说明" miniwidth="300"></el-table-column>
       <el-table-column prop="experimentId" label="实验编号" miniwidth="160">
         <template slot-scope="scope">
-          <el-link type="primary" v-for="sc in scope.row.experimentId" :key="sc">
-            <el-tag type="success" effect="plain" size="small">
+          <el-link type="primary" @click="to_experiment_page(scope.row.id)">
+            <el-tag type="success" effect="plain" size="small" v-for="sc in scope.row.experimentId" :key="sc">
                 {{ sc }}
             </el-tag>
           </el-link>
@@ -110,7 +110,20 @@ export default {
   },
   methods: {
     to_sample_page(id) {
-      this.$router.push({path: '/sample', query: {id}})
+      this.$router.push({
+        path: '/sample',
+        query: {
+          id: id.trim()
+        }
+      })
+    },
+    to_experiment_page(id) {
+      this.$router.push({
+        path: '/experiment',
+        query: {
+          id: id.trim()
+        }
+      })
     }
   }
 }

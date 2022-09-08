@@ -30,10 +30,13 @@ def get_sampleinfos():
         'data': [s.to_json() for s in sample_infos]
     }
 
+def get_sampleinfo_dao(sampleId):
+    return SampleInfo.query.filter_by(id=sampleId).first()
+
 # 获取特定样本信息
 @app.route('/api/sampleinfo/<sampleId>', methods=['GET'])
 def get_sampleinfo(sampleId):
-    sample_info = SampleInfo.query.filter_by(id=sampleId).first()
+    sample_info = get_sampleinfo_dao(sampleId)
     return {
         'status': 200,
         'data': sample_info.to_json() if sample_info is not None else None
@@ -51,7 +54,8 @@ def get_microviews(sampleId):
 # 获取特定样本的矿物含量信息
 @app.route('/api/minecontentinfo/<sampleId>', methods=['GET'])
 def get_mine_content_infos(sampleId):
-    content_infos = MineContentInfo.query.filter(MineContentInfo.id.like(sampleId + '-%')).all()
+    experimentIds = get_sampleinfo_dao(sampleId).experimentId
+    content_infos = MineContentInfo.query.filter(MineContentInfo.id.in_(experimentIds)).all()
     return {
         'status': 200,
         'data': [s.to_json() for s in content_infos]
@@ -60,7 +64,8 @@ def get_mine_content_infos(sampleId):
 # 获取特定样本的矿物测量数据
 @app.route('/api/minesurveyinfo/<sampleId>', methods=['GET'])
 def get_mine_survey_infos(sampleId):
-    survey_infos = MineSurveyInfo.query.filter(MineSurveyInfo.id.like(sampleId + '-%')).all()
+    experimentIds = get_sampleinfo_dao(sampleId).experimentId
+    survey_infos = MineSurveyInfo.query.filter(MineSurveyInfo.id.in_(experimentIds)).all()
     return {
         'status': 200,
         'data': [s.to_json() for s in survey_infos]
@@ -69,7 +74,8 @@ def get_mine_survey_infos(sampleId):
 # 获取特定样本的XRD分析数据
 @app.route('/api/minexrdinfo/<sampleId>', methods=['GET'])
 def get_mine_xrd_infos(sampleId):
-    xrd_infos = MineXRDInfo.query.filter(MineXRDInfo.id.like(sampleId + '-%')).all()
+    experimentIds = get_sampleinfo_dao(sampleId).experimentId
+    xrd_infos = MineXRDInfo.query.filter(MineXRDInfo.id.in_(experimentIds)).all()
     return {
         'status': 200,
         'data': [s.to_json() for s in xrd_infos]
@@ -78,7 +84,8 @@ def get_mine_xrd_infos(sampleId):
 # 获取特定样本的化学成分数据
 @app.route('/api/minechemistryinfo/<sampleId>', methods=['GET'])
 def get_mine_chemistry_infos(sampleId):
-    chem_infos = MineChemistryInfo.query.filter(MineChemistryInfo.id.like(sampleId + '-%')).all()
+    experimentIds = get_sampleinfo_dao(sampleId).experimentId
+    chem_infos = MineChemistryInfo.query.filter(MineChemistryInfo.id.in_(experimentIds)).all()
     return {
         'status': 200,
         'data': [s.to_json() for s in chem_infos]
@@ -96,7 +103,8 @@ def get_mine_physics_info(sampleId):
 # 获取特定样本的热分析
 @app.route('/api/minethermalinfo/<sampleId>', methods=['GET'])
 def get_mine_thermal_infos(sampleId):
-    thermal_infos = MineThermalInfo.query.filter(MineThermalInfo.id.like(sampleId + '-%')).all()
+    experimentIds = get_sampleinfo_dao(sampleId).experimentId
+    thermal_infos = MineThermalInfo.query.filter(MineThermalInfo.id.in_(experimentIds)).all()
     return {
         'status': 200,
         'data': [s.to_json() for s in thermal_infos]
