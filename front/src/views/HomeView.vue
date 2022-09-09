@@ -62,11 +62,11 @@
             <template slot-scope="scope">
               <!-- <span style="display: none;">{{ scope.row.id }}</span> -->
               <el-button size="mini" round plain type="warning" icon="el-icon-edit"></el-button><br>
-              <el-button size="mini" round plain type="danger" icon="el-icon-delete" @click="deleteDialogVisible=true"></el-button>
-              <el-dialog title="确认" :visible.sync="deleteDialogVisible" width="30%">
+              <el-button size="mini" round plain type="danger" icon="el-icon-delete" @click="deleteDialogVisible[scope.row.id]=true"></el-button>
+              <el-dialog title="确认" :visible.sync="deleteDialogVisible[scope.row.id]" width="30%">
                 <span>删除{{ scope.row.id }}?</span>
                 <span slot="footer" class="dialog-footer">
-                  <el-button @click="deleteDialogVisible=false">取 消</el-button>
+                  <el-button @click="deleteDialogVisible[scope.row.id]=false">取 消</el-button>
                   <el-button type="primary" @click="deleteSampleInfo(scope.row.id)">确 定</el-button>
                 </span>
               </el-dialog>
@@ -131,7 +131,7 @@ export default {
         year: [],
         people: []
       },
-      deleteDialogVisible: false
+      deleteDialogVisible: {}
     }
   },
   mounted() {
@@ -140,6 +140,9 @@ export default {
         if (res.status ==200 && res.data.status == 200) {
           this.sampleInfos = res.data.data
           this.$store.commit('setSampleInfos', res.data.data)
+          this.sampleInfos.forEach(v => {
+            this.$set(this.deleteDialogVisible, v.id, false)
+          })
           var temp = {
             id: new Set(),
             type: new Set(),
