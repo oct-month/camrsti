@@ -10,7 +10,7 @@ app, db = get_app(__name__)
 def all_exception_handler(e):
     return {
         'status': 500,
-        'msg': e
+        'msg': str(e)
     }
 
 # 404错误
@@ -40,6 +40,15 @@ def get_sampleinfo(sampleId):
     return {
         'status': 200,
         'data': sample_info.to_json() if sample_info is not None else None
+    }
+
+# 删除特定样本信息
+@app.route('/api/sampleinfo/<sampleId>', methods=['DELETE'])
+def delete_sampleinfo(sampleId):
+    db.session.delete(get_sampleinfo_dao(sampleId))
+    db.session.commit()
+    return {
+        'status': 200
     }
 
 # 获取特定样本的显微观察信息

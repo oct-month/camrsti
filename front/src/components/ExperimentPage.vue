@@ -198,7 +198,10 @@
 
 <script>
 export default {
-  name: "ExperimentView",
+  name: "ExperimentPage",
+  props: {
+    sampleId: String
+  },
   data() {
     return {
       mineContentInfos: [],
@@ -212,11 +215,12 @@ export default {
     }
   },
   mounted() {
-    if (!this.$route.query.id) {
+    if (!this.sampleId) {
+      // TODO
       this.$router.push('/')
       return
     }
-    this.axios.get('/api/minecontentinfo/' + this.$route.query.id)
+    this.axios.get('/api/minecontentinfo/' + this.sampleId)
       .then((res) => {
         if (res.status == 200 && res.data.status == 200) {
           var temp = res.data.data
@@ -288,7 +292,7 @@ export default {
           this.$message.error('出错啦！')
         }
       })
-    this.axios.get('/api/minesurveyinfo/' + this.$route.query.id)
+    this.axios.get('/api/minesurveyinfo/' + this.sampleId)
       .then((res) => {
         if (res.status == 200 && res.data.status == 200) {
           var temp = res.data.data
@@ -303,7 +307,7 @@ export default {
           this.$message.error('出错啦！')
         }
       })
-    this.axios.get('/api/minexrdinfo/' + this.$route.query.id)
+    this.axios.get('/api/minexrdinfo/' + this.sampleId)
       .then(res => {
         if (res.status == 200 && res.data.status == 200) {
           this.mineXRDInfos = res.data.data
@@ -312,7 +316,7 @@ export default {
           this.$message.error('出错啦！')
         }
       })
-    this.axios.get('/api/minechemistryinfo/' + this.$route.query.id)
+    this.axios.get('/api/minechemistryinfo/' + this.sampleId)
       .then(res => {
         if (res.status == 200 && res.data.status == 200) {
           this.mineChemistryInfos = res.data.data
@@ -321,7 +325,7 @@ export default {
           this.$message.error('出错啦！')
         }
       })
-    this.axios.get('/api/minethermalinfo/' + this.$route.query.id)
+    this.axios.get('/api/minethermalinfo/' + this.sampleId)
       .then(res => {
         if (res.status == 200 && res.data.status == 200) {
           this.mineThermalInfos = res.data.data
@@ -362,7 +366,7 @@ export default {
     },
     mineThermalSpan({ rowIndex, columnIndex }) {
       if (rowIndex == 0 && columnIndex >= 4) {
-        console.log(this.mineThermalInfos.length);
+        // console.log(this.mineThermalInfos.length);
         return {
           rowspan: this.mineThermalInfos.length,
           colspan: 1

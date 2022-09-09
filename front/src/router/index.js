@@ -6,8 +6,6 @@ import HomeView from '@/views/HomeView.vue'
 import AddView from '@/views/AddView'
 import SearchView from '@/views/SearchView'
 import AboutView from '@/views/AboutView'
-import SampleView from '@/views/SampleView'
-import ExperimentView from '@/views/ExperimentView'
 
 
 const routes = [
@@ -15,16 +13,6 @@ const routes = [
     path: '/',
     name: 'HomeView',
     component: HomeView
-  },
-  {
-    path: '/sample',
-    name: 'SampleView',
-    component: SampleView
-  },
-  {
-    path: '/experiment',
-    name: 'ExperimentView',
-    component: ExperimentView
   },
   {
     path: '/add',

@@ -287,7 +287,10 @@
 
 <script>
 export default {
-  name: 'SampleView',
+  name: 'SamplePage',
+  props: {
+    sampleId: String
+  },
   data() {
     return {
       // sampleInfo: null,
@@ -298,12 +301,13 @@ export default {
     }
   },
   mounted() {
-    if (!this.$route.query.id) {
+    // TODO
+    if (!this.sampleId) {
       this.$router.push('/')
       return
     }
-    // this.sampleInfo = this.$store.getters.getSampleInfo(this.$route.query.id)
-    this.axios.get('/api/microview/' + this.$route.query.id)
+    // this.sampleInfo = this.$store.getters.getSampleInfo(this.sampleId)
+    this.axios.get('/api/microview/' + this.sampleId)
       .then((res) => {
         if (res.status == 200 && res.data.status == 200) {
           var microInfos = res.data.data
@@ -326,7 +330,7 @@ export default {
           this.$message.error('出错啦！')
         }
       })
-    this.axios.get('/api/minephysicsinfo/' + this.$route.query.id)
+    this.axios.get('/api/minephysicsinfo/' + this.sampleId)
       .then((res) => {
         if (res.status == 200 && res.data.status == 200) {
           this.physicalInfo = res.data.data
