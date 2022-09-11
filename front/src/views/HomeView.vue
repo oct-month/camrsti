@@ -2,13 +2,66 @@
   <div id="HomeView">
     <el-tabs type="card" :value="String(activeTab)" @tab-click="transTab" @tab-remove="removeTab">
       <el-tab-pane label="主页" name="0">
+        <el-table stripe border empty-text=" " height="50" style="width:100%">
+          <el-table-column width="50">
+            <template slot="header" slot-scope="scope">
+              检索
+            </template>
+          </el-table-column>
+          <el-table-column width="90">
+            <template slot="header" slot-scope="scope">
+              <el-input size="mini" placeholder="样品号" v-model="filterItems.id" @input="forceUpdate" @change="inputFilterHandler"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column width="110">
+            <template slot="header" slot-scope="scope">
+              <el-input size="mini" placeholder="样品类型" v-model="filterItems.type" @input="forceUpdate" @change="inputFilterHandler"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column width="120">
+            <template slot="header" slot-scope="scope">
+              <el-input size="mini" placeholder="样品来源" v-model="filterItems.source" @input="forceUpdate" @change="inputFilterHandler"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column width="113">
+            <template slot="header" slot-scope="scope">
+              <el-input size="mini" placeholder="取样年份" v-model="filterItems.year" @input="forceUpdate" @change="inputFilterHandler"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column width="110">
+            <template slot="header" slot-scope="scope">
+              <el-input size="mini" placeholder="取样人" v-model="filterItems.people" @input="forceUpdate" @change="inputFilterHandler"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column width="240">
+            <template slot="header" slot-scope="scope">
+              <el-input size="mini" placeholder="照片号" v-model="filterItems.imageId" @input="forceUpdate" @change="inputFilterHandler"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column width="78">
+            <template slot="header" slot-scope="scope">
+              模糊检索
+            </template>
+          </el-table-column>
+          <el-table-column miniwidth="100">
+            <template slot="header" slot-scope="scope">
+              <el-input size="mini" placeholder="请输入关键字搜索" v-model="filterItems.keyWord" @input="forceUpdate" @change="inputFilterHandler"></el-input>
+            </template>
+          </el-table-column>
+        </el-table>
+
         <el-table
-          :data="sampleInfos"
+          :data="currentTableData"
           stripe
           border
-          height="85vh"
-          style="width: 100%">
-          <el-table-column sortable prop="id" label="样品号" width="100" :filters="sampleFilters.id" :filter-method="filterHandler('id')">
+          height="80vh"
+          style="width:100%">
+          <el-table-column type="index" width="50">
+            <template slot-scope="scope">
+              <div style="text-align:center;">{{scope.$index + 1}}</div>
+            </template>
+          </el-table-column>
+          <el-table-column sortable prop="id" :label="keyMap['id']" width="90">
             <template slot-scope="scope">
               <el-link type="primary" @click="to_sample_page(scope.row.id)">
                 <el-tag type="info" effect="plain" size="small">
@@ -17,7 +70,7 @@
               </el-link>
             </template>
           </el-table-column>
-          <el-table-column sortable prop="type" label="样品类型" width="120" :filters="sampleFilters.type" :filter-method="filterHandler('type')">
+          <el-table-column sortable prop="type" :label="keyMap['type']" width="110">
             <template slot-scope="scope">
               <el-select v-if="editModel[scope.row.id]" v-model="nowEditSampleInfo.type" placeholder="请选择样品类型" style="width: 100%">
                 <el-option label="炉渣" value="炉渣"></el-option>
@@ -34,7 +87,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column sortable prop="source" label="样品来源" width="120" :filters="sampleFilters.source" :filter-method="filterHandler('source')">
+          <el-table-column sortable prop="source" :label="keyMap['source']" width="120">
             <template slot-scope="scope">
               <el-input v-if="editModel[scope.row.id]" v-model="nowEditSampleInfo.source"></el-input>
               <span v-else>
@@ -42,22 +95,22 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column sortable prop="year" label="取样年份" width="120" :filters="sampleFilters.year" :filter-method="filterHandler('year')">
+          <el-table-column sortable prop="year" :label="keyMap['year']" width="113">
             <template slot-scope="scope">
-              <el-date-picker v-if="editModel[scope.row.id]" type="year" placeholder="选择日期" v-model="nowEditSampleInfo.year" style="width: 100%"></el-date-picker>
-              <div v-else>
+              <el-date-picker v-if="editModel[scope.row.id]" type="year" placeholder="日期" v-model="nowEditSampleInfo.year" style="width: 100%"></el-date-picker>
+              <div v-else-if="scope.row.year">
                 <i class="el-icon-time"></i>
                 <span style="margin-left: 8px">{{ scope.row.year }}</span>
               </div>
             </template>
           </el-table-column>
-          <el-table-column sortable prop="people" label="取样人" width="100" :filters="sampleFilters.people" :filter-method="filterHandler('people')">
+          <el-table-column sortable prop="people" :label="keyMap['people']" width="110">
             <template slot-scope="scope">
               <el-input v-if="editModel[scope.row.id]" v-model="nowEditSampleInfo.people"></el-input>
-              <el-tag v-else size="medium">{{ scope.row.people }}</el-tag>
+              <el-tag v-else-if="scope.row.people" size="medium">{{ scope.row.people }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="imageId" label="照片号" miniwidth="100">
+          <el-table-column prop="imageId" :label="keyMap['imageId']" width="240">
             <template slot-scope="scope">
               <el-upload
                 v-if="editModel[scope.row.id]"
@@ -88,7 +141,7 @@
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column prop="describe" label="描述" miniwidth="190">
+          <el-table-column prop="describe" :label="keyMap['describe']" miniwidth="190">
             <template slot-scope="scope">
               <el-input v-if="editModel[scope.row.id]" type="textarea" autosize v-model="nowEditSampleInfo.describe"></el-input>
               <span v-else>
@@ -96,7 +149,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column prop="explain" label="样品制备说明" miniwidth="300">
+          <el-table-column prop="explain" :label="keyMap['explain']" miniwidth="300">
             <template slot-scope="scope">
               <el-input v-if="editModel[scope.row.id]" type="textarea" autosize v-model="nowEditSampleInfo.explain"></el-input>
               <span v-else>
@@ -104,7 +157,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column prop="experimentId" label="实验编号" miniwidth="160">
+          <el-table-column prop="experimentId" :label="keyMap['experimentId']" miniwidth="160">
             <template slot-scope="scope">
               <el-link type="primary" @click="to_experiment_page(scope.row.id)">
                 <el-tag type="success" effect="plain" size="small" v-for="sc in scope.row.experimentId" :key="sc">
@@ -134,7 +187,13 @@
             </template>
           </el-table-column>
         </el-table>
-        <span style="text-align:left; width:100%; display:inline-block;">总计：{{ sampleInfos.length }}条</span>
+        <div style="text-align:center; width:100%; display:inline-block;">
+          <span style="float:left;">总计：{{ currentTableData.length }}条</span>
+          <div style="float:right;">
+            导出：
+            <el-button size="small" type="success" icon="el-icon-download" @click="exportTableData"></el-button>
+          </div>
+        </div>
       </el-tab-pane>
       <el-tab-pane closable :label="v.label" :name="v.name" v-for="v in editableTabs" :key="v">
         <sample-page v-if="v.type" :sampleId="v.sampleId"/>
@@ -167,9 +226,14 @@
 ::v-deep .el-tabs__nav {
   background: #ddd;
 }
+/* ::v-deep .el-table__cell {
+  text-align: center;
+} */
 </style>
 
 <script>
+import xlsx from 'xlsx'
+
 import SamplePage from '@/components/SamplePage.vue'
 import ExperimentPage from '@/components/ExperimentPage.vue'
 
@@ -181,6 +245,27 @@ export default {
   },
   data() {
     return {
+      keyMap: {
+        id: '样品号',
+        type: '样品类型',
+        source: '样品来源',
+        year: '取样年份',
+        people: '取样人',
+        imageId: '照片号',
+        describe: '描述',
+        explain: '样品制备说明',
+        experimentId: '实验编号',
+      },
+      currentTableData: [],
+      filterItems: {
+        id: '',
+        type: '',
+        source: '',
+        year: '',
+        people: '',
+        imageId: '',
+        keyWord: ''
+      },
       sampleInfos: [],
       editableTabs: [],
       lastActiveTab: 0,
@@ -202,7 +287,7 @@ export default {
     this.axios.get('/api/sampleinfo')
       .then(res => {
         if (res.status ==200 && res.data.status == 200) {
-          this.sampleInfos = res.data.data
+          this.sampleInfos = res.data.data.reverse()
           this.$store.commit('setSampleInfos', res.data.data)
           this.sampleInfos.forEach(v => {
             this.$set(this.deleteDialogVisible, v.id, false)
@@ -252,6 +337,7 @@ export default {
               value: v
             })
           })
+          this.currentTableData = this.sampleInfos
         }
         else {
           this.$message.error('出错啦！')
@@ -297,6 +383,67 @@ export default {
     filterHandler: property => (value, row) => {
       return value === row[property]
     },
+    forceUpdate() {
+      this.$forceUpdate()
+    },
+    inputFilterHandler() {
+      this.currentTableData = JSON.parse(JSON.stringify(this.sampleInfos))
+      if (this.filterItems.id.trim()) {
+        for (let i = this.currentTableData.length - 1; i >=0 ; -- i) {
+          if (this.currentTableData[i].id.indexOf(this.filterItems.id.trim()) < 0) {
+            this.currentTableData.splice(i, 1)
+          }
+        }
+      }
+      if (this.filterItems.type.trim()) {
+        for (let i = this.currentTableData.length - 1; i >=0 ; -- i) {
+          if (this.currentTableData[i].type.indexOf(this.filterItems.type.trim()) < 0) {
+            this.currentTableData.splice(i, 1)
+          }
+        }
+      }
+      if (this.filterItems.source.trim()) {
+        for (let i = this.currentTableData.length - 1; i >=0 ; -- i) {
+          if (this.currentTableData[i].source.indexOf(this.filterItems.source.trim()) < 0) {
+            this.currentTableData.splice(i, 1)
+          }
+        }
+      }
+      if (this.filterItems.year.trim()) {
+        for (let i = this.currentTableData.length - 1; i >=0 ; -- i) {
+          if (String(this.currentTableData[i].year).indexOf(this.filterItems.year.trim()) < 0) {
+            this.currentTableData.splice(i, 1)
+          }
+        }
+      }
+      if (this.filterItems.people.trim()) {
+        for (let i = this.currentTableData.length - 1; i >=0 ; -- i) {
+          if (this.currentTableData[i].people.indexOf(this.filterItems.people.trim()) < 0) {
+            this.currentTableData.splice(i, 1)
+          }
+        }
+      }
+      if (this.filterItems.imageId.trim()) {
+        for (let i = this.currentTableData.length - 1; i >=0 ; -- i) {
+          let flag = false
+          this.currentTableData[i].imageId.forEach(v => {
+            if (v.indexOf(this.filterItems.imageId.trim()) >= 0) {
+              flag = true
+            }
+          })
+          if (!flag) {
+            this.currentTableData.splice(i, 1)
+          }
+        }
+      }
+      if (this.filterItems.keyWord.trim()) {
+        for (let i = this.currentTableData.length - 1; i >=0 ; -- i) {
+          if (JSON.stringify(this.currentTableData[i]).indexOf(this.filterItems.keyWord) < 0) {
+            this.currentTableData.splice(i, 1)
+          }
+        }
+      }
+    },
     deleteSampleInfo(sampleId) {
       this.axios.delete('/api/sampleinfo/' + sampleId)
         .then(res => {
@@ -315,7 +462,12 @@ export default {
         var temp = this.sampleInfos.filter(v => v.id === sampleId)
         if (temp.length > 0) {
           this.nowEditSampleInfo = JSON.parse(JSON.stringify(temp[0]))
-          this.nowEditSampleInfo.year = new Date(this.nowEditSampleInfo.year, 1)
+          if (this.nowEditSampleInfo.year) {
+            this.nowEditSampleInfo.year = new Date(this.nowEditSampleInfo.year, 1)
+          }
+          else {
+            this.nowEditSampleInfo.year = 0
+          }
         }
         this.editModel[sampleId] = true
       }
@@ -338,7 +490,12 @@ export default {
       this.$refs.upload.submit()
     },
     submitEdit(sampleId) {
-      this.nowEditSampleInfo.year = this.nowEditSampleInfo.year.getFullYear()
+      if (this.nowEditSampleInfo.year) {
+        this.nowEditSampleInfo.year = this.nowEditSampleInfo.year.getFullYear()
+      }
+      else {
+        this.nowEditSampleInfo.year = 0
+      }
       if (this.uploadFileList.length > 0) {
         this.nowEditSampleInfo.imageId = this.uploadFileList
       }
@@ -349,6 +506,11 @@ export default {
             this.sampleInfos.forEach((v, i) => {
               if (v.id == sampleId) {
                 this.$set(this.sampleInfos, i, this.nowEditSampleInfo)
+              }
+            })
+            this.currentTableData.forEach((v, i) => {
+              if (v.id == sampleId) {
+                this.$set(this.currentTableData, i, this.nowEditSampleInfo)
               }
             })
             this.nowEditSampleInfo = null
@@ -362,6 +524,37 @@ export default {
     cancelEdit(sampleId) {
       this.nowEditSampleInfo = null
       this.editModel[sampleId] = false
+    },
+    exportTableData() {
+      var temp = JSON.parse(JSON.stringify(this.currentTableData))
+      temp.forEach((v, i) => {
+        let s = ''
+        v.imageId.forEach(k => {
+          s += k + '、'
+        })
+        s = s.substring(0, s.length - 1)
+        temp[i].imageId = s
+      })
+      temp.forEach((v, i) => {
+        let s = ''
+        v.experimentId.forEach(k => {
+          s += k + '、'
+        })
+        s = s.substring(0, s.length - 1)
+        temp[i].experimentId = s
+      })
+      var exData = [];
+      temp.forEach(v => {
+        let obj = {};
+        Object.keys(this.keyMap).forEach(k => {
+          obj[this.keyMap[k]] = v[k]
+        })
+        exData.push(obj)
+      })
+      var ws = xlsx.utils.json_to_sheet(exData)
+      var wb = xlsx.utils.book_new()
+      xlsx.utils.book_append_sheet(wb, ws, 'Sheet')
+      xlsx.writeFileXLSX(wb, `Export-${new Date().toISOString().split('T')[0]}.xlsx`)
     }
   }
 }

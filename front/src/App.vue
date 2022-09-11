@@ -33,7 +33,7 @@
             </el-menu-item>
             <el-menu-item index="3">
               <i class="el-icon-search"></i>
-              <span slot="title">信息检索</span>
+              <span slot="title">测试页面</span>
             </el-menu-item>
             <el-submenu index="4">
               <template slot="title">
@@ -157,7 +157,7 @@ export default {
           break
         case '3':
           router.push({
-            name: 'SearchView'
+            name: 'TestView'
           })
           break
         case '4-1':

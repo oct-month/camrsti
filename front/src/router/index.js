@@ -4,8 +4,9 @@ Vue.use(VueRouter)
 
 import HomeView from '@/views/HomeView.vue'
 import AddView from '@/views/AddView'
-import SearchView from '@/views/SearchView'
+// import SearchView from '@/views/SearchView'
 import AboutView from '@/views/AboutView'
+import TestView from '@/views/TestView'
 
 
 const routes = [
@@ -19,15 +20,20 @@ const routes = [
     name: 'AddView',
     component: AddView
   },
-  {
-    path: '/search',
-    name: 'SearchView',
-    component: SearchView
-  },
+  // {
+  //   path: '/search',
+  //   name: 'SearchView',
+  //   component: SearchView
+  // },
   {
     path: '/about',
     name: 'AboutView',
     component: AboutView
+  },
+  {
+    path: '/test',
+    name: 'TestView',
+    component: TestView
   }
 ]
 

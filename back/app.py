@@ -72,6 +72,35 @@ def modify_sampleinfo():
         'status': 200
     }
 
+# 增加样本信息
+@app.route('/api/sampleinfo', methods=['POST'])
+def add_sampleinfo():
+    sampleInfo_json = json.loads(request.data)
+    sampleId = sampleInfo_json['id']
+    sampleInfo = get_sampleinfo_dao(sampleId)
+    if (sampleInfo):
+        return {
+            'status': 400,
+            'msg': '样本已存在'
+        }
+    else:
+        instance = SampleInfo(
+            id=sampleInfo_json['id'],
+            type=sampleInfo_json['type'],
+            source=sampleInfo_json['source'],
+            year=sampleInfo_json['year'],
+            people=sampleInfo_json['people'],
+            imageId=sampleInfo_json['imageId'],
+            describe=sampleInfo_json['describe'],
+            explain=sampleInfo_json['explain'],
+            experimentId=sampleInfo_json['experimentId']
+        )
+        db.session.add(instance)
+        db.session.commit()
+        return {
+            'status': 200
+        }
+
 # 获取特定样本的显微观察信息
 @app.route('/api/microview/<sampleId>', methods=['GET'])
 def get_microviews(sampleId):
