@@ -1,3 +1,6 @@
+import json
+from flask import request
+
 from utils import get_app
 from table_structure import SampleInfo, MicroView, MineContentInfo, MineSurveyInfo, MineXRDInfo, MineChemistryInfo, MinePhysicsInfo, MineThermalInfo
 
@@ -30,7 +33,7 @@ def get_sampleinfos():
         'data': [s.to_json() for s in sample_infos]
     }
 
-def get_sampleinfo_dao(sampleId):
+def get_sampleinfo_dao(sampleId) -> SampleInfo:
     return SampleInfo.query.filter_by(id=sampleId).first()
 
 # 获取特定样本信息
@@ -46,6 +49,24 @@ def get_sampleinfo(sampleId):
 @app.route('/api/sampleinfo/<sampleId>', methods=['DELETE'])
 def delete_sampleinfo(sampleId):
     db.session.delete(get_sampleinfo_dao(sampleId))
+    db.session.commit()
+    return {
+        'status': 200
+    }
+
+# 更改特定样本信息
+@app.route('/api/sampleinfo', methods=['PUT'])
+def modify_sampleinfo():
+    sampleInfo_json = json.loads(request.data)
+    sampleId = sampleInfo_json['id']
+    sampleInfo = get_sampleinfo_dao(sampleId)
+    sampleInfo.type = sampleInfo_json['type']
+    sampleInfo.source = sampleInfo_json['source']
+    sampleInfo.year = sampleInfo_json['year']
+    sampleInfo.people = sampleInfo_json['people']
+    sampleInfo.imageId = sampleInfo_json['imageId']
+    sampleInfo.describe = sampleInfo_json['describe']
+    sampleInfo.explain = sampleInfo_json['explain']
     db.session.commit()
     return {
         'status': 200

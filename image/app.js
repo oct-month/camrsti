@@ -2,7 +2,7 @@
 const fs = require('fs')
 const express = require('express')
 const multer = require('multer')
-const crypto = require('crypto')
+// const crypto = require('crypto')
 const path = require('path')
 
 const logger = require('./logger')
@@ -12,8 +12,7 @@ const config = require('./config')
 const upload = multer({
     storage: multer.memoryStorage(),
     limits: {
-        fileSize: 4 * 1024 * 1024,  // 限制4MB
-        files: 1
+        fileSize: 4 * 1024 * 1024  // 限制4MB
     },
     fileFilter(req, file, cb) {
         var re = /(\.jpg|\.png|\.jpeg)$/i
@@ -40,31 +39,59 @@ if (process.env.NODE_ENV !== 'product') {
 }
 
 app.post('/api/image', (req, res, next) => {
-    upload.single('upload')(req, res, (err) => {
+    upload.array('upload')(req, res, (err) => {
         if (err) {
             res.json({
-                err: err.message
+                status: 400,
+                msg: err.message
             }, 400)
         }
         else {
-            var sum = crypto.createHash('sha256')
-            sum.update(req.file.buffer.toString('hex'))
-            var sha = sum.digest('hex')
-            var filename = sha + path.extname(req.file.originalname)
-            var filepath = path.join('public/uploads', filename)
-            // logger.debug(req.body)
-            if (!fs.existsSync(filepath) || req.body['cover']) {
-                fs.writeFileSync(filepath, req.file.buffer)
-            }
-            else {
-                logger.debug(`${filepath} 已存在`)
-            }
-
+            var filenames = []
+            req.files.forEach(v => {
+                // var sum = crypto.createHash('sha256')
+                // sum.update(v.buffer.toString('hex'))
+                // var sha = sum.digest('hex')
+                var date = new Date().toISOString().replaceAll(':', '')
+                var filename = `IMG_${date}` + path.extname(v.originalname)
+                filenames.push(filename)
+                var filepath = path.join(__dirname, 'public/uploads', filename)
+                if (fs.existsSync(filepath)) {
+                    logger.warn(`--${filepath}-- 已存在`)
+                }
+                fs.writeFileSync(filepath, v.buffer)
+            })
             res.json({
-                path: '/uploads/' + filename
+                status: 200,
+                data: filenames
             })
         }
     })
+    // upload.single('upload')(req, res, (err) => {
+    //     if (err) {
+    //         res.json({
+    //             err: err.message
+    //         }, 400)
+    //     }
+    //     else {
+    //         var sum = crypto.createHash('sha256')
+    //         sum.update(req.file.buffer.toString('hex'))
+    //         var sha = sum.digest('hex')
+    //         var filename = sha + path.extname(req.file.originalname)
+    //         var filepath = path.join('public/uploads', filename)
+    //         // logger.debug(req.body)
+    //         if (!fs.existsSync(filepath) || req.body['cover']) {
+    //             fs.writeFileSync(filepath, req.file.buffer)
+    //         }
+    //         else {
+    //             logger.debug(`${filepath} 已存在`)
+    //         }
+
+    //         res.json({
+    //             path: '/uploads/' + filename
+    //         })
+    //     }
+    // })
 })
 
 

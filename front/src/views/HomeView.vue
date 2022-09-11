@@ -3,36 +3,77 @@
     <el-tabs type="card" :value="String(activeTab)" @tab-click="transTab" @tab-remove="removeTab">
       <el-tab-pane label="主页" name="0">
         <el-table
-        :data="sampleInfos"
-        stripe
-        border
-        height="85vh"
-        style="width: 100%">
-        <el-table-column sortable prop="id" label="样品号" width="100" :filters="sampleFilters.id" :filter-method="filterHandler('id')">
-          <template slot-scope="scope">
-            <el-link type="primary" @click="to_sample_page(scope.row.id)">
-              <el-tag type="info" effect="plain" size="small">
-                {{ scope.row.id }}
-              </el-tag>
-            </el-link>
-          </template>
-        </el-table-column>
-        <el-table-column sortable prop="type" label="样品类型" width="120" :filters="sampleFilters.type" :filter-method="filterHandler('type')"></el-table-column>
-        <el-table-column sortable prop="source" label="样品来源" width="120" :filters="sampleFilters.source" :filter-method="filterHandler('source')"></el-table-column>
-        <el-table-column sortable prop="year" label="取样年份" width="120" :filters="sampleFilters.year" :filter-method="filterHandler('year')">
-          <template slot-scope="scope">
-            <i class="el-icon-time"></i>
-            <span style="margin-left: 8px">{{ scope.row.year }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column sortable prop="people" label="取样人" width="100" :filters="sampleFilters.people" :filter-method="filterHandler('people')">
-          <template slot-scope="scope">
-            <el-tag size="medium">{{ scope.row.people }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="imageId" label="照片号" miniwidth="100">
-          <template slot-scope="scope">
-              <el-popover trigger="hover" placement="top" v-for="iid in scope.row.imageId" :key="iid">
+          :data="sampleInfos"
+          stripe
+          border
+          height="85vh"
+          style="width: 100%">
+          <el-table-column sortable prop="id" label="样品号" width="100" :filters="sampleFilters.id" :filter-method="filterHandler('id')">
+            <template slot-scope="scope">
+              <el-link type="primary" @click="to_sample_page(scope.row.id)">
+                <el-tag type="info" effect="plain" size="small">
+                  {{ scope.row.id }}
+                </el-tag>
+              </el-link>
+            </template>
+          </el-table-column>
+          <el-table-column sortable prop="type" label="样品类型" width="120" :filters="sampleFilters.type" :filter-method="filterHandler('type')">
+            <template slot-scope="scope">
+              <el-select v-if="editModel[scope.row.id]" v-model="nowEditSampleInfo.type" placeholder="请选择样品类型" style="width: 100%">
+                <el-option label="炉渣" value="炉渣"></el-option>
+                <el-option label="炉壁" value="炉壁"></el-option>
+                <el-option label="陶范" value="陶范"></el-option>
+                <el-option label="坩埚" value="坩埚"></el-option>
+                <el-option label="鼓风管" value="鼓风管"></el-option>
+                <el-option label="铜" value="铜"></el-option>
+                <el-option label="铁" value="铁"></el-option>
+                <el-option label="不明" value="不明"></el-option>
+              </el-select>
+              <span v-else>
+                {{ scope.row.type }}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column sortable prop="source" label="样品来源" width="120" :filters="sampleFilters.source" :filter-method="filterHandler('source')">
+            <template slot-scope="scope">
+              <el-input v-if="editModel[scope.row.id]" v-model="nowEditSampleInfo.source"></el-input>
+              <span v-else>
+                {{ scope.row.source }}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column sortable prop="year" label="取样年份" width="120" :filters="sampleFilters.year" :filter-method="filterHandler('year')">
+            <template slot-scope="scope">
+              <el-date-picker v-if="editModel[scope.row.id]" type="year" placeholder="选择日期" v-model="nowEditSampleInfo.year" style="width: 100%"></el-date-picker>
+              <div v-else>
+                <i class="el-icon-time"></i>
+                <span style="margin-left: 8px">{{ scope.row.year }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column sortable prop="people" label="取样人" width="100" :filters="sampleFilters.people" :filter-method="filterHandler('people')">
+            <template slot-scope="scope">
+              <el-input v-if="editModel[scope.row.id]" v-model="nowEditSampleInfo.people"></el-input>
+              <el-tag v-else size="medium">{{ scope.row.people }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="imageId" label="照片号" miniwidth="100">
+            <template slot-scope="scope">
+              <el-upload
+                v-if="editModel[scope.row.id]"
+                action="/api/image"
+                accept="image/png, image/jpeg"
+                ref="upload"
+                name="upload"
+                multiple
+                :on-success="handleUploadSuccess"
+                :on-error="handleUploadError"
+                :auto-upload="false">
+                <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过4MB</div>
+              </el-upload>
+              <el-popover v-else trigger="hover" placement="top" v-for="iid in scope.row.imageId" :key="iid">
                 <el-image
                     style="height: 200px"
                     :src="'/api/image/' + iid"
@@ -47,8 +88,22 @@
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column prop="describe" label="描述" miniwidth="190"></el-table-column>
-          <el-table-column prop="explain" label="样品制备说明" miniwidth="300"></el-table-column>
+          <el-table-column prop="describe" label="描述" miniwidth="190">
+            <template slot-scope="scope">
+              <el-input v-if="editModel[scope.row.id]" type="textarea" autosize v-model="nowEditSampleInfo.describe"></el-input>
+              <span v-else>
+                {{ scope.row.describe }}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="explain" label="样品制备说明" miniwidth="300">
+            <template slot-scope="scope">
+              <el-input v-if="editModel[scope.row.id]" type="textarea" autosize v-model="nowEditSampleInfo.explain"></el-input>
+              <span v-else>
+                {{ scope.row.explain }}
+              </span>
+            </template>
+          </el-table-column>
           <el-table-column prop="experimentId" label="实验编号" miniwidth="160">
             <template slot-scope="scope">
               <el-link type="primary" @click="to_experiment_page(scope.row.id)">
@@ -61,15 +116,21 @@
           <el-table-column label="操作" width="62">
             <template slot-scope="scope">
               <!-- <span style="display: none;">{{ scope.row.id }}</span> -->
-              <el-button size="mini" round plain type="warning" icon="el-icon-edit"></el-button><br>
-              <el-button size="mini" round plain type="danger" icon="el-icon-delete" @click="deleteDialogVisible[scope.row.id]=true"></el-button>
-              <el-dialog title="确认" :visible.sync="deleteDialogVisible[scope.row.id]" width="30%">
-                <span>删除{{ scope.row.id }}?</span>
-                <span slot="footer" class="dialog-footer">
-                  <el-button @click="deleteDialogVisible[scope.row.id]=false">取 消</el-button>
-                  <el-button type="primary" @click="deleteSampleInfo(scope.row.id)">确 定</el-button>
-                </span>
-              </el-dialog>
+              <div v-if="editModel[scope.row.id]" style="text-align:center;">
+                <el-button size="small" type="success" icon="el-icon-check" circle @click="submitEdit(scope.row.id)"></el-button><br>
+                <el-button size="mini" type="danger" icon="el-icon-close" circle @click="cancelEdit(scope.row.id)"></el-button>
+              </div>
+              <div v-else style="text-align:center;">
+                <el-button size="mini" round plain type="warning" icon="el-icon-edit" @click="editSampleInfo(scope.row.id)"></el-button><br>
+                <el-button size="mini" round plain type="danger" icon="el-icon-delete" @click="deleteDialogVisible[scope.row.id]=true"></el-button>
+                <el-dialog title="确认" :visible.sync="deleteDialogVisible[scope.row.id]" width="30%">
+                  <span>删除{{ scope.row.id }}?</span>
+                  <span slot="footer" class="dialog-footer">
+                    <el-button @click="deleteDialogVisible[scope.row.id]=false">取 消</el-button>
+                    <el-button type="primary" @click="deleteSampleInfo(scope.row.id)">确 定</el-button>
+                  </span>
+                </el-dialog>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -131,7 +192,10 @@ export default {
         year: [],
         people: []
       },
-      deleteDialogVisible: {}
+      deleteDialogVisible: {},
+      editModel: {},
+      nowEditSampleInfo: null,
+      uploadFileList: []
     }
   },
   mounted() {
@@ -142,6 +206,7 @@ export default {
           this.$store.commit('setSampleInfos', res.data.data)
           this.sampleInfos.forEach(v => {
             this.$set(this.deleteDialogVisible, v.id, false)
+            this.$set(this.editModel, v.id, false)
           })
           var temp = {
             id: new Set(),
@@ -233,7 +298,6 @@ export default {
       return value === row[property]
     },
     deleteSampleInfo(sampleId) {
-      this.deleteDialogVisible = true
       this.axios.delete('/api/sampleinfo/' + sampleId)
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
@@ -244,6 +308,58 @@ export default {
             this.$message.error('出错啦！')
           }
         })
+      this.deleteDialogVisible[sampleId] = false
+    },
+    editSampleInfo(sampleId) {
+      if (!this.nowEditSampleInfo) {
+        var temp = this.sampleInfos.filter(v => v.id === sampleId)
+        if (temp.length > 0) {
+          this.nowEditSampleInfo = JSON.parse(JSON.stringify(temp[0]))
+          this.nowEditSampleInfo.year = new Date(this.nowEditSampleInfo.year, 1)
+        }
+        this.editModel[sampleId] = true
+      }
+      else {
+        this.$message.warning('您正在编辑' + this.nowEditSampleInfo.id + '，请优先完成')
+      }
+    },
+    handleUploadSuccess(res) {
+      if (res.status == 200) {
+        this.uploadFileList = this.uploadFileList.concat(res.data)
+      }
+      // else {
+      //   this.$message.error(file.name + '没有上传成功：' + res.data.msg)
+      // }
+    },
+    handleUploadError(err, file) {
+      this.$message.error(file.name + '没有上传成功：' + JSON.parse(err.message).msg)
+    },
+    submitUpload() {
+      this.$refs.upload.submit()
+    },
+    submitEdit(sampleId) {
+      this.nowEditSampleInfo.year = this.nowEditSampleInfo.year.getFullYear()
+      this.nowEditSampleInfo.imageId = this.uploadFileList
+      this.uploadFileList = []
+      this.axios.put('/api/sampleinfo', this.nowEditSampleInfo)
+        .then(res => {
+          if (res.status == 200 && res.data.status == 200) {
+            this.sampleInfos.forEach((v, i) => {
+              if (v.id == sampleId) {
+                this.$set(this.sampleInfos, i, this.nowEditSampleInfo)
+              }
+            })
+            this.nowEditSampleInfo = null
+            this.editModel[sampleId] = false
+          }
+          else {
+            this.$message.error('出错啦！')
+          }
+        })
+    },
+    cancelEdit(sampleId) {
+      this.nowEditSampleInfo = null
+      this.editModel[sampleId] = false
     }
   }
 }
