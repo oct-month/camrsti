@@ -13,4 +13,7 @@ COPY ./ /camrsti-image/
 RUN yarn
 RUN yarn cache clean
 
+EXPOSE 8082
+VOLUME [ "/camrsti-image/public" ]
+
 ENTRYPOINT [ "yarn", "serve" ]
