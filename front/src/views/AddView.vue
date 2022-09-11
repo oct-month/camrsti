@@ -2,7 +2,7 @@
   <div id="AddView">
     <el-form class="form" ref="form" :model="form" :rules="rules" label-width="100px" label-position="right" style="width: 800px;">
         <el-form-item label="样品号" prop="id">
-          <el-input v-model="form.id"></el-input>
+          <el-input v-model="form.id" placeholder="必填"></el-input>
         </el-form-item>
         <el-form-item label="样品类型">
           <el-select v-model="form.type" placeholder="请选择样品类型" style="width: 100%">
@@ -49,6 +49,15 @@
         <el-form-item label="样品制备说明">
           <el-input type="textarea" autosize v-model="form.explain"></el-input>
         </el-form-item>
+        <el-form-item label="实验编号">
+          <el-autocomplete
+            style="width:100%;"
+            class="inline-input"
+            v-model="form.experimentId"
+            :fetch-suggestions="experimentIdInputIdea"
+            placeholder='以中文"、"分隔'></el-autocomplete>
+          <!-- <el-input v-model="form.experimentId" placeholder='以中文"、"分隔'></el-input> -->
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即增加</el-button>
           <el-button>取消</el-button>
@@ -80,7 +89,7 @@ export default {
         imageId: [],
         describe: '',
         explain: '',
-        experimentId: []
+        experimentId: ''
       },
       rules: {
         id: [
@@ -99,9 +108,13 @@ export default {
     handleUploadError(err, file) {
       this.$message.error(file.name + '没有上传成功：' + JSON.parse(err.message).msg)
     },
+    experimentIdInputIdea(qs, cb) {
+      cb([{value: `${this.form.id}-1、${this.form.id}-2、${this.form.id}-3`}])
+    },
     onSubmit() {
       this.$refs.form.validate(valid => {
         if (valid) {
+          this.form.experimentId = this.form.experimentId.split('、').filter(v => v.trim())
           if (this.form.year){
             this.form.year = this.form.year.getFullYear()
           }
@@ -114,11 +127,25 @@ export default {
               if (res.status == 200 && res.data.status == 200) {
                 this.$message.success('添加成功!')
                 this.$refs.form.resetFields()
+                this.form = {
+                  id: '',
+                  type: '',
+                  source: '',
+                  year: 0,
+                  people: '',
+                  imageId: [],
+                  describe: '',
+                  explain: '',
+                  experimentId: ''
+                }
+                this.uploadFileList = []
+                this.$refs.upload.clearFiles()
               }
               else {
                 this.$message.error('出错啦！')
               }
             })
+          this.form.experimentId = this.form.experimentId.join('、')
         }
       })
     }

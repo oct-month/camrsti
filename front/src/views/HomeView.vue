@@ -159,7 +159,8 @@
           </el-table-column>
           <el-table-column prop="experimentId" :label="keyMap['experimentId']" miniwidth="160">
             <template slot-scope="scope">
-              <el-link type="primary" @click="to_experiment_page(scope.row.id)">
+              <el-input v-if="editModel[scope.row.id]" autosize v-model="nowEditSampleInfo.experimentId"></el-input>
+              <el-link v-else type="primary" @click="to_experiment_page(scope.row.id)">
                 <el-tag type="success" effect="plain" size="small" v-for="sc in scope.row.experimentId" :key="sc">
                     {{ sc }}
                 </el-tag>
@@ -195,7 +196,7 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane closable :label="v.label" :name="v.name" v-for="v in editableTabs" :key="v">
+      <el-tab-pane closable :label="v.label" :name="v.name" v-for="v in editableTabs" :key="v.label">
         <sample-page v-if="v.type" :sampleId="v.sampleId"/>
         <experiment-page v-else :sampleId="v.sampleId"/>
       </el-tab-pane>
@@ -449,6 +450,7 @@ export default {
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.sampleInfos = this.sampleInfos.filter(v => v.id != sampleId)
+            this.currentTableData = this.currentTableData.filter(v => v.id != sampleId)
             this.$message.warning('删除' + sampleId + '成功！')
           }
           else {
@@ -462,6 +464,7 @@ export default {
         var temp = this.sampleInfos.filter(v => v.id === sampleId)
         if (temp.length > 0) {
           this.nowEditSampleInfo = JSON.parse(JSON.stringify(temp[0]))
+          this.nowEditSampleInfo.experimentId = temp[0].experimentId.join('、')
           if (this.nowEditSampleInfo.year) {
             this.nowEditSampleInfo.year = new Date(this.nowEditSampleInfo.year, 1)
           }
@@ -490,6 +493,7 @@ export default {
       this.$refs.upload.submit()
     },
     submitEdit(sampleId) {
+      this.nowEditSampleInfo.experimentId = this.nowEditSampleInfo.experimentId.split('、').filter(v => v.trim())
       if (this.nowEditSampleInfo.year) {
         this.nowEditSampleInfo.year = this.nowEditSampleInfo.year.getFullYear()
       }
@@ -528,20 +532,10 @@ export default {
     exportTableData() {
       var temp = JSON.parse(JSON.stringify(this.currentTableData))
       temp.forEach((v, i) => {
-        let s = ''
-        v.imageId.forEach(k => {
-          s += k + '、'
-        })
-        s = s.substring(0, s.length - 1)
-        temp[i].imageId = s
+        temp[i].imageId = v.imageId.join('、')
       })
       temp.forEach((v, i) => {
-        let s = ''
-        v.experimentId.forEach(k => {
-          s += k + '、'
-        })
-        s = s.substring(0, s.length - 1)
-        temp[i].experimentId = s
+        temp[i].experimentId = v.experimentId.join('、')
       })
       var exData = [];
       temp.forEach(v => {

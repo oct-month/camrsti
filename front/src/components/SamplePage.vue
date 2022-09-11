@@ -301,9 +301,8 @@ export default {
     }
   },
   mounted() {
-    // TODO
     if (!this.sampleId) {
-      this.$router.push('/')
+      this.$message.error('出错啦！')
       return
     }
     // this.sampleInfo = this.$store.getters.getSampleInfo(this.sampleId)

@@ -31,10 +31,10 @@
               <i class="el-icon-document-add"></i>
               <span slot="title">增加数据</span>
             </el-menu-item>
-            <el-menu-item index="3">
+            <!-- <el-menu-item index="3">
               <i class="el-icon-search"></i>
               <span slot="title">测试页面</span>
-            </el-menu-item>
+            </el-menu-item> -->
             <el-submenu index="4">
               <template slot="title">
                 <i class="el-icon-data-analysis"></i>
@@ -42,9 +42,10 @@
               </template>
               <el-menu-item-group>
                 <template slot="title">统计</template>
-                <el-menu-item index="4-1">计数</el-menu-item>
-                <el-menu-item index="4-2">均值</el-menu-item>
-                <el-menu-item index="4-3">图表</el-menu-item>
+                <el-menu-item index="4-1">显微组织</el-menu-item>
+                <el-menu-item index="4-2">矿物含量+矿物测量</el-menu-item>
+                <el-menu-item index="4-3">XRD+化学成分</el-menu-item>
+                <el-menu-item index="4-4">物理结构+热分析</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
           </el-menu>
@@ -155,19 +156,29 @@ export default {
             name: 'AddView'
           })
           break
-        case '3':
-          router.push({
-            name: 'TestView'
-          })
-          break
+        // case '3':
+        //   router.push({
+        //     name: 'TestView'
+        //   })
+        //   break
         case '4-1':
           router.push({
-            name: 'CountView'
+            name: 'AboutView'
+          })
+          break
+        case '4-2':
+          router.push({
+            name: 'AboutView'
           })
           break
         case '4-3':
           router.push({
-            name:'CurveView'
+            name:'AboutView'
+          })
+          break
+        case '4-4':
+          router.push({
+            name: 'AboutView'
           })
           break
         default:
