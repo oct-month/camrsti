@@ -249,7 +249,7 @@ CREATE TABLE `SampleInfo` (
 
 LOCK TABLES `SampleInfo` WRITE;
 /*!40000 ALTER TABLE `SampleInfo` DISABLE KEYS */;
-INSERT INTO `SampleInfo` VALUES ('11Y1:9','炉壁','北京延庆水泉沟',2019,'刘海峰','[\"IMG_20190512_33333.jpg\", \"IMG_20190512_33333.jpg\"]','取自炉体上半部分，红色，质地疏松多空','自内向外取三处，分别做薄片后矿相观察，制备粉末样品开展XRD分析','[\"11Y3:9-1\", \"11Y3:9-2\", \"11Y3:9-3\"]');
+INSERT INTO `SampleInfo` VALUES ('11Y1:9','炉壁','北京延庆水泉沟',2019,'刘海峰','[\"IMG_20190512_33333.jpg\"]','取自炉体上半部分，红色，质地疏松多空','自内向外取三处，分别做薄片后矿相观察，制备粉末样品开展XRD分析','[\"11Y3:9-1\", \"11Y3:9-2\", \"11Y3:9-3\"]');
 /*!40000 ALTER TABLE `SampleInfo` ENABLE KEYS */;
 UNLOCK TABLES;
 

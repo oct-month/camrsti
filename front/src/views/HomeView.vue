@@ -235,6 +235,7 @@
 <script>
 import xlsx from 'xlsx'
 
+import { deepObjCopy } from '@/utils'
 import SamplePage from '@/components/SamplePage.vue'
 import ExperimentPage from '@/components/ExperimentPage.vue'
 
@@ -388,7 +389,7 @@ export default {
       this.$forceUpdate()
     },
     inputFilterHandler() {
-      this.currentTableData = JSON.parse(JSON.stringify(this.sampleInfos))
+      this.currentTableData = deepObjCopy(this.sampleInfos)
       if (this.filterItems.id.trim()) {
         for (let i = this.currentTableData.length - 1; i >=0 ; -- i) {
           if (this.currentTableData[i].id.indexOf(this.filterItems.id.trim()) < 0) {
@@ -463,7 +464,7 @@ export default {
       if (!this.nowEditSampleInfo) {
         var temp = this.sampleInfos.filter(v => v.id === sampleId)
         if (temp.length > 0) {
-          this.nowEditSampleInfo = JSON.parse(JSON.stringify(temp[0]))
+          this.nowEditSampleInfo = deepObjCopy(temp[0])
           this.nowEditSampleInfo.experimentId = temp[0].experimentId.join('、')
           if (this.nowEditSampleInfo.year) {
             this.nowEditSampleInfo.year = new Date(this.nowEditSampleInfo.year, 1)
@@ -530,7 +531,7 @@ export default {
       this.editModel[sampleId] = false
     },
     exportTableData() {
-      var temp = JSON.parse(JSON.stringify(this.currentTableData))
+      var temp = deepObjCopy(this.currentTableData)
       temp.forEach((v, i) => {
         temp[i].imageId = v.imageId.join('、')
       })

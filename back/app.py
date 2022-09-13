@@ -1,4 +1,5 @@
 import json
+from typing import Dict, Set
 from flask import request
 
 from utils import get_app
@@ -19,6 +20,7 @@ def all_exception_handler(e):
 # 404错误
 @app.errorhandler(404)
 def error_404(e):
+    print(e)
     return {
         'status': 404,
         'msg': 'Not Found'
@@ -58,15 +60,15 @@ def delete_sampleinfo(sampleId):
 @app.route('/api/sampleinfo', methods=['PUT'])
 def modify_sampleinfo():
     sampleInfo_json = json.loads(request.data)
-    sampleId = sampleInfo_json['id']
+    sampleId = sampleInfo_json.get('id')
     sampleInfo = get_sampleinfo_dao(sampleId)
-    sampleInfo.type = sampleInfo_json['type']
-    sampleInfo.source = sampleInfo_json['source']
-    sampleInfo.year = sampleInfo_json['year']
-    sampleInfo.people = sampleInfo_json['people']
-    sampleInfo.imageId = sampleInfo_json['imageId']
-    sampleInfo.describe = sampleInfo_json['describe']
-    sampleInfo.explain = sampleInfo_json['explain']
+    sampleInfo.type = sampleInfo_json.get('type')
+    sampleInfo.source = sampleInfo_json.get('source')
+    sampleInfo.year = sampleInfo_json.get('year')
+    sampleInfo.people = sampleInfo_json.get('people')
+    sampleInfo.imageId = sampleInfo_json.get('imageId')
+    sampleInfo.describe = sampleInfo_json.get('describe')
+    sampleInfo.explain = sampleInfo_json.get('explain')
     db.session.commit()
     return {
         'status': 200
@@ -76,7 +78,7 @@ def modify_sampleinfo():
 @app.route('/api/sampleinfo', methods=['POST'])
 def add_sampleinfo():
     sampleInfo_json = json.loads(request.data)
-    sampleId = sampleInfo_json['id']
+    sampleId = sampleInfo_json.get('id')
     sampleInfo = get_sampleinfo_dao(sampleId)
     if (sampleInfo):
         return {
@@ -85,15 +87,15 @@ def add_sampleinfo():
         }
     else:
         instance = SampleInfo(
-            id=sampleInfo_json['id'],
-            type=sampleInfo_json['type'],
-            source=sampleInfo_json['source'],
-            year=sampleInfo_json['year'],
-            people=sampleInfo_json['people'],
-            imageId=sampleInfo_json['imageId'],
-            describe=sampleInfo_json['describe'],
-            explain=sampleInfo_json['explain'],
-            experimentId=sampleInfo_json['experimentId']
+            id=sampleInfo_json.get('id'),
+            type=sampleInfo_json.get('type'),
+            source=sampleInfo_json.get('source'),
+            year=sampleInfo_json.get('year'),
+            people=sampleInfo_json.get('people'),
+            imageId=sampleInfo_json.get('imageId'),
+            describe=sampleInfo_json.get('describe'),
+            explain=sampleInfo_json.get('explain'),
+            experimentId=sampleInfo_json.get('experimentId')
         )
         db.session.add(instance)
         db.session.commit()
@@ -157,6 +159,31 @@ def get_mine_physics_info(sampleId):
     return {
         'status': 200,
         'data': physics_info.to_json() if physics_info is not None else None
+    }
+
+# 修改特定样本的物理结构数据
+@app.route('/api/minephysicsinfo', methods=['POST'])
+def set_mine_physics_info():
+    phy_info_json = json.loads(request.data)
+    physics_info = MinePhysicsInfo.query.filter_by(id=phy_info_json.get('id')).first()
+    if physics_info is not None:
+        physics_info.type = phy_info_json.get('type')
+        physics_info.apparentPorosity = phy_info_json.get('apparentPorosity')
+        physics_info.trueDensity = phy_info_json.get('trueDensity')
+        physics_info.waterAbsorption = phy_info_json.get('waterAbsorption')
+        db.session.commit()
+    else:
+        instance = MinePhysicsInfo(
+            id=phy_info_json.get('id'), 
+            type=phy_info_json.get('type'),
+            apparentPorosity=phy_info_json.get('apparentPorosity'),
+            trueDensity=phy_info_json.get('trueDensity'),
+            waterAbsorption=phy_info_json.get('waterAbsorption'),
+        )
+        db.session.add(instance)
+        db.session.commit()
+    return {
+        'status': 200
     }
 
 # 获取特定样本的热分析
@@ -389,4 +416,4 @@ def get_mine_thermal_infos(sampleId):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8081, debug=False)
+    app.run(host='0.0.0.0', port=8081, debug=True)

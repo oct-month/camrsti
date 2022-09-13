@@ -2,35 +2,43 @@
   <div id="SampleView">
     <el-descriptions class="margin-top" title="物理结构数据" :column="2" border>
       <template slot="extra">
-        <el-button type="primary" size="small">{{ physicalInfo ? '修改' : '增加' }}</el-button>
+        <div v-if="editPhysicalInfoFlag" style="text-align:center;">
+          <el-button size="small" type="success" icon="el-icon-check" circle @click="submitPhysicalInfoEdit"></el-button>
+          <el-button size="mini" type="danger" icon="el-icon-close" circle @click="cancelPhysicalInfoEdit"></el-button>
+        </div>
+        <el-button v-else type="primary" size="small" @click="setPhysicalInfo">{{ physicalInfo ? '修改' : '增加' }}</el-button>
       </template>
       <el-descriptions-item>
         <template slot="label">
           <i class="el-icon-s-order"></i>
           类型
         </template>
-        {{ physicalInfo ? physicalInfo.type : '无' }}
+        <el-input v-if="editPhysicalInfoFlag" v-model="physicalInfo_E.type"></el-input>
+        <span v-else>{{ physicalInfo ? physicalInfo.type : '无' }}</span>
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">
           <i class="el-icon-document"></i>
           显气孔率（%）
         </template>
-        {{ physicalInfo ? physicalInfo.apparentPorosity : '无' }}
+        <el-input v-if="editPhysicalInfoFlag" v-model="physicalInfo_E.apparentPorosity" @change="phyInputValid('apparentPorosity')"></el-input>
+        <span v-else>{{ physicalInfo ? physicalInfo.apparentPorosity : '无' }}</span>
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">
           <i class="el-icon-document"></i>
           真密度（g/cm3）
         </template>
-        {{ physicalInfo ? physicalInfo.trueDensity : '无' }}
+        <el-input v-if="editPhysicalInfoFlag" v-model="physicalInfo_E.trueDensity" @change="phyInputValid('trueDensity')"></el-input>
+        <span v-else>{{ physicalInfo ? physicalInfo.trueDensity : '无' }}</span>
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">
           <i class="el-icon-document"></i>
           吸水率%（%）
         </template>
-        {{ physicalInfo ? physicalInfo.waterAbsorption : '无' }}
+        <el-input v-if="editPhysicalInfoFlag" v-model="physicalInfo_E.waterAbsorption" @change="phyInputValid('waterAbsorption')"></el-input>
+        <span v-else>{{ physicalInfo ? physicalInfo.waterAbsorption : '无' }}</span>
       </el-descriptions-item>
     </el-descriptions>
 
@@ -286,6 +294,8 @@
 </style>
 
 <script>
+import { deepObjCopy } from '@/utils'
+
 export default {
   name: 'SamplePage',
   props: {
@@ -297,7 +307,9 @@ export default {
       physicalInfo: null,
       jinxiang: null,
       kuangxiang: null,
-      dianzi: null
+      dianzi: null,
+      editPhysicalInfoFlag: false,
+      physicalInfo_E: null
     }
   },
   mounted() {
@@ -338,6 +350,47 @@ export default {
           this.$message.error('出错啦！')
         }
       })
+  },
+  methods: {
+    setPhysicalInfo() {
+      this.physicalInfo_E = deepObjCopy(this.physicalInfo)
+      this.editPhysicalInfoFlag = true
+    },
+    phyInputValid(key) {
+      this.physicalInfo_E[key] = this.physicalInfo_E[key].trim()
+      var point_flag = false
+      for (let i = 0; i < this.physicalInfo_E[key].length; ++ i) {
+        if (this.physicalInfo_E[key][i] == '.' && !point_flag) {
+          point_flag = true
+        }
+        else if (this.physicalInfo_E[key][i] < '0' || this.physicalInfo_E[key][i] > '9') {
+          this.physicalInfo_E[key] = this.physicalInfo_E[key].substring(0, i)
+          break
+        }
+      }
+    },
+    submitPhysicalInfoEdit() {
+      this.physicalInfo_E.type = this.physicalInfo_E.type.trim()
+      this.physicalInfo_E.apparentPorosity = Number(this.physicalInfo_E.apparentPorosity)
+      this.physicalInfo_E.trueDensity = Number(this.physicalInfo_E.trueDensity)
+      this.physicalInfo_E.waterAbsorption = Number(this.physicalInfo_E.waterAbsorption)
+      this.axios.post('/api/minephysicsinfo', this.physicalInfo_E)
+        .then(res => {
+          if (res.status == 200 && res.data.status == 200) {
+            this.physicalInfo =this.physicalInfo_E
+            this.physicalInfo_E = null
+            this.$message.success('修改' + this.sampleId+ '物理结构数据成功！')
+          }
+          else {
+            this.$message.error('出错啦！')
+          }
+        })
+      this.editPhysicalInfoFlag = false
+    },
+    cancelPhysicalInfoEdit() {
+      this.physicalInfo_E = null
+      this.editPhysicalInfoFlag = false
+    }
   }
 }
 </script>
