@@ -353,7 +353,18 @@ export default {
   },
   methods: {
     setPhysicalInfo() {
-      this.physicalInfo_E = deepObjCopy(this.physicalInfo)
+      if (this.physicalInfo) {
+        this.physicalInfo_E = deepObjCopy(this.physicalInfo)
+      }
+      else {
+        this.physicalInfo_E = {
+          id: this.sampleId,
+          type: '',
+          apparentPorosity: '',
+          trueDensity: '',
+          waterAbsorption: ''
+        }
+      }
       this.editPhysicalInfoFlag = true
     },
     phyInputValid(key) {
