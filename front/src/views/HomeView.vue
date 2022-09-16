@@ -224,7 +224,7 @@
   width: 50%;
 }
 
-::v-deep .el-tabs__nav {
+:deep(.el-tabs__nav) {
   background: #ddd;
 }
 /* ::v-deep .el-table__cell {

@@ -1,0 +1,24 @@
+{
+    "device": "徕卡2700P",
+    "id": 1,
+    "imageData": [
+        {
+            "describe": "整体结构为大量的岩石和砂颗粒和少量黏土基质，图中上下为石英砂岩和花岗岩颗粒，中间为黏土+粉砂",
+            "image": "图片3.jpg",
+            "photoMode": "XPL",
+            "zoom": 10
+        },
+        {
+            "describe": "与左图正交偏光图像综合对比，可以辅助判定矿相、空洞和不透明物质",
+            "image": "图片4.jpg",
+            "photoMode": "PPL",
+            "zoom": 10
+        }
+    ],
+    "sampleDescribe": "红色区域，有较多的粗砂和岩屑，该部分黏土基质较多",
+    "sampleId": "11Y1:9",
+    "sampleImage": [
+        "图片2.jpg"
+    ],
+    "type": "矿相"
+}

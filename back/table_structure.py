@@ -53,7 +53,7 @@ class MicroView(db.Model):
     imageData = db.Column('imageData', db.JSON)                     # 照片数据
     sampleId = db.Column('sampleId', db.Unicode(30))                # 样品id（外键）
 
-    def __init__(self, id, type=None, sampleImage=None, sampleDescribe=None, device=None, imageData=None, sampleId=None):
+    def __init__(self, id=None, type=None, sampleImage=None, sampleDescribe=None, device=None, imageData=None, sampleId=None):
         self.id = id
         self.type = type
         self.sampleImage = sampleImage
