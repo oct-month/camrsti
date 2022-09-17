@@ -1017,7 +1017,16 @@ export default {
     },
     findItem(id) {
       let res = null
-      let temp = this.jinxiang.imageData.concat(this.kuangxiang.imageData).concat(this.dianzi.imageData)
+      let temp = []
+      if (this.jinxiang) {
+        temp = temp.concat(this.jinxiang.imageData)
+      }
+      if (this.kuangxiang) {
+        temp = temp.concat(this.kuangxiang.imageData)
+      }
+      if (this.dianzi) {
+        temp = temp.concat(this.dianzi.imageData)
+      }
       for (let i = 0; i < temp.length; ++ i) {
         if (temp[i].id == id) {
           res = temp[i]
@@ -1027,30 +1036,42 @@ export default {
       return res
     },
     removeItem(id) {
-      this.jinxiang.imageData = this.jinxiang.imageData.filter(v => v.id != id)
-      this.kuangxiang.imageData = this.kuangxiang.imageData.filter(v => v.id != id)
-      this.dianzi.imageData = this.dianzi.imageData.filter(v => v.id != id)
+      if (this.jinxiang) {
+        this.jinxiang.imageData = this.jinxiang.imageData.filter(v => v.id != id)
+      }
+      if (this.kuangxiang) {
+        this.kuangxiang.imageData = this.kuangxiang.imageData.filter(v => v.id != id)
+      }
+      if (this.dianzi) {
+        this.dianzi.imageData = this.dianzi.imageData.filter(v => v.id != id)
+      }
     },
     setItem(item) {
       let flag = true
-      this.jinxiang.imageData.forEach((v, i) => {
-        if (flag && v.id == item.id) {
-          this.$set(this.jinxiang.imageData, i, item)
-          flag = false
-        }
-      })
-      this.kuangxiang.imageData.forEach((v, i) => {
-        if (flag && v.id == item.id) {
-          this.$set(this.kuangxiang.imageData, i, item)
-          flag = false
-        }
-      })
-      this.dianzi.imageData.forEach((v, i) => {
-        if (flag && v.id == item.id) {
-          this.$set(this.dianzi.imageData, i, item)
-          flag = false
-        }
-      })
+      if (this.jinxiang) {
+        this.jinxiang.imageData.forEach((v, i) => {
+          if (flag && v.id == item.id) {
+            this.$set(this.jinxiang.imageData, i, item)
+            flag = false
+          }
+        })
+      }
+      if (this.kuangxiang && flag) {
+        this.kuangxiang.imageData.forEach((v, i) => {
+          if (flag && v.id == item.id) {
+            this.$set(this.kuangxiang.imageData, i, item)
+            flag = false
+          }
+        })
+      }
+      if (this.dianzi && flag) {
+        this.dianzi.imageData.forEach((v, i) => {
+          if (flag && v.id == item.id) {
+            this.$set(this.dianzi.imageData, i, item)
+            flag = false
+          }
+        })
+      }
     },
     editItem(id) {
       if (this.nowEditItem) {
