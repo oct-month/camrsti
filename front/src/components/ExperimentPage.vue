@@ -7,38 +7,23 @@
       stripe
       border
       style="width: 100%">
-      <template v-if="mineContentInfos.length">
-        <el-table-column prop="id" label="样品号" width="80"></el-table-column>
-        <el-table-column prop="sampleName" label="样品名称" width="90"></el-table-column>
-        <el-table-column prop="clay" label="黏土基质" miniwidth="100"></el-table-column>
-        <el-table-column prop="quartz" label="石英粉砂" miniwidth="100"></el-table-column>
-        <el-table-column label="砂">
-          <el-table-column prop="sand.quartz" label="石英" miniwidth="100"></el-table-column>
-          <el-table-column prop="sand.feldspar" label="长石" miniwidth="100"></el-table-column>
-          <el-table-column prop="sand.Ominerals" label="其他矿物" miniwidth="100"></el-table-column>
-          <el-table-column label="小计" miniwidth="100">
-            <template slot-scope="scope">
-              {{ sum(Object.values(scope.row.sand)) }}
-            </template>
-          </el-table-column>
+      <el-table-column prop="id" label="样品号" width="80"></el-table-column>
+      <el-table-column prop="sampleName" label="样品名称" width="90"></el-table-column>
+      <el-table-column prop="clay" label="黏土基质" miniwidth="100"></el-table-column>
+      <el-table-column prop="quartz" label="石英粉砂" miniwidth="100"></el-table-column>
+      <el-table-column label="砂">
+        <el-table-column prop="sand.quartz" label="石英" miniwidth="100"></el-table-column>
+        <el-table-column prop="sand.feldspar" label="长石" miniwidth="100"></el-table-column>
+        <el-table-column prop="sand.Ominerals" label="其他矿物" miniwidth="100"></el-table-column>
+        <el-table-column label="小计" miniwidth="100">
+          <template slot-scope="scope">
+            {{ sum(Object.values(scope.row.sand)) }}
+          </template>
         </el-table-column>
-        <el-table-column prop="debris" label="岩屑" miniwidth="100"></el-table-column>
-        <el-table-column prop="hollow" label="空洞" miniwidth="100"></el-table-column>
-      </template>
-      <template v-else>
-        <el-table-column label="样品号" width="80"></el-table-column>
-        <el-table-column label="样品名称" width="90"></el-table-column>
-        <el-table-column label="黏土基质" miniwidth="100"></el-table-column>
-        <el-table-column label="石英粉砂" miniwidth="100"></el-table-column>
-        <el-table-column label="砂">
-          <el-table-column label="石英" miniwidth="100"></el-table-column>
-          <el-table-column label="长石" miniwidth="100"></el-table-column>
-          <el-table-column label="其他矿物" miniwidth="100"></el-table-column>
-          <el-table-column label="小计" miniwidth="100"></el-table-column>
-        </el-table-column>
-        <el-table-column label="岩屑" miniwidth="100"></el-table-column>
-        <el-table-column label="空洞" miniwidth="100"></el-table-column>
-      </template>
+      </el-table-column>
+      <el-table-column prop="debris" label="岩屑" miniwidth="100"></el-table-column>
+      <el-table-column prop="hollow" label="空洞" miniwidth="100"></el-table-column>
+      <el-table-column prop="other" label="其他" miniwidth="100"></el-table-column>
     </el-table>
 
     <hr>
@@ -51,10 +36,13 @@
       stripe
       border
       style="width: 100%">
-      <template v-if="mineSurveyInfos.debrisData.length">
-        <el-table-column prop="id" label="样品号" width="80"></el-table-column>
-        <el-table-column v-for="key in Object.keys(mineSurveyInfos.debrisData[0]).filter(x => x != 'id')" :key="key" :prop="key" :label="key" miniwidth="100"></el-table-column>
-      </template>
+      <el-table-column prop="id" label="样品号" width="80"></el-table-column>
+      <!-- <el-table-column v-for="key in Object.keys(mineSurveyInfos.debrisData[0]).filter(x => x != 'id')" :key="key" :prop="key" :label="key" miniwidth="100"></el-table-column> -->
+      <el-table-column prop="≤67μm" label="≤67μm" miniwidth="100"></el-table-column>
+      <el-table-column prop="67-167μm" label="67-167μm" miniwidth="100"></el-table-column>
+      <el-table-column prop="167-501" label="167-501" miniwidth="100"></el-table-column>
+      <el-table-column prop="501-1002" label="501-1002" miniwidth="100"></el-table-column>
+      <el-table-column prop="≥1002" label="≥1002" miniwidth="100"></el-table-column>
     </el-table>
     空洞长度分布
     <el-table
@@ -62,10 +50,13 @@
       stripe
       border
       style="width: 100%">
-      <template v-if="mineSurveyInfos.hollowData.length">
-        <el-table-column prop="id" label="样品号" width="110"></el-table-column>
-        <el-table-column v-for="key in Object.keys(mineSurveyInfos.hollowData[0]).filter(x => x != 'id')" :key="key" :prop="key" :label="key" miniwidth="100"></el-table-column>
-      </template>
+      <el-table-column prop="id" label="样品号" width="80"></el-table-column>
+      <!-- <el-table-column v-for="key in Object.keys(mineSurveyInfos.hollowData[0]).filter(x => x != 'id')" :key="key" :prop="key" :label="key" miniwidth="100"></el-table-column> -->
+      <el-table-column prop="≤167" label="≤167" miniwidth="100"></el-table-column>
+      <el-table-column prop="167-501" label="167-501" miniwidth="100"></el-table-column>
+      <el-table-column prop="501-1002" label="501-1002" miniwidth="100"></el-table-column>
+      <el-table-column prop="1002-2004" label="1002-2004" miniwidth="100"></el-table-column>
+      <el-table-column prop="＞2004" label="＞2004" miniwidth="100"></el-table-column>
     </el-table>
 
     <hr>
@@ -77,86 +68,68 @@
       stripe
       border
       style="width: 100%">
-      <template v-if="mineXRDInfos.length">
-        <el-table-column prop="id" label="样品编号" width="80"></el-table-column>
-        <el-table-column prop="type" label="类型" width="90"></el-table-column>
-        <el-table-column prop="quartz" label="石英" miniwidth="100">
-          <template slot-scope="scope">
-            {{ scope.row.quartz ? scope.row.quartz + '%' : '' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="albite" label="钠长石" miniwidth="100">
-          <template slot-scope="scope">
-            {{ scope.row.albite ? scope.row.albite + '%' : '' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="potashFeldspar" label="钾长石" miniwidth="100">
-          <template slot-scope="scope">
-            {{ scope.row.potashFeldspar ? scope.row.potashFeldspar + '%' : '' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="mica" label="云母" miniwidth="100">
-          <template slot-scope="scope">
-            {{ scope.row.mica ? scope.row.mica + '%' : '' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="amphibole" label="闪石" miniwidth="100">
-          <template slot-scope="scope">
-            {{ scope.row.amphibole ? scope.row.amphibole + '%' : '' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="hematite" label="赤铁矿" miniwidth="100">
-          <template slot-scope="scope">
-            {{ scope.row.hematite ? scope.row.hematite + '%' : '' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="magnetite" label="磁铁矿" miniwidth="100">
-          <template slot-scope="scope">
-            {{ scope.row.magnetite ? scope.row.magnetite + '%' : '' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="dolomite" label="白云石" miniwidth="100">
-          <template slot-scope="scope">
-            {{ scope.row.dolomite ? scope.row.dolomite + '%' : '' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="analcite" label="方沸石" miniwidth="100">
-          <template slot-scope="scope">
-            {{ scope.row.analcite ? scope.row.analcite + '%' : '' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="tridymite" label="磷石英" miniwidth="100">
-          <template slot-scope="scope">
-            {{ scope.row.tridymite ? scope.row.tridymite + '%' : '' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="cristobalite" label="方石英" miniwidth="100">
-          <template slot-scope="scope">
-            {{ scope.row.cristobalite ? scope.row.cristobalite + '%' : '' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="mullite" label="莫来石" miniwidth="100">
-          <template slot-scope="scope">
-            {{ scope.row.mullite ? scope.row.mullite + '%' : '' }}
-          </template>
-        </el-table-column>
-      </template>
-      <template v-else>
-        <el-table-column label="样品编号" width="80"></el-table-column>
-        <el-table-column label="类型" width="90"></el-table-column>
-        <el-table-column label="石英" miniwidth="100"></el-table-column>
-        <el-table-column label="钠长石" miniwidth="100"></el-table-column>
-        <el-table-column label="钾长石" miniwidth="100"></el-table-column>
-        <el-table-column label="云母" miniwidth="100"></el-table-column>
-        <el-table-column label="闪石" miniwidth="100"></el-table-column>
-        <el-table-column label="赤铁矿" miniwidth="100"></el-table-column>
-        <el-table-column label="磁铁矿" miniwidth="100"></el-table-column>
-        <el-table-column label="白云石" miniwidth="100"></el-table-column>
-        <el-table-column label="方沸石" miniwidth="100"></el-table-column>
-        <el-table-column label="磷石英" miniwidth="100"></el-table-column>
-        <el-table-column label="方石英" miniwidth="100"></el-table-column>
-        <el-table-column label="莫来石" miniwidth="100"></el-table-column>
-      </template>
+      <el-table-column prop="id" label="样品编号" width="80"></el-table-column>
+      <el-table-column prop="type" label="类型" width="90"></el-table-column>
+      <el-table-column prop="quartz" label="石英" miniwidth="100">
+        <template slot-scope="scope">
+          {{ scope.row.quartz ? scope.row.quartz + '%' : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="albite" label="钠长石" miniwidth="100">
+        <template slot-scope="scope">
+          {{ scope.row.albite ? scope.row.albite + '%' : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="potashFeldspar" label="钾长石" miniwidth="100">
+        <template slot-scope="scope">
+          {{ scope.row.potashFeldspar ? scope.row.potashFeldspar + '%' : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="mica" label="云母" miniwidth="100">
+        <template slot-scope="scope">
+          {{ scope.row.mica ? scope.row.mica + '%' : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="amphibole" label="闪石" miniwidth="100">
+        <template slot-scope="scope">
+          {{ scope.row.amphibole ? scope.row.amphibole + '%' : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="hematite" label="赤铁矿" miniwidth="100">
+        <template slot-scope="scope">
+          {{ scope.row.hematite ? scope.row.hematite + '%' : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="magnetite" label="磁铁矿" miniwidth="100">
+        <template slot-scope="scope">
+          {{ scope.row.magnetite ? scope.row.magnetite + '%' : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="dolomite" label="白云石" miniwidth="100">
+        <template slot-scope="scope">
+          {{ scope.row.dolomite ? scope.row.dolomite + '%' : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="analcite" label="方沸石" miniwidth="100">
+        <template slot-scope="scope">
+          {{ scope.row.analcite ? scope.row.analcite + '%' : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="tridymite" label="磷石英" miniwidth="100">
+        <template slot-scope="scope">
+          {{ scope.row.tridymite ? scope.row.tridymite + '%' : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="cristobalite" label="方石英" miniwidth="100">
+        <template slot-scope="scope">
+          {{ scope.row.cristobalite ? scope.row.cristobalite + '%' : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="mullite" label="莫来石" miniwidth="100">
+        <template slot-scope="scope">
+          {{ scope.row.mullite ? scope.row.mullite + '%' : '' }}
+        </template>
+      </el-table-column>
     </el-table>
 
     <hr>
@@ -168,28 +141,15 @@
       stripe
       border
       style="width: 100%">
-      <template v-if="mineChemistryInfos.length">
-        <el-table-column prop="id" label="样品号" width="80"></el-table-column>
-        <el-table-column prop="type" label="类型" width="90"></el-table-column>
-        <el-table-column prop="Na2O" label="Na₂O" miniwidth="100"></el-table-column>
-        <el-table-column prop="MgO" label="MgO" miniwidth="100"></el-table-column>
-        <el-table-column prop="Al2O3" label="Al₂O₃" miniwidth="100"></el-table-column>
-        <el-table-column prop="SiO2" label="SiO₂" miniwidth="100"></el-table-column>
-        <el-table-column prop="K2O" label="K₂O" miniwidth="100"></el-table-column>
-        <el-table-column prop="CaO" label="CaO" miniwidth="100"></el-table-column>
-        <el-table-column prop="Fe2O3" label="Fe₂O₃" miniwidth="100"></el-table-column>
-      </template>
-      <template v-else>
-        <el-table-column label="样品号" width="80"></el-table-column>
-        <el-table-column label="类型" width="90"></el-table-column>
-        <el-table-column label="Na₂O" miniwidth="100"></el-table-column>
-        <el-table-column label="MgO" miniwidth="100"></el-table-column>
-        <el-table-column label="Al₂O₃" miniwidth="100"></el-table-column>
-        <el-table-column label="SiO₂" miniwidth="100"></el-table-column>
-        <el-table-column label="K₂O" miniwidth="100"></el-table-column>
-        <el-table-column label="CaO" miniwidth="100"></el-table-column>
-        <el-table-column label="Fe₂O₃" miniwidth="100"></el-table-column>
-      </template>
+      <el-table-column prop="id" label="样品号" width="80"></el-table-column>
+      <el-table-column prop="type" label="类型" width="90"></el-table-column>
+      <el-table-column prop="Na2O" label="Na₂O" miniwidth="100"></el-table-column>
+      <el-table-column prop="MgO" label="MgO" miniwidth="100"></el-table-column>
+      <el-table-column prop="Al2O3" label="Al₂O₃" miniwidth="100"></el-table-column>
+      <el-table-column prop="SiO2" label="SiO₂" miniwidth="100"></el-table-column>
+      <el-table-column prop="K2O" label="K₂O" miniwidth="100"></el-table-column>
+      <el-table-column prop="CaO" label="CaO" miniwidth="100"></el-table-column>
+      <el-table-column prop="Fe2O3" label="Fe₂O₃" miniwidth="100"></el-table-column>
     </el-table>
 
     <h3>热分析</h3>
@@ -200,31 +160,22 @@
       stripe
       border
       style="width: 100%">
-      <template v-if="mineThermalInfos.length">
-        <el-table-column prop="id" label="样品号" width="80"></el-table-column>
-        <el-table-column prop="termTemper" label="终止温度" miniwidth="100"></el-table-column>
-        <el-table-column prop="fireResis" label="耐火度" miniwidth="100"></el-table-column>
-        <el-table-column prop="data" label="热分析数据" miniwidth="100"></el-table-column>
-        <el-table-column prop="surveImage" label="热分析曲线" miniwidth="400">
-          <template slot-scope="scope">
-            <el-image
-              style="height: 200px"
-              :src="'/api/image/' + scope.row.surveImage"
-              fit="contain">
-              <div slot="error" class="image-slot">
-                <i class="el-icon-picture-outline"></i>
-              </div>
-            </el-image>
-          </template>
-        </el-table-column>
-      </template>
-      <template v-else>
-        <el-table-column label="样品号" width="80"></el-table-column>
-        <el-table-column label="终止温度" miniwidth="100"></el-table-column>
-        <el-table-column label="耐火度" miniwidth="100"></el-table-column>
-        <el-table-column label="热分析数据" miniwidth="100"></el-table-column>
-        <el-table-column label="热分析曲线" miniwidth="400"></el-table-column>
-      </template>
+      <el-table-column prop="id" label="样品号" width="80"></el-table-column>
+      <el-table-column prop="termTemper" label="终止温度" miniwidth="100"></el-table-column>
+      <el-table-column prop="fireResis" label="耐火度" miniwidth="100"></el-table-column>
+      <el-table-column prop="data" label="热分析数据" miniwidth="100"></el-table-column>
+      <el-table-column prop="surveImage" label="热分析曲线" miniwidth="400">
+        <template slot-scope="scope">
+          <el-image
+            style="height: 200px"
+            :src="'/api/image/' + scope.row.surveImage"
+            fit="contain">
+            <div slot="error" class="image-slot">
+              <i class="el-icon-picture-outline"></i>
+            </div>
+          </el-image>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>

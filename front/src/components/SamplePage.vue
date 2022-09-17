@@ -584,7 +584,7 @@ export default {
       this.physicalInfo_E.apparentPorosity = Number(this.physicalInfo_E.apparentPorosity)
       this.physicalInfo_E.trueDensity = Number(this.physicalInfo_E.trueDensity)
       this.physicalInfo_E.waterAbsorption = Number(this.physicalInfo_E.waterAbsorption)
-      this.axios.post('/api/minephysicsinfo', this.physicalInfo_E)
+      this.axios.put('/api/minephysicsinfo', this.physicalInfo_E)
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.physicalInfo =this.physicalInfo_E
@@ -624,10 +624,11 @@ export default {
         this.jinxiang_E.sampleImage = this.jinxiang_E_up1
         this.jinxiang_E_up1 = []
       }
-      this.axios.post('/api/microview', this.jinxiang_E)
+      this.axios.put('/api/microview', this.jinxiang_E)
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.jinxiang = this.jinxiang_E
+            this.jinxiang.id = res.data.id
             this.jinxiang_E = null
             this.$message.success('修改' + this.sampleId+ '金相数据成功！')
           }
@@ -672,10 +673,11 @@ export default {
         this.kuangxiang_E.sampleImage = this.kuangxiang_E_up1
         this.kuangxiang_E_up1 = []
       }
-      this.axios.post('/api/microview', this.kuangxiang_E)
+      this.axios.put('/api/microview', this.kuangxiang_E)
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.kuangxiang = this.kuangxiang_E
+            this.kuangxiang.id = res.data.id
             this.kuangxiang_E = null
             this.$message.success('修改' + this.sampleId+ '矿相数据成功！')
           }
@@ -717,10 +719,11 @@ export default {
         this.dianzi_E.sampleImage = this.dianzi_E_up1
         this.dianzi_E_up1 = []
       }
-      this.axios.post('/api/microview', this.dianzi_E)
+      this.axios.put('/api/microview', this.dianzi_E)
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.dianzi = this.dianzi_E
+            this.dianzi.id = res.data.id
             this.dianzi_E = null
             this.$message.success('修改' + this.sampleId+ '电子显微照片数据成功！')
           }
@@ -748,7 +751,8 @@ export default {
         zoom: '',
         photoMode: '',
         image: '',
-        describe: ''
+        describe: '',
+        microId: this.jinxiang.id
       }
       this.jinxiang.imageData.push({
         temp: true,
@@ -765,14 +769,11 @@ export default {
       }
     },
     submitjinxiangItemEdit() {
-      var tempjinxiang = deepObjCopy(this.jinxiang)
       this.jinxiangItem_E.zoom = Number(this.jinxiangItem_E.zoom)
-      tempjinxiang.imageData.push(this.jinxiangItem_E)
-      tempjinxiang.imageData = tempjinxiang.imageData.filter(v=>!v.temp)
-      this.axios.post('/api/microview', tempjinxiang)
+      this.axios.post('/api/microview/' + this.jinxiang.id, this.jinxiangItem_E)
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
-            this.jinxiang = tempjinxiang
+            this.jinxiang.imageData.push(this.jinxiangItem_E)
             this.jinxiangItem_E = null
             this.$message.success('增加' + this.sampleId+ '金相数据成功！')
           }
@@ -797,7 +798,8 @@ export default {
         zoom: '',
         photoMode: '',
         image: '',
-        describe: ''
+        describe: '',
+        microId: this.kuangxiang.id
       }
       this.kuangxiang.imageData.push({
         temp: true,
@@ -814,14 +816,11 @@ export default {
       }
     },
     submitkuangxiangItemEdit() {
-      var tempkuangxiang = deepObjCopy(this.kuangxiang)
       this.kuangxiangItem_E.zoom = Number(this.kuangxiangItem_E.zoom)
-      tempkuangxiang.imageData.push(this.kuangxiangItem_E)
-      tempkuangxiang.imageData = tempkuangxiang.imageData.filter(v=>!v.temp)
-      this.axios.post('/api/microview', tempkuangxiang)
+      this.axios.post('/api/microview/' + this.kuangxiang.id, this.kuangxiangItem_E)
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
-            this.kuangxiang = tempkuangxiang
+            this.kuangxiang.imageData.push(this.kuangxiangItem_E)
             this.kuangxiangItem_E = null
             this.$message.success('增加' + this.sampleId+ '矿相数据成功！')
           }
@@ -846,7 +845,8 @@ export default {
         zoom: '',
         photoMode: '',
         image: '',
-        describe: ''
+        describe: '',
+        microId: this.dianzi.id
       }
       this.dianzi.imageData.push({
         temp: true,
@@ -863,14 +863,11 @@ export default {
       }
     },
     submitdianziItemEdit() {
-      var tempdianzi = deepObjCopy(this.dianzi)
       this.dianziItem_E.zoom = Number(this.dianziItem_E.zoom)
-      tempdianzi.imageData.push(this.dianziItem_E)
-      tempdianzi.imageData = tempdianzi.imageData.filter(v=>!v.temp)
-      this.axios.post('/api/microview', tempdianzi)
+      this.axios.post('/api/microview/' + this.dianzi.id, this.dianziItem_E)
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
-            this.dianzi = tempdianzi
+            this.dianzi.imageData.push(this.dianziItem_E)
             this.dianziItem_E = null
             this.$message.success('增加' + this.sampleId+ '电子显微照片数据成功！')
           }

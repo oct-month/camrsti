@@ -50,16 +50,16 @@ class MicroView(db.Model):
     sampleImage = db.Column('sampleImage', db.JSON)                 # 样品全图
     sampleDescribe = db.Column('sampleDescribe', db.UnicodeText)    # 描述
     device = db.Column('device', db.Unicode(100))                   # 设备
-    imageData = db.Column('imageData', db.JSON)                     # 照片数据
-    sampleId = db.Column('sampleId', db.Unicode(30))                # 样品id（外键）
 
-    def __init__(self, id=None, type=None, sampleImage=None, sampleDescribe=None, device=None, imageData=None, sampleId=None):
+    sampleId = db.Column('sampleId', db.Unicode(30), db.ForeignKey('SampleInfo.id'))    # 样品id（外键）
+    sampleInfo = db.relationship('SampleInfo', backref=db.backref('microViews'))
+
+    def __init__(self, id=None, type=None, sampleImage=None, sampleDescribe=None, device=None, sampleId=None):
         self.id = id
         self.type = type
         self.sampleImage = sampleImage
         self.sampleDescribe = sampleDescribe
         self.device = device
-        self.imageData = imageData
         self.sampleId = sampleId
 
     def to_json(self):
@@ -69,23 +69,55 @@ class MicroView(db.Model):
             'sampleImage': self.sampleImage,
             'sampleDescribe': self.sampleDescribe,
             'device': self.device,
-            'imageData': self.imageData,
-            'sampleId': self.sampleId
+            'sampleId': self.sampleId,
+            'imageData': [v.to_json() for v in self.imageData] if hasattr(self, 'imageData') else []
         }
     
+# 显微 照片数据
+class MicroViewData(db.Model):
+    __tablename__ = 'MicroViewData'
+
+    id = db.Column('id', db.Integer, primary_key=True)
+    zoom = db.Column('zoom', db.Float)                  # 放大倍数
+    image = db.Column('image', db.Unicode(50))          # 图片
+    photoMode = db.Column('photoMode', db.Unicode(30))  # 拍摄模式
+    describe = db.Column('describe', db.UnicodeText)    # 描述
+
+    microId = db.Column('microId', db.Integer, db.ForeignKey('MicroView.id'))   # micro id 外键
+    microView = db.relationship('MicroView', backref=db.backref('imageData'))
+
+    def __init__(self, id=None, zoom=None, image=None, photoMode=None, describe=None, microId=None):
+        self.id = id
+        self.zoom = zoom
+        self.image = image
+        self.photoMode = photoMode
+        self.describe = describe
+        self.microId = microId
+    
+    def to_json(self):
+        return {
+            'id': self.id,
+            'zoom': self.zoom,
+            'image': self.image,
+            'photoMode': self.photoMode,
+            'describe': self.describe,
+            'microId': self.microId
+        }
+
 # 矿物含量信息
 class MineContentInfo(db.Model):
     __tablename__ = 'MineContentInfo'
 
     id = db.Column('id', db.Unicode(30), primary_key=True)  # 样品号
     sampleName = db.Column('sampleName', db.Unicode(50))    # 样品名称
-    clay = db.Column('clay', db.Float)                     # 粘土基质
-    quartz = db.Column('quartz', db.Float)                 # 石英粉砂
+    clay = db.Column('clay', db.Float)                      # 粘土基质
+    quartz = db.Column('quartz', db.Float)                  # 石英粉砂
     sand = db.Column('sand', db.JSON)                       # 砂
-    debris = db.Column('debris', db.Float)                 # 岩屑
-    hollow = db.Column('hollow', db.Float)                 # 空洞
+    debris = db.Column('debris', db.Float)                  # 岩屑
+    hollow = db.Column('hollow', db.Float)                  # 空洞
+    other = db.Column('other', db.Float)                    # 其他
 
-    def __init__(self, id, sampleName=None, clay=None, quartz=None, sand=None, debris=None, hollow=None):
+    def __init__(self, id, sampleName=None, clay=None, quartz=None, sand=None, debris=None, hollow=None, other=None):
         self.id = id
         self.sampleName = sampleName
         self.clay = clay
@@ -93,6 +125,7 @@ class MineContentInfo(db.Model):
         self.sand = sand
         self.debris = debris
         self.hollow = hollow
+        self.other = other
 
     def to_json(self):
         return {
@@ -102,7 +135,8 @@ class MineContentInfo(db.Model):
             'quartz': self.quartz,
             'sand': self.sand,
             'debris': self.debris,
-            'hollow': self.hollow
+            'hollow': self.hollow,
+            'other': self.other
         }
 
 # 矿物测量数据
