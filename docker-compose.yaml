@@ -46,7 +46,7 @@ services:
     container_name: camrsti-front
     restart: on-failure
     ports:
-      - 8080:80
+      - 8088:80
     depends_on:
       - camrsti-back
       - camrsti-image
