@@ -124,13 +124,18 @@
         style="width: 100%">
         <el-table-column prop="zoom" label="放大倍数" width="100">
           <template slot-scope="scope">
-            <el-input v-if="jinxiangItemFlag && scope.row.temp" v-model="jinxiangItem_E.zoom" @change="zoomInputValid('jinxiang')"></el-input>
+            <el-input v-if="jinxiangItemFlag && scope.row.temp" v-model="jinxiangItem_E.zoom" @change="zoomInputValid('jinxiangItem_E')"></el-input>
+            <el-input v-else-if="editItemModel[scope.row.id]" v-model="nowEditItem.zoom" @change="zoomInputValid('nowEditItem')"></el-input>
             <span v-else>{{ scope.row.zoom }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="photoMode" label="拍摄模式" width="100">
           <template slot-scope="scope">
             <el-select v-if="jinxiangItemFlag && scope.row.temp" v-model="jinxiangItem_E.photoMode">
+              <el-option label="明场" value="明场"></el-option>
+              <el-option label="暗场" value="暗场"></el-option>
+            </el-select>
+            <el-select v-else-if="editItemModel[scope.row.id]" v-model="nowEditItem.photoMode">
               <el-option label="明场" value="明场"></el-option>
               <el-option label="暗场" value="暗场"></el-option>
             </el-select>
@@ -151,6 +156,18 @@
               <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过4MB</div>
             </el-upload>
+            <el-upload
+              v-if="editItemModel[scope.row.id]"
+              action="/api/image"
+              accept="image/png, image/jpeg"
+              ref="upload"
+              name="upload"
+              :on-success="itemHandleUploadSuccess"
+              :on-error="handleUploadError"
+              :auto-upload="true">
+              <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过4MB</div>
+            </el-upload>
             <el-image
               v-else
               style="height: 200px"
@@ -165,7 +182,27 @@
         <el-table-column prop="describe" label="描述" miniwidth="200">
           <template slot-scope="scope">
             <el-input v-if="jinxiangItemFlag && scope.row.temp" type="textarea" autosize v-model="jinxiangItem_E.describe"></el-input>
+            <el-input v-else-if="editItemModel[scope.row.id]" type="textarea" autosize v-model="nowEditItem.describe"></el-input>
             <span v-else>{{ scope.row.describe }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="62">
+          <template slot-scope="scope">
+            <div v-if="editItemModel[scope.row.id] && !scope.row.temp" style="text-align:center;">
+              <el-button size="small" type="success" icon="el-icon-check" circle @click="submitItemEdit(scope.row.id)"></el-button><br>
+              <el-button size="mini" type="danger" icon="el-icon-close" circle @click="cancelItemEdit(scope.row.id)"></el-button>
+            </div>
+            <div v-else-if="!scope.row.temp" style="text-align:center;">
+              <el-button size="mini" round plain type="warning" icon="el-icon-edit" @click="editItem(scope.row.id)"></el-button><br>
+              <el-button size="mini" round plain type="danger" icon="el-icon-delete" @click="$set(deleteDialogVisible, scope.row.id, true)"></el-button>
+              <el-dialog title="确认" :visible.sync="deleteDialogVisible[scope.row.id]" width="30%">
+                <span>删除?</span>
+                <span slot="footer" class="dialog-footer">
+                  <el-button @click="deleteDialogVisible[scope.row.id]=false">取 消</el-button>
+                  <el-button type="primary" @click="deleteItem(scope.row.id)">确 定</el-button>
+                </span>
+              </el-dialog>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -260,13 +297,18 @@
         style="width: 100%">
         <el-table-column prop="zoom" label="放大倍数" width="100">
           <template slot-scope="scope">
-            <el-input v-if="kuangxiangItemFlag && scope.row.temp" v-model="kuangxiangItem_E.zoom" @change="zoomInputValid('kuangxiang')"></el-input>
+            <el-input v-if="kuangxiangItemFlag && scope.row.temp" v-model="kuangxiangItem_E.zoom" @change="zoomInputValid('kuangxiangItem_E')"></el-input>
+            <el-input v-else-if="editItemModel[scope.row.id]" v-model="nowEditItem.zoom" @change="zoomInputValid('nowEditItem')"></el-input>
             <span v-else>{{ scope.row.zoom }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="photoMode" label="拍摄模式" width="100">
           <template slot-scope="scope">
             <el-select v-if="kuangxiangItemFlag && scope.row.temp" v-model="kuangxiangItem_E.photoMode">
+              <el-option label="XPL" value="XPL"></el-option>
+              <el-option label="PPL" value="PPL"></el-option>
+            </el-select>
+            <el-select v-else-if="editItemModel[scope.row.id]" v-model="nowEditItem.photoMode">
               <el-option label="XPL" value="XPL"></el-option>
               <el-option label="PPL" value="PPL"></el-option>
             </el-select>
@@ -287,6 +329,18 @@
               <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过4MB</div>
             </el-upload>
+            <el-upload
+              v-if="editItemModel[scope.row.id]"
+              action="/api/image"
+              accept="image/png, image/jpeg"
+              ref="upload"
+              name="upload"
+              :on-success="itemHandleUploadSuccess"
+              :on-error="handleUploadError"
+              :auto-upload="true">
+              <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过4MB</div>
+            </el-upload>
             <el-image
               v-else
               style="height: 200px"
@@ -301,7 +355,27 @@
         <el-table-column prop="describe" label="描述" miniwidth="200">
           <template slot-scope="scope">
             <el-input v-if="kuangxiangItemFlag && scope.row.temp" type="textarea" autosize v-model="kuangxiangItem_E.describe"></el-input>
+            <el-input v-else-if="editItemModel[scope.row.id]" type="textarea" autosize v-model="nowEditItem.describe"></el-input>
             <span v-else>{{ scope.row.describe }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="62">
+          <template slot-scope="scope">
+            <div v-if="editItemModel[scope.row.id] && !scope.row.temp" style="text-align:center;">
+              <el-button size="small" type="success" icon="el-icon-check" circle @click="submitItemEdit(scope.row.id)"></el-button><br>
+              <el-button size="mini" type="danger" icon="el-icon-close" circle @click="cancelItemEdit(scope.row.id)"></el-button>
+            </div>
+            <div v-else-if="!scope.row.temp" style="text-align:center;">
+              <el-button size="mini" round plain type="warning" icon="el-icon-edit" @click="editItem(scope.row.id)"></el-button><br>
+              <el-button size="mini" round plain type="danger" icon="el-icon-delete" @click="$set(deleteDialogVisible, scope.row.id, true)"></el-button>
+              <el-dialog title="确认" :visible.sync="deleteDialogVisible[scope.row.id]" width="30%">
+                <span>删除?</span>
+                <span slot="footer" class="dialog-footer">
+                  <el-button @click="deleteDialogVisible[scope.row.id]=false">取 消</el-button>
+                  <el-button type="primary" @click="deleteItem(scope.row.id)">确 定</el-button>
+                </span>
+              </el-dialog>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -396,13 +470,18 @@
         style="width: 100%">
         <el-table-column prop="zoom" label="放大倍数" width="100">
           <template slot-scope="scope">
-            <el-input v-if="dianziItemFlag && scope.row.temp" v-model="dianziItem_E.zoom" @change="zoomInputValid('dianzi')"></el-input>
+            <el-input v-if="dianziItemFlag && scope.row.temp" v-model="dianziItem_E.zoom" @change="zoomInputValid('dianziItem_E')"></el-input>
+            <el-input v-else-if="editItemModel[scope.row.id]" v-model="nowEditItem.zoom" @change="zoomInputValid('nowEditItem')"></el-input>
             <span v-else>{{ scope.row.zoom }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="photoMode" label="拍摄模式" width="100">
           <template slot-scope="scope">
             <el-select v-if="dianziItemFlag && scope.row.temp" v-model="dianziItem_E.photoMode">
+              <el-option label="SE" value="SE"></el-option>
+              <el-option label="BSE" value="BSE"></el-option>
+            </el-select>
+            <el-select v-else-if="editItemModel[scope.row.id]" v-model="nowEditItem.photoMode">
               <el-option label="SE" value="SE"></el-option>
               <el-option label="BSE" value="BSE"></el-option>
             </el-select>
@@ -423,6 +502,18 @@
               <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过4MB</div>
             </el-upload>
+            <el-upload
+              v-if="editItemModel[scope.row.id]"
+              action="/api/image"
+              accept="image/png, image/jpeg"
+              ref="upload"
+              name="upload"
+              :on-success="itemHandleUploadSuccess"
+              :on-error="handleUploadError"
+              :auto-upload="true">
+              <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过4MB</div>
+            </el-upload>
             <el-image
               v-else
               style="height: 200px"
@@ -437,7 +528,27 @@
         <el-table-column prop="describe" label="描述" miniwidth="200">
           <template slot-scope="scope">
             <el-input v-if="dianziItemFlag && scope.row.temp" type="textarea" autosize v-model="dianziItem_E.describe"></el-input>
+            <el-input v-else-if="editItemModel[scope.row.id]" type="textarea" autosize v-model="nowEditItem.describe"></el-input>
             <span v-else>{{ scope.row.describe }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="62">
+          <template slot-scope="scope">
+            <div v-if="editItemModel[scope.row.id] && !scope.row.temp" style="text-align:center;">
+              <el-button size="small" type="success" icon="el-icon-check" circle @click="submitItemEdit(scope.row.id)"></el-button><br>
+              <el-button size="mini" type="danger" icon="el-icon-close" circle @click="cancelItemEdit(scope.row.id)"></el-button>
+            </div>
+            <div v-else-if="!scope.row.temp" style="text-align:center;">
+              <el-button size="mini" round plain type="warning" icon="el-icon-edit" @click="editItem(scope.row.id)"></el-button><br>
+              <el-button size="mini" round plain type="danger" icon="el-icon-delete" @click="$set(deleteDialogVisible, scope.row.id, true)"></el-button>
+              <el-dialog title="确认" :visible.sync="deleteDialogVisible[scope.row.id]" width="30%">
+                <span>删除?</span>
+                <span slot="footer" class="dialog-footer">
+                  <el-button @click="deleteDialogVisible[scope.row.id]=false">取 消</el-button>
+                  <el-button type="primary" @click="deleteItem(scope.row.id)">确 定</el-button>
+                </span>
+              </el-dialog>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -505,7 +616,10 @@ export default {
       dianzi_E: null,
       dianzi_E_up1: [],
       dianziItemFlag: false,
-      dianziItem_E: null
+      dianziItem_E: null,
+      editItemModel: {},
+      deleteDialogVisible: {},
+      nowEditItem: null
     }
   },
   mounted() {
@@ -530,6 +644,8 @@ export default {
                 this.dianzi = v
                 break
             }
+            this.$set(this.deleteDialogVisible, v.id, false)
+            this.$set(this.editItemModel, v.id, false)
           })
           // this.$store.commit('setSampleInfos', res.data.data)
         }
@@ -773,6 +889,7 @@ export default {
       this.axios.post('/api/microview/' + this.jinxiang.id, this.jinxiangItem_E)
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
+            this.jinxiangItem_E.id = res.data.id
             this.jinxiang.imageData.push(this.jinxiangItem_E)
             this.jinxiangItem_E = null
             this.$message.success('增加' + this.sampleId+ '金相数据成功！')
@@ -820,6 +937,7 @@ export default {
       this.axios.post('/api/microview/' + this.kuangxiang.id, this.kuangxiangItem_E)
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
+            this.kuangxiangItem_E.id = res.data.id
             this.kuangxiang.imageData.push(this.kuangxiangItem_E)
             this.kuangxiangItem_E = null
             this.$message.success('增加' + this.sampleId+ '矿相数据成功！')
@@ -867,6 +985,7 @@ export default {
       this.axios.post('/api/microview/' + this.dianzi.id, this.dianziItem_E)
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
+            this.dianziItem_E.id = res.data.id
             this.dianzi.imageData.push(this.dianziItem_E)
             this.dianziItem_E = null
             this.$message.success('增加' + this.sampleId+ '电子显微照片数据成功！')
@@ -884,18 +1003,100 @@ export default {
       this.dianziItemFlag = false
     },
     zoomInputValid(key) {
-      this[key + 'Item_E'].zoom = this[key + 'Item_E'].zoom.trim()
+      this[key].zoom = this[key].zoom.trim()
       var point_flag = false
-      for (let i = 0; i < this[key + 'Item_E'].zoom.length; ++ i) {
-        if (this[key + 'Item_E'].zoom[i] == '.' && !point_flag) {
+      for (let i = 0; i < this[key].zoom.length; ++ i) {
+        if (this[key].zoom[i] == '.' && !point_flag) {
           point_flag = true
         }
-        else if (this[key + 'Item_E'].zoom[i] < '0' || this[key + 'Item_E'].zoom[i] > '9') {
-          this[key + 'Item_E'].zoom = this[key + 'Item_E'].zoom.substring(0, i)
+        else if (this[key].zoom[i] < '0' || this[key].zoom[i] > '9') {
+          this[key].zoom = this[key].zoom.substring(0, i)
           break
         }
       }
     },
+    findItem(id) {
+      let res = null
+      let temp = this.jinxiang.imageData.concat(this.kuangxiang.imageData).concat(this.dianzi.imageData)
+      for (let i = 0; i < temp.length; ++ i) {
+        if (temp[i].id == id) {
+          res = temp[i]
+          break
+        }
+      }
+      return res
+    },
+    removeItem(id) {
+      this.jinxiang.imageData = this.jinxiang.imageData.filter(v => v.id != id)
+      this.kuangxiang.imageData = this.kuangxiang.imageData.filter(v => v.id != id)
+      this.dianzi.imageData = this.dianzi.imageData.filter(v => v.id != id)
+    },
+    setItem(item) {
+      let flag = true
+      this.jinxiang.imageData.forEach((v, i) => {
+        if (flag && v.id == item.id) {
+          this.$set(this.jinxiang.imageData, i, item)
+          flag = false
+        }
+      })
+      this.kuangxiang.imageData.forEach((v, i) => {
+        if (flag && v.id == item.id) {
+          this.$set(this.kuangxiang.imageData, i, item)
+          flag = false
+        }
+      })
+      this.dianzi.imageData.forEach((v, i) => {
+        if (flag && v.id == item.id) {
+          this.$set(this.dianzi.imageData, i, item)
+          flag = false
+        }
+      })
+    },
+    editItem(id) {
+      if (this.nowEditItem) {
+        this.$message.warning('请优先完成正在编辑的条目。')
+        return
+      }
+      this.nowEditItem = deepObjCopy(this.findItem(id))
+      this.$set(this.editItemModel, id, true)
+    },
+    cancelItemEdit(id) {
+      this.nowEditItem = null
+      this.editItemModel[id] = false
+    },
+    deleteItem(id) {
+      this.axios.delete('/api/microview/' + id)
+        .then(res => {
+          if (res.status == 200 && res.data.status == 200) {
+            this.deleteDialogVisible[id] = false
+            this.removeItem(id)
+            this.$message.warning('删除成功！')
+          }
+          else {
+            this.$message.error('出错啦！')
+          }
+        })
+    },
+    submitItemEdit(id) {
+      this.nowEditItem.zoom = Number(this.nowEditItem.zoom)
+      this.axios.put('/api/microview/' + id, this.nowEditItem)
+        .then(res => {
+          if (res.status == 200 && res.data.status == 200) {
+            this.setItem(this.nowEditItem)
+            this.nowEditItem = null
+            this.editItemModel[id] = false
+            this.$message.success('修改成功！')
+          }
+          else {
+            this.$message.error('出错啦！')
+          }
+        })
+    },
+    itemHandleUploadSuccess(res) {
+      if (res.status == 200) {
+        this.nowEditItem.image = res.data[0]
+      }
+    }
   }
 }
 </script>
