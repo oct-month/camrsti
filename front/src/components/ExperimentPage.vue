@@ -116,31 +116,141 @@
 
     岩屑直径分布
     <el-table
-      :data="mineSurveyInfos.debrisData"
+      :data="mineSurveyInfos"
       stripe
       border
       style="width: 100%">
       <el-table-column prop="id" label="样品号" width="80"></el-table-column>
-      <!-- <el-table-column v-for="key in Object.keys(mineSurveyInfos.debrisData[0]).filter(x => x != 'id')" :key="key" :prop="key" :label="key" miniwidth="100"></el-table-column> -->
-      <el-table-column prop="≤67μm" label="≤67μm" miniwidth="100"></el-table-column>
-      <el-table-column prop="67-167μm" label="67-167μm" miniwidth="100"></el-table-column>
-      <el-table-column prop="167-501" label="167-501" miniwidth="100"></el-table-column>
-      <el-table-column prop="501-1002" label="501-1002" miniwidth="100"></el-table-column>
-      <el-table-column prop="≥1002" label="≥1002" miniwidth="100"></el-table-column>
+      <el-table-column prop="debrisData.≤67μm" label="≤67μm" miniwidth="100">
+        <template slot-scope="scope">
+          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debrisData['≤67μm']"></el-input>
+          <span v-else>
+            {{ scope.row.debrisData['≤67μm'] }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="debrisData.67-167μm" label="67-167μm" miniwidth="100">
+        <template slot-scope="scope">
+          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debrisData['67-167μm']"></el-input>
+          <span v-else>
+            {{ scope.row.debrisData['67-167μm'] }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="debrisData.167-501" label="167-501" miniwidth="100">
+        <template slot-scope="scope">
+          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debrisData['167-501']"></el-input>
+          <span v-else>
+            {{ scope.row.debrisData['167-501'] }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="debrisData.501-1002" label="501-1002" miniwidth="100">
+        <template slot-scope="scope">
+          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debrisData['501-1002']"></el-input>
+          <span v-else>
+            {{ scope.row.debrisData['501-1002'] }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="debrisData.≥1002" label="≥1002" miniwidth="100">
+        <template slot-scope="scope">
+          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debrisData['≥1002']"></el-input>
+          <span v-else>
+            {{ scope.row.debrisData['≥1002'] }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="118">
+        <template slot-scope="scope">
+          <div v-if="!scope.row.temp">
+            <div v-if="editSurveyModel[scope.row.id]" style="text-align:center;">
+              <el-button size="small" type="success" icon="el-icon-check" circle @click="submitSurveyEdit(scope.row.id)"></el-button>
+              <el-button size="mini" type="danger" icon="el-icon-close" circle @click="cancelSurveyEdit(scope.row.id)"></el-button>
+            </div>
+            <div v-else style="text-align:center;">
+              <el-button size="mini" round plain type="warning" icon="el-icon-edit" @click="editSurvey(scope.row.id)"></el-button>
+              <el-button size="mini" round plain type="danger" icon="el-icon-delete" @click="deleteSurveyDialogVisible[scope.row.id]=true"></el-button>
+              <el-dialog title="确认" :visible.sync="deleteSurveyDialogVisible[scope.row.id]" width="30%">
+                <span>删除{{ scope.row.id }}?</span>
+                <span slot="footer" class="dialog-footer">
+                  <el-button @click="deleteSurveyDialogVisible[scope.row.id]=false">取 消</el-button>
+                  <el-button type="primary" @click="deleteSurvey(scope.row.id)">确 定</el-button>
+                </span>
+              </el-dialog>
+            </div>
+          </div>
+        </template>
+      </el-table-column>
     </el-table>
     空洞长度分布
     <el-table
-      :data="mineSurveyInfos.hollowData"
+      :data="mineSurveyInfos"
       stripe
       border
       style="width: 100%">
       <el-table-column prop="id" label="样品号" width="80"></el-table-column>
-      <!-- <el-table-column v-for="key in Object.keys(mineSurveyInfos.hollowData[0]).filter(x => x != 'id')" :key="key" :prop="key" :label="key" miniwidth="100"></el-table-column> -->
-      <el-table-column prop="≤167" label="≤167" miniwidth="100"></el-table-column>
-      <el-table-column prop="167-501" label="167-501" miniwidth="100"></el-table-column>
-      <el-table-column prop="501-1002" label="501-1002" miniwidth="100"></el-table-column>
-      <el-table-column prop="1002-2004" label="1002-2004" miniwidth="100"></el-table-column>
-      <el-table-column prop="＞2004" label="＞2004" miniwidth="100"></el-table-column>
+      <el-table-column prop="hollowData.≤167" label="≤167" miniwidth="100">
+        <template slot-scope="scope">
+          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollowData['≤167']"></el-input>
+          <span v-else>
+            {{ scope.row.hollowData['≤167'] }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="hollowData.167-501" label="167-501" miniwidth="100">
+        <template slot-scope="scope">
+          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollowData['167-501']"></el-input>
+          <span v-else>
+            {{ scope.row.hollowData['167-501'] }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="hollowData.501-1002" label="501-1002" miniwidth="100">
+        <template slot-scope="scope">
+          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollowData['501-1002']"></el-input>
+          <span v-else>
+            {{ scope.row.hollowData['501-1002'] }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="hollowData.1002-2004" label="1002-2004" miniwidth="100">
+        <template slot-scope="scope">
+          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollowData['1002-2004']"></el-input>
+          <span v-else>
+            {{ scope.row.hollowData['1002-2004'] }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="hollowData.＞2004" label="＞2004" miniwidth="100">
+        <template slot-scope="scope">
+          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollowData['＞2004']"></el-input>
+          <span v-else>
+            {{ scope.row.hollowData['＞2004'] }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="118">
+        <template slot-scope="scope">
+          <div v-if="!scope.row.temp">
+            <div v-if="editSurveyModel[scope.row.id]" style="text-align:center;">
+              <el-button size="small" type="success" icon="el-icon-check" circle @click="submitSurveyEdit(scope.row.id)"></el-button>
+              <el-button size="mini" type="danger" icon="el-icon-close" circle @click="cancelSurveyEdit(scope.row.id)"></el-button>
+            </div>
+            <div v-else style="text-align:center;">
+              <el-button size="mini" round plain type="warning" icon="el-icon-edit" @click="editSurvey(scope.row.id)"></el-button>
+              <el-button size="mini" round plain type="danger" icon="el-icon-delete" @click="deleteSurveyDialogVisible[scope.row.id]=true"></el-button>
+              <el-dialog title="确认" :visible.sync="deleteSurveyDialogVisible[scope.row.id]" width="30%">
+                <span>删除{{ scope.row.id }}?</span>
+                <span slot="footer" class="dialog-footer">
+                  <el-button @click="deleteSurveyDialogVisible[scope.row.id]=false">取 消</el-button>
+                  <el-button type="primary" @click="deleteSurvey(scope.row.id)">确 定</el-button>
+                </span>
+              </el-dialog>
+            </div>
+          </div>
+        </template>
+      </el-table-column>
     </el-table>
 
     <hr>
@@ -385,6 +495,10 @@
         </template>
       </el-table-column>
     </el-table>
+    <div style="float:right;">
+      导出：
+      <el-button size="small" type="success" icon="el-icon-download" @click="exportTableData"></el-button>
+    </div>
   </div>
 </template>
 
@@ -410,7 +524,10 @@
 </style>
 
 <script>
+import xlsx from 'xlsx'
+
 import { deepObjCopy } from '@/utils'
+
 export default {
   name: "ExperimentPage",
   props: {
@@ -422,10 +539,7 @@ export default {
       editContentModel: {},
       deleteContentDialogVisible: {},
       nowEditContent: null,
-      mineSurveyInfos: {
-        debrisData: [],
-        hollowData: []
-      },
+      mineSurveyInfos: [],
       editSurveyModel: {},
       deleteSurveyDialogVisible: {},
       nowEditSurvey: null,
@@ -469,15 +583,10 @@ export default {
     this.axios.get('/api/minesurveyinfo/' + this.sampleId)
       .then((res) => {
         if (res.status == 200 && res.data.status == 200) {
-          var temp = res.data.data
-          temp.forEach(v => {
-            v.debrisData.id = v.id
-            this.mineSurveyInfos.debrisData.push(v.debrisData)
-            v.hollowData.id = v.id
-            this.mineSurveyInfos.hollowData.push(v.hollowData)
-            // TODO
-            // this.$set(this.editSurveyModel, v.id, false)
-            // this.$set(this.deleteSurveyDialogVisible, v.id, false)
+          this.mineSurveyInfos = res.data.data
+          this.mineSurveyInfos.forEach(v => {
+            this.$set(this.editSurveyModel, v.id, false)
+            this.$set(this.deleteSurveyDialogVisible, v.id, false)
           })
         }
         else {
@@ -858,6 +967,156 @@ export default {
             this.$message.error('出错啦！')
           }
         })
+    },
+    editSurvey(id) {
+      if (this.nowEditSurvey) {
+        this.$message.warning('您正在编辑' + this.nowEditSurvey.id + '，请优先完成')
+        return
+      }
+      let mi = this.mineSurveyInfos.filter(v => v.id == id)[0]
+      this.nowEditSurvey = deepObjCopy(mi)
+      this.editSurveyModel[id] = true
+    },
+    submitSurveyEdit(id) {
+      let t = this.nowEditSurvey
+      t.debrisData['167-501'] = Number(t.debrisData['167-501'])
+      t.debrisData['501-1002'] = Number(t.debrisData['501-1002'])
+      t.debrisData['67-167μm'] = Number(t.debrisData['67-167μm'])
+      t.debrisData['≤67μm'] = Number(t.debrisData['≤67μm'])
+      t.debrisData['≥1002'] = Number(t.debrisData['≥1002'])
+      t.hollowData['1002-2004'] = Number(t.hollowData['1002-2004'])
+      t.hollowData['167-501'] = Number(t.hollowData['167-501'])
+      t.hollowData['501-1002'] = Number(t.hollowData['501-1002'])
+      t.hollowData['≤167'] = Number(t.hollowData['≤167'])
+      t.hollowData['＞2004'] = Number(t.hollowData['＞2004'])
+      this.axios.put('/api/minesurveyinfo/' + id, t)
+        .then(res => {
+          if (res.status == 200 && res.data.status == 200) {
+            for (let i = 0; i < this.mineSurveyInfos.length; ++ i) {
+              if (this.mineSurveyInfos[i].id == id) {
+                this.$set(this.mineSurveyInfos, i, t)
+                break
+              }
+            }
+            this.$message.success('修改' + id + '成功！')
+          }
+          else {
+            this.$message.error('出错啦！')
+          }
+        })
+      this.editSurveyModel[id] = false
+      this.nowEditSurvey = null
+    },
+    cancelSurveyEdit(id) {
+      this.editSurveyModel[id] = false
+      this.nowEditSurvey= null
+    },
+    deleteSurvey(id) {
+      this.axios.delete('/api/minesurveyinfo/' + id)
+        .then(res => {
+          if (res.status == 200 && res.data.status == 200) {
+            this.mineSurveyInfos = this.mineSurveyInfos.filter(v => v.id != id || v.temp)
+            this.$message.success('删除' + id + '成功！')
+          }
+          else {
+            this.$message.error('出错啦！')
+          }
+        })
+    },
+    exportTableData() {
+      var wb = xlsx.utils.book_new()
+      var temp = []
+      this.mineContentInfos.forEach(v => {
+        temp.push({
+          '样品号': v.id,
+          '样品名称': v.sampleName,
+          '黏土基质': v.clay,
+          '石英粉砂': v.quartz,
+          '石英': v.sand.quartz,
+          '长石': v.sand.feldspar,
+          '其他矿物': v.sand.Ominerals,
+          '小计': this.sum(Object.values(v.sand)),
+          '岩屑': v.debris,
+          '空洞': v.hollow,
+          '其他': v.other
+        })
+      })
+      var ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '3.矿物含量信息')
+      temp = []
+      var temp2 = []
+      this.mineSurveyInfos.forEach(v => {
+        temp.push({
+          '样品号': v.id,
+          '≤67μm': v.debrisData['≤67μm'],
+          '67-167μm': v.debrisData['67-167μm'],
+          '167-501': v.debrisData['167-501'],
+          '501-1002': v.debrisData['501-1002'],
+          '≥1002': v.debrisData['≥1002']
+        })
+        temp2.push({
+          '样品号': v.id,
+          '≤167': v.hollowData['≤167'],
+          '167-501': v.hollowData['167-501'],
+          '501-1002': v.hollowData['501-1002'],
+          '1002-2004': v.hollowData['1002-2004'],
+          '＞2004': v.hollowData['＞2004']
+        })
+      })
+      ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '4.矿物测量数据-岩屑直径分布')
+      ws = xlsx.utils.json_to_sheet(temp2)
+      xlsx.utils.book_append_sheet(wb, ws, '4.矿物测量数据-空洞长度分布')
+      temp = []
+      this.mineXRDInfos.forEach(v => {
+        temp.push({
+          '样品编号': v.id,
+          '类型': v.type,
+          '石英': v.quartz,
+          '钠长石': v.albite,
+          '钾长石': v.potashFeldspar,
+          '云母': v.mica,
+          '闪石': v.amphibole,
+          '赤铁矿': v.hematite,
+          '磁铁矿': v.magnetite,
+          '白云石': v.dolomite,
+          '方沸石': v.analcite,
+          '磷石英': v.tridymite,
+          '方石英': v.cristobalite,
+          '莫来石': v.mullite
+        })
+      })
+      ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '5.XRD分析数据')
+      temp = []
+      this.mineChemistryInfos.forEach(v => {
+        temp.push({
+          '样品号': v.id,
+          '类型': v.type,
+          'Na₂O': v.Na2O,
+          'MgO': v.MgO,
+          'Al₂O₃': v.Al2O3,
+          'SiO₂': v.SiO2,
+          'K₂O': v.K2O,
+          'CaO': v.CaO,
+          'Fe₂O₃': v.Fe2O3
+        })
+      })
+      ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '6.化学成分数据')
+      temp = []
+      this.mineThermalInfos.forEach(v => {
+        temp.push({
+          '样品号': v.id,
+          '终止温度': v.termTemper,
+          '耐火度': v.fireResis,
+          '热分析数据': v.data,
+          '热分析曲线': '' //v.surveImage
+        })
+      })
+      ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '8.热分析')
+      xlsx.writeFileXLSX(wb, `Export-${new Date().toISOString().split('T')[0]}.xlsx`)
     }
   }
 }
