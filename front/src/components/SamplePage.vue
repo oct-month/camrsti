@@ -1091,7 +1091,7 @@ export default {
           if (res.status == 200 && res.data.status == 200) {
             this.deleteDialogVisible[id] = false
             this.removeItem(id)
-            this.$message.warning('删除成功！')
+            this.$message.success('删除成功！')
           }
           else {
             this.$message.error('出错啦！')

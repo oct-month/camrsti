@@ -1,4 +1,4 @@
-from utils import get_app
+from factory import get_app
 
 
 _, db = get_app(__name__)
@@ -165,18 +165,18 @@ class MineXRDInfo(db.Model):
 
     id = db.Column('id', db.Unicode(30), primary_key=True)  # 样品号
     type = db.Column('type', db.Unicode(40))                # 类型
-    quartz = db.Column('quartz', db.Integer)                # 石英
-    albite = db.Column('albite', db.Integer)                # 钠长石
-    potashFeldspar = db.Column('potashFeldspar', db.Integer)    # 钾长石
-    mica = db.Column('mica', db.Integer)                    # 云母
-    amphibole = db.Column('amphibole', db.Integer)          # 闪石
-    hematite = db.Column('hematite', db.Integer)            # 赤铁矿
-    magnetite = db.Column('magnetite', db.Integer)          # 磁铁矿
-    dolomite = db.Column('dolomite', db.Integer)            # 白云石
-    analcite = db.Column('analcite', db.Integer)            # 方沸石
-    tridymite = db.Column('tridymite', db.Integer)          # 磷石英
-    cristobalite = db.Column('cristobalite', db.Integer)    # 方石英
-    mullite = db.Column('mullite', db.Integer)              # 莫来石
+    quartz = db.Column('quartz', db.Float)                # 石英
+    albite = db.Column('albite', db.Float)                # 钠长石
+    potashFeldspar = db.Column('potashFeldspar', db.Float)    # 钾长石
+    mica = db.Column('mica', db.Float)                    # 云母
+    amphibole = db.Column('amphibole', db.Float)          # 闪石
+    hematite = db.Column('hematite', db.Float)            # 赤铁矿
+    magnetite = db.Column('magnetite', db.Float)          # 磁铁矿
+    dolomite = db.Column('dolomite', db.Float)            # 白云石
+    analcite = db.Column('analcite', db.Float)            # 方沸石
+    tridymite = db.Column('tridymite', db.Float)          # 磷石英
+    cristobalite = db.Column('cristobalite', db.Float)    # 方石英
+    mullite = db.Column('mullite', db.Float)              # 莫来石
 
     def __init__(self, id, type=None, quartz=None, albite=None, potashFeldspar=None, mica=None, amphibole=None, hematite=None, magnetite=None, dolomite=None, analcite=None, tridymite=None, cristobalite=None, mullite=None):
         self.id = id

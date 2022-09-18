@@ -452,7 +452,7 @@ export default {
           if (res.status == 200 && res.data.status == 200) {
             this.sampleInfos = this.sampleInfos.filter(v => v.id != sampleId)
             this.currentTableData = this.currentTableData.filter(v => v.id != sampleId)
-            this.$message.warning('删除' + sampleId + '成功！')
+            this.$message.success('删除' + sampleId + '成功！')
           }
           else {
             this.$message.error('出错啦！')

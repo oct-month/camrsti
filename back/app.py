@@ -2,7 +2,7 @@ import json
 from typing import List, Optional
 from flask import request
 
-from utils import get_app
+from factory import get_app
 from table_structure import MicroViewData, SampleInfo, MicroView, MineContentInfo, MineSurveyInfo, MineXRDInfo, MineChemistryInfo, MinePhysicsInfo, MineThermalInfo
 
 
@@ -207,6 +207,33 @@ def get_mine_content_infos(sampleId):
         'data': [s.to_json() for s in content_infos]
     }
 
+# 修改特定矿物含量信息
+@app.route('/api/minecontentinfo/<id>', methods=['PUT'])
+def set_mine_content_info(id):
+    ci_json = json.loads(request.data)
+    content_info = MineContentInfo.query.filter_by(id=id).first()
+    content_info.sampleName = ci_json.get('sampleName', content_info.sampleName)
+    content_info.clay = ci_json.get('clay', content_info.clay)
+    content_info.quartz = ci_json.get('quartz', content_info.quartz)
+    content_info.sand = ci_json.get('sand', content_info.sand)
+    content_info.debris = ci_json.get('debris', content_info.debris)
+    content_info.hollow = ci_json.get('hollow', content_info.hollow)
+    content_info.other = ci_json.get('other', content_info.other)
+    db.session.commit()
+    return {
+        'status': 200
+    }
+
+# 删除特定矿物含量信息
+@app.route('/api/minecontentinfo/<id>', methods=['DELETE'])
+def delete_mine_content_info(id):
+    content_info = MineContentInfo.query.filter_by(id=id).first()
+    db.session.delete(content_info)
+    db.session.commit()
+    return {
+        'status': 200
+    }
+
 # 获取特定样本的矿物测量数据
 @app.route('/api/minesurveyinfo/<sampleId>', methods=['GET'])
 def get_mine_survey_infos(sampleId):
@@ -215,6 +242,28 @@ def get_mine_survey_infos(sampleId):
     return {
         'status': 200,
         'data': [s.to_json() for s in survey_infos]
+    }
+
+# 修改特定的矿物测量数据
+@app.route('/api/minesurveyinfo/<id>', methods=['PUT'])
+def set_mine_survey_info(id):
+    si_json = json.loads(request.data)
+    survey_info = MineSurveyInfo.query.filter_by(id=id).first()
+    survey_info.debrisData = si_json.get('debrisData', survey_info.debrisData)
+    survey_info.hollowData = si_json.get('hollowData', survey_info.hollowData)
+    db.session.commit()
+    return {
+        'status': 200
+    }
+
+# 删除特定的矿物测量数据
+@app.route('/api/minesurveyinfo/<id>', methods=['DELETE'])
+def delete_mine_survey_info(id):
+    survey_info = MineSurveyInfo.query.filter_by(id=id).first()
+    db.session.delete(survey_info)
+    db.session.commit()
+    return {
+        'status': 200
     }
 
 # 获取特定样本的XRD分析数据
@@ -227,6 +276,39 @@ def get_mine_xrd_infos(sampleId):
         'data': [s.to_json() for s in xrd_infos]
     }
 
+# 修改特定的XRD数据
+@app.route('/api/minexrdinfo/<id>', methods=['PUT'])
+def set_mine_xrd_info(id):
+    xi_json = json.loads(request.data)
+    xrd_info = MineXRDInfo.query.filter_by(id=id).first()
+    xrd_info.type = xi_json.get('type', xrd_info.type)
+    xrd_info.quartz = xi_json.get('quartz', xrd_info.quartz)
+    xrd_info.albite = xi_json.get('albite', xrd_info.albite)
+    xrd_info.potashFeldspar = xi_json.get('potashFeldspar', xrd_info.potashFeldspar)
+    xrd_info.mica = xi_json.get('mica', xrd_info.mica)
+    xrd_info.amphibole = xi_json.get('amphibole', xrd_info.amphibole)
+    xrd_info.hematite = xi_json.get('hematite', xrd_info.hematite)
+    xrd_info.magnetite = xi_json.get('magnetite', xrd_info.magnetite)
+    xrd_info.dolomite = xi_json.get('dolomite', xrd_info.dolomite)
+    xrd_info.analcite = xi_json.get('analcite', xrd_info.analcite)
+    xrd_info.tridymite = xi_json.get('tridymite', xrd_info.tridymite)
+    xrd_info.cristobalite = xi_json.get('cristobalite', xrd_info.cristobalite)
+    xrd_info.mullite = xi_json.get('mullite', xrd_info.mullite)
+    db.session.commit()
+    return {
+        'status': 200
+    }
+
+# 删除特定的XRD数据
+@app.route('/api/minexrdinfo/<id>', methods=['DELETE'])
+def delete_mine_xrd_info(id):
+    xrd_info = MineXRDInfo.query.filter_by(id=id).first()
+    db.session.delete(xrd_info)
+    db.session.commit()
+    return {
+        'status': 200
+    }
+
 # 获取特定样本的化学成分数据
 @app.route('/api/minechemistryinfo/<sampleId>', methods=['GET'])
 def get_mine_chemistry_infos(sampleId):
@@ -235,6 +317,34 @@ def get_mine_chemistry_infos(sampleId):
     return {
         'status': 200,
         'data': [s.to_json() for s in chem_infos]
+    }
+
+# 修改特定化学成分数据
+@app.route('/api/minechemistryinfo/<id>', methods=['PUT'])
+def set_mine_chemistry_info(id):
+    ci_json = json.loads(request.data)
+    chem_info = MineChemistryInfo.query.filter_by(id=id).first()
+    chem_info.type = ci_json.get('type', chem_info.type)
+    chem_info.Na2O = ci_json.get('Na2O', chem_info.Na2O)
+    chem_info.MgO = ci_json.get('MgO', chem_info.MgO)
+    chem_info.Al2O3 = ci_json.get('Al2O3', chem_info.Al2O3)
+    chem_info.SiO2 = ci_json.get('SiO2', chem_info.SiO2)
+    chem_info.K2O = ci_json.get('K2O', chem_info.K2O)
+    chem_info.CaO = ci_json.get('CaO', chem_info.CaO)
+    chem_info.Fe2O3 = ci_json.get('Fe2O3', chem_info.Fe2O3)
+    db.session.commit()
+    return {
+        'status': 200
+    }
+
+# 删除特定化学成分数据
+@app.route('/api/minechemistryinfo/<id>', methods=['DELETE'])
+def delete_mine_chemistry_info(id):
+    chem_info = MineChemistryInfo.query.filter_by(id=id).first()
+    db.session.delete(chem_info)
+    db.session.commit()
+    return {
+        'status': 200
     }
 
 # 获取特定样本的物理结构数据
@@ -279,6 +389,30 @@ def get_mine_thermal_infos(sampleId):
     return {
         'status': 200,
         'data': [s.to_json() for s in thermal_infos]
+    }
+
+# 修改特定的热分析
+@app.route('/api/minethermalinfo/<id>', methods=['PUT'])
+def set_mine_thermal_info(id):
+    th_json = json.loads(request.data)
+    thermal_info = MineThermalInfo.query.filter_by(id=id).first()
+    thermal_info.termTemper = th_json.get('termTemper', thermal_info.termTemper)
+    thermal_info.fireResis = th_json.get('fireResis', thermal_info.fireResis)
+    thermal_info.data = th_json.get('data', thermal_info.data)
+    thermal_info.surveImage = th_json.get('surveImage', thermal_info.surveImage)
+    db.session.commit()
+    return {
+        'status': 200
+    }
+
+# 删除特定的热分析
+@app.route('/api/minethermalinfo/<id>', methods=['DELETE'])
+def delete_mine_thermal_info(id):
+    thermal_info = MineThermalInfo.query.filter_by(id=id).first()
+    db.session.delete(thermal_info)
+    db.session.commit()
+    return {
+        'status': 200
     }
 
 
