@@ -1,6 +1,7 @@
 import json
 from typing import List, Optional
 from flask import request
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from factory import get_app
 from table_structure import MicroViewData, SampleInfo, MicroView, MineContentInfo, MineSurveyInfo, MineXRDInfo, MineChemistryInfo, MinePhysicsInfo, MineThermalInfo
@@ -415,6 +416,11 @@ def delete_mine_thermal_info(id):
         'status': 200
     }
 
+# 告诉Flask我在使用代理
+app.wsgi_app = ProxyFix(
+    app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
+)
+
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8081, debug=True)
+    app.run(host='0.0.0.0', port=8081, debug=False)
