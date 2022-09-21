@@ -117,7 +117,7 @@ class MineContentInfo(db.Model):
     hollow = db.Column('hollow', db.Float)                  # 空洞
     other = db.Column('other', db.Float)                    # 其他
 
-    def __init__(self, id, sampleName=None, clay=None, quartz=None, sand=None, debris=None, hollow=None, other=None):
+    def __init__(self, id=None, sampleName=None, clay=None, quartz=None, sand={}, debris=None, hollow=None, other=None):
         self.id = id
         self.sampleName = sampleName
         self.clay = clay
@@ -178,7 +178,7 @@ class MineXRDInfo(db.Model):
     cristobalite = db.Column('cristobalite', db.Float)    # 方石英
     mullite = db.Column('mullite', db.Float)              # 莫来石
 
-    def __init__(self, id, type=None, quartz=None, albite=None, potashFeldspar=None, mica=None, amphibole=None, hematite=None, magnetite=None, dolomite=None, analcite=None, tridymite=None, cristobalite=None, mullite=None):
+    def __init__(self, id=None, type=None, quartz=None, albite=None, potashFeldspar=None, mica=None, amphibole=None, hematite=None, magnetite=None, dolomite=None, analcite=None, tridymite=None, cristobalite=None, mullite=None):
         self.id = id
         self.type = type
         self.quartz = quartz
@@ -226,7 +226,7 @@ class MineChemistryInfo(db.Model):
     CaO = db.Column('CaO', db.Float)
     Fe2O3 = db.Column('Fe2O3', db.Float)
 
-    def __init__(self, id, type=None, Na2O=None, MgO=None, Al2O3=None, SiO2=None, K2O=None, CaO=None, Fe2O3=None):
+    def __init__(self, id=None, type=None, Na2O=None, MgO=None, Al2O3=None, SiO2=None, K2O=None, CaO=None, Fe2O3=None):
         self.id = id
         self.type = type
         self.Na2O = Na2O
@@ -260,7 +260,7 @@ class MinePhysicsInfo(db.Model):
     trueDensity = db.Column('trueDensity', db.Float)           # 真密度
     waterAbsorption = db.Column('waterAbsorption', db.Float)   # 吸水率
 
-    def __init__(self, id, type=None, apparentPorosity=None, trueDensity=None, waterAbsorption=None):
+    def __init__(self, id=None, type=None, apparentPorosity=None, trueDensity=None, waterAbsorption=None):
         self.id = id
         self.type = type
         self.apparentPorosity = apparentPorosity
@@ -286,7 +286,7 @@ class MineThermalInfo(db.Model):
     data = db.Column('data', db.Unicode(100))                       # 热分析数据
     surveImage = db.Column('surveImage', db.Unicode(100))   # 热分析曲线
 
-    def __init__(self, id, termTemper=None, fireResis=None, data=None, surveImage=None):
+    def __init__(self, id=None, termTemper=None, fireResis=None, data=None, surveImage=None):
         self.id = id
         self.termTemper = termTemper
         self.fireResis = fireResis

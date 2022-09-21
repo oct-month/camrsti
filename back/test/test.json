@@ -1,0 +1,14 @@
+{
+    "clay": 34.7,
+    "debris": 25.0,
+    "hollow": 15.4,
+    "id": "11Y3:9-1",
+    "other": null,
+    "quartz": 7.3,
+    "sampleName": "炉衬",
+    "sand": {
+        "Ominerals": 3,
+        "feldspar": 2,
+        "quartz": 12.5
+    }
+}

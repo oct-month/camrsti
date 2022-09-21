@@ -8,6 +8,7 @@ flask = "*"
 flask-cors = "*"
 flask-sqlalchemy = "*"
 mysqlclient = "*"
+openpyxl = "*"
 
 [dev-packages]
 mypy = "*"

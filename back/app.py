@@ -1,11 +1,15 @@
 import json
+import os
 from typing import List, Optional
 from flask import request
+from werkzeug.utils import secure_filename
 from werkzeug.middleware.proxy_fix import ProxyFix
+from openpyxl import load_workbook
+from datetime import datetime
 
 from factory import get_app
 from table_structure import MicroViewData, SampleInfo, MicroView, MineContentInfo, MineSurveyInfo, MineXRDInfo, MineChemistryInfo, MinePhysicsInfo, MineThermalInfo
-
+from import_excel import get_instances
 
 app, db = get_app(__name__)
 
@@ -414,6 +418,31 @@ def delete_mine_thermal_info(id):
     db.session.commit()
     return {
         'status': 200
+    }
+
+# 导入功能
+@app.route('/api/import', methods=['POST'])
+def upload_and_import():
+    if 'upload' in request.files:
+        file = request.files['upload']
+        if file.filename.endswith('.xlsx'):
+            filename = datetime.now().isoformat().replace(':', '') + '.xlsx'
+            path = os.path.join('./excels/', filename)
+            file.save(path)
+            wb = load_workbook(path)
+            instance_list = get_instances(wb)
+            db.session.add_all(instance_list)
+            db.session.commit()
+            return {
+                'status': 200,
+                'msg': '成功插入了' + str(len(instance_list)) + '条数据'
+            }
+        return {
+            'status': 400,
+            'msg': '不支持扩展名为' + os.path.splitext(file.filename)[-1] + '的文件'
+        }
+    return {
+        'status': 400
     }
 
 # 告诉Flask我在使用代理
