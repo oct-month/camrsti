@@ -24,10 +24,28 @@ const upload = multer({
         }
     }
 })
+
+const upload2 = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 4 * 1024 * 1024   // 限制4MB
+    },
+    fileFilter(req, file, cb) {
+        var re = /(\.TXT|\.txt)$/i
+        if (file.originalname.match(re)) {
+            cb(null, true)
+        }
+        else {
+            cb(new Error('仅支持txt文件'), false)
+        }
+    }
+})
+
 const app = express()
 
 // 静态资源 BaseUrl/api/image/*.png
-app.use('/api/image', express.static(__dirname + '/public/uploads'))
+app.use('/api/image', express.static(__dirname + '/public/images'))
+app.use('/api/txt', express.static(__dirname + '/public/txts'))
 
 // 跨域
 if (process.env.NODE_ENV !== 'product') {
@@ -49,13 +67,10 @@ app.post('/api/image', (req, res, next) => {
         else {
             var filenames = []
             req.files.forEach(v => {
-                // var sum = crypto.createHash('sha256')
-                // sum.update(v.buffer.toString('hex'))
-                // var sha = sum.digest('hex')
                 var date = new Date().toISOString().replaceAll(':', '')
                 var filename = `IMG_${date}` + path.extname(v.originalname)
                 filenames.push(filename)
-                var filepath = path.join(__dirname, 'public/uploads', filename)
+                var filepath = path.join(__dirname, 'public/images', filename)
                 if (fs.existsSync(filepath)) {
                     logger.warn(`--${filepath}-- 已存在`)
                 }
@@ -67,31 +82,30 @@ app.post('/api/image', (req, res, next) => {
             })
         }
     })
-    // upload.single('upload')(req, res, (err) => {
-    //     if (err) {
-    //         res.json({
-    //             err: err.message
-    //         }, 400)
-    //     }
-    //     else {
-    //         var sum = crypto.createHash('sha256')
-    //         sum.update(req.file.buffer.toString('hex'))
-    //         var sha = sum.digest('hex')
-    //         var filename = sha + path.extname(req.file.originalname)
-    //         var filepath = path.join('public/uploads', filename)
-    //         // logger.debug(req.body)
-    //         if (!fs.existsSync(filepath) || req.body['cover']) {
-    //             fs.writeFileSync(filepath, req.file.buffer)
-    //         }
-    //         else {
-    //             logger.debug(`${filepath} 已存在`)
-    //         }
+})
 
-    //         res.json({
-    //             path: '/uploads/' + filename
-    //         })
-    //     }
-    // })
+app.post('/api/txt', (req, res, next) => {
+    upload2.single('upload')(req, res, (err) => {
+        if (err) {
+            res.json({
+                status: 400,
+                msg: err.message
+            }, 400)
+        }
+        else {
+            var date = new Date().toISOString().replaceAll(':', '')
+            var filename = `TXT_${date}` + path.extname(req.file.originalname)
+            var filepath = path.join(__dirname, 'public/txts', filename)
+            if (fs.existsSync(filepath)) {
+                logger.warn(`--${filepath}-- 已存在`)
+            }
+            fs.writeFileSync(filepath, req.file.buffer)
+            res.json({
+                status: 200,
+                data: filename
+            })
+        }
+    })
 })
 
 

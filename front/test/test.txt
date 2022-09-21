@@ -1,0 +1,39 @@
+ABS Adaptive Buffer Sizing via Augmented Programmability with Machine Learning
+Adaptive Bitrate with User-level QoE Preference for Video Streaming
+Age-Based Scheduling for Monitoring and Control Applications in Mobile Edge Computing Systems
+AI in 5G The Case of Online Distributed Transfer Learning over Edge Networks
+ANTIGONE Accurate Navigation Path Caching in Dynamic Road Networks leveraging Route APIs
+An Efficient Two-Layer Task Offloading Scheme for MEC System with Multiple Services Providers
+AoI-centric Task Scheduling for Autonomous Driving Systems
+Communication-Efficient Device Scheduling for Federated Learning Using Stochastic Optimization
+Constrained In-network Computing with Low Congestion in Datacenter Networks
+D2BFData-Driven Beamforming in MU-MIMO with Channel Estimation Uncertainty
+Decentralized Task Offloading in Edge Computing A Multi-User Multi-Armed Bandit Approach
+Deep Learning on Mobile Devices Through Neural Processing Units and Edge Computing
+Distributed Bandits with Heterogeneous Agents
+Distributed Cooperative Caching in Unreliable Edge Environments
+Distributed Inference with Deep Learning Models across Heterogeneous Edge Devices
+DNN-Driven Compressive Offloading for Edge-Assisted Semantic Video Segmentation
+Enabling QoE Support for Interactive Applications over Mobile Edge with High User Mobility
+Experimental Design Networks A Paradigm for Serving Heterogeneous Learners under Networking Constraints
+FLASH Federated Learning for Automated Selection of High-band mmWave Sectors
+Joint Order Dispatch and Charging for Electric Self-Driving Taxi Systems
+Joint Resource Management and Flow Scheduling for SFC Deployment in Hybrid Edge-and-Cloud Network
+Kalmia A Heterogeneous QoS-aware Scheduling Framework for DNN Tasks on Edge Servers
+Learning Buffer Management Policies for Shared Memory Switches
+Lumos towards Better Video Streaming QoE through Accurate Throughput Prediction
+Multi-Agent Distributed Reinforcement Learning for Making Decentralized Offloading Decisions
+Muses Enabling Lightweight Learning-Based Congestion Control for Mobile Devices
+Optimal Admission Control Mechanism Design for Time-Sensitive Services in Edge Computing
+Optimal Routing for Stream Learning Systems
+Optimizing Task Placement and Online Scheduling for Distributed GNN Training Acceleration
+OrchestRAN Network Automation through Orchestrated Intelligence in the Open RAN
+Protect Privacy from Gradient Leakage Attack in Federated Learning
+Reinforcement Learning for Dynamic Dimensioning of Cloud Caches A Restless Bandit Approach
+Socially-Optimal Mechanism Design for Incentivized Online Learning
+Stream Iterative Distributed Coded Computing for Learning Applications in Heterogeneous Systems
+User Experience Oriented Task Computation for UAV-Assisted MEC System
+VR Viewport Pose Model for Quantifying and Exploiting Frame Correlations
+VSiM Improving QoE Fairness for Video Streaming in Mobile Environments
+Worker Selection Towards Data Completion for Online Sparse Crowdsensing
+xNet Improving Expressiveness and Granularity for Network Modeling with Graph Neural Networks

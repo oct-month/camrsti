@@ -7,13 +7,13 @@ LABEL maintainer="ablocker ablocker@163.com"
 RUN yarn config set registry https://repo.nju.edu.cn/repository/npm/
 ENV NODE_ENV=product
 
-WORKDIR /camrsti-image
-COPY ./ /camrsti-image/
+WORKDIR /camrsti-file
+COPY ./ /camrsti-file/
 
 RUN yarn
 RUN yarn cache clean
 
 EXPOSE 8082
-VOLUME [ "/camrsti-image/public" ]
+VOLUME [ "/camrsti-file/public" ]
 
 ENTRYPOINT [ "yarn", "serve" ]

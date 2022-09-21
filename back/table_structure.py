@@ -283,7 +283,7 @@ class MineThermalInfo(db.Model):
     id = db.Column('id', db.Unicode(30), primary_key=True)   # 样品号
     termTemper = db.Column('termTemper', db.Float)         # 终止温度
     fireResis = db.Column('fireResis', db.Float)           # 耐火度
-    data = db.Column('data', db.JSON)                       # 热分析数据
+    data = db.Column('data', db.Unicode(100))                       # 热分析数据
     surveImage = db.Column('surveImage', db.Unicode(100))   # 热分析曲线
 
     def __init__(self, id, termTemper=None, fireResis=None, data=None, surveImage=None):

@@ -2,5 +2,6 @@ node_modules/
 
 .vscode/
 *.log
-public/uploads/*
+public/*
 !public/uploads/.keep
+!public/txts/.keep

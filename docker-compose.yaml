@@ -30,13 +30,13 @@ services:
     # ports:
     #   - 8081:8081
   
-  camrsti-image:
-    build: ./image/
-    image: ablocker/camrsti-image:latest
-    container_name: camrsti-image
+  camrsti-file:
+    build: ./file/
+    image: ablocker/camrsti-file:latest
+    container_name: camrsti-file
     restart: on-failure
     volumes:
-      - ./image/public:/camrsti-image/public
+      - ./file/public:/camrsti-file/public
     # ports:
     #   - 8082:8082
   

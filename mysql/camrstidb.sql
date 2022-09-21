@@ -200,7 +200,7 @@ CREATE TABLE `MineThermalInfo` (
   `id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '样品号',
   `termTemper` double DEFAULT NULL COMMENT '终止温度',
   `fireResis` double DEFAULT NULL COMMENT '耐火度',
-  `data` json DEFAULT NULL COMMENT '热分析数据',
+  `data` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '热分析数据',
   `surveImage` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '热分析曲线',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='热分析';

@@ -17,6 +17,12 @@ module.exports = defineConfig({
         secure: false,
         changeOrigin: true
       },
+      '/api/txt': {
+        target: 'http://localhost:8082',
+        ws: false,
+        secure: false,
+        changeOrigin: true
+      },
       '/api': {
         target: 'http://localhost:8081',
         ws: true,

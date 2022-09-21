@@ -462,7 +462,25 @@
           <span v-else>{{ scope.row.fireResis }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="data" label="热分析数据" miniwidth="100"></el-table-column>
+      <el-table-column prop="data" label="热分析数据" miniwidth="100">
+        <template slot-scope="scope">
+          <el-upload
+            v-if="editThermalModel[scope.row.id]"
+            action="/api/txt"
+            accept=".txt"
+            ref="upload"
+            name="upload"
+            :on-success="handleTxtUploadSuccess"
+            :on-error="handleTxtUploadError"
+            :auto-upload="true">
+            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传txt文件，且不超过4MB</div>
+          </el-upload>
+          <el-link v-else type="primary" target="_blank" :href="'/api/txt/'+scope.row.data" :download="scope.row.data">
+            {{ scope.row.data }}
+          </el-link>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="118">
         <template slot-scope="scope">
           <div v-if="editThermalModel[scope.row.id]" style="text-align:center;">
@@ -967,6 +985,14 @@ export default {
             this.$message.error('出错啦！')
           }
         })
+    },
+    handleTxtUploadSuccess(res) {
+      if (res.status == 200) {
+        this.nowEditThermal.data = res.data
+      }
+    },
+    handleTxtUploadError(err, file) {
+      this.$message.error(file.name + '没有上传成功：' + JSON.parse(err.message).msg)
     },
     editSurvey(id) {
       if (this.nowEditSurvey) {
