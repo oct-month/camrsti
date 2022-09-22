@@ -4,7 +4,7 @@ Vue.use(VueRouter)
 
 import HomeView from '@/views/HomeView.vue'
 import AddView from '@/views/AddView'
-// import SearchView from '@/views/SearchView'
+import ImportView from '@/views/ImportView'
 import AboutView from '@/views/AboutView'
 import TestView from '@/views/TestView'
 
@@ -20,11 +20,11 @@ const routes = [
     name: 'AddView',
     component: AddView
   },
-  // {
-  //   path: '/search',
-  //   name: 'SearchView',
-  //   component: SearchView
-  // },
+  {
+    path: '/import',
+    name: 'ImportView',
+    component: ImportView
+  },
   {
     path: '/about',
     name: 'AboutView',

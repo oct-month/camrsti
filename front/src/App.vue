@@ -31,10 +31,10 @@
               <i class="el-icon-document-add"></i>
               <span slot="title">增加数据</span>
             </el-menu-item>
-            <!-- <el-menu-item index="3">
-              <i class="el-icon-search"></i>
-              <span slot="title">测试页面</span>
-            </el-menu-item> -->
+            <el-menu-item index="3">
+              <i class="el-icon-upload"></i>
+              <span slot="title">导入数据</span>
+            </el-menu-item>
             <el-submenu index="4">
               <template slot="title">
                 <i class="el-icon-data-analysis"></i>
@@ -156,11 +156,11 @@ export default {
             name: 'AddView'
           })
           break
-        // case '3':
-        //   router.push({
-        //     name: 'TestView'
-        //   })
-        //   break
+        case '3':
+          router.push({
+            name: 'ImportView'
+          })
+          break
         case '4-1':
           router.push({
             name: 'AboutView'

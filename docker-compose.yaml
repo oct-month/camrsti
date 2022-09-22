@@ -49,4 +49,4 @@ services:
       - 8088:80
     depends_on:
       - camrsti-back
-      - camrsti-image
+      - camrsti-file
