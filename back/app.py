@@ -74,6 +74,7 @@ def modify_sampleinfo():
     sampleInfo.imageId = sampleInfo_json.get('imageId', sampleInfo.imageId)
     sampleInfo.describe = sampleInfo_json.get('describe', sampleInfo.describe)
     sampleInfo.explain = sampleInfo_json.get('explain', sampleInfo.explain)
+    sampleInfo.experimentId = sampleInfo_json.get('experimentId', sampleInfo.experimentId)
     db.session.commit()
     return {
         'status': 200
