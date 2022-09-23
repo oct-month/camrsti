@@ -1,7 +1,18 @@
 <template>
   <div id="ImportView">
-    <!-- TODO -->
-    <el-form class="form" ref="form" label-width="100px" label-position="right" style="width: 800px;">
+    <!-- <h3 align="left">数据导入模块</h3>
+    <p align="left">在此处下载导入模板：<el-link href="/api/txt/导入模板.xlsx" type="primary" icon="el-icon-document-copy">导入模板.xlsx</el-link></p> -->
+    <h3 align="left">注意事项</h3>
+    <p align="left">1. 导入功能需要确保各sheet命名正确</p>
+    <p align="left">2. 导入功能需要各sheet内的表格规范放置</p>
+    <p align="left">3. 表头请加粗，表格内数据请不要加粗</p>
+    <p align="left">4. 表格内的数据请不要使用合并单元格，表头也尽量减少合并单元格的使用</p>
+    <p align="left">5. 一个sheet内可放置多个表格，请注意按照<el-link href="/api/txt/导入模板.xlsx" type="primary" icon="el-icon-document-copy">导入模板.xlsx</el-link>的样式排版</p>
+    <p align="left">6. 仅支持<b>.xlsx</b>格式的文件，<b>.xls</b>旧格式不支持</p>
+
+    <el-divider></el-divider>
+
+    <el-form inline class="form" ref="form" label-width="100px" label-position="right" style="text-align:left;width:800px;">
       <el-form-item label="数据导入">
         <el-upload
           action="/api/import"
@@ -12,13 +23,26 @@
           :on-success="handleUploadSuccess"
           :on-error="handleUploadError"
           :auto-upload="true"
+          :data="{cover: cover}"
           style="width: 100%">
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
           <div class="el-upload__tip" slot="tip">只能上传xlsx文件</div>
         </el-upload>
       </el-form-item>
+      <el-form-item label="覆盖模式">
+         <el-checkbox v-model="cover">{{ cover ? '已启用' : '已关闭' }}</el-checkbox>
+      </el-form-item>
     </el-form>
+
+    <el-divider></el-divider>
+
+    <div>
+      <h3 align="left">导入历史</h3>
+      <p align="left" v-for="h in history" :key="h">
+        <el-link :href="'/api/import/'+h" type="primary" icon="el-icon-document-copy">{{ h }}</el-link>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -36,7 +60,20 @@ export default {
   name: "ImportView",
   data() {
     return {
+      history: [],
+      cover: false
     }
+  },
+  mounted() {
+    this.axios.get('/api/import')
+      .then(res => {
+        if (res.status == 200 && res.data.status == 200) {
+          this.history = res.data.data
+        }
+        else {
+          this.$message.error('出错啦！')
+        }
+      })
   },
   methods: {
     submitUpload() {
@@ -44,6 +81,7 @@ export default {
     },
     handleUploadSuccess(res) {
       if (res.status == 200) {
+        this.history.unshift(res.data)
         this.$message.success(res.msg)
       }
       else {

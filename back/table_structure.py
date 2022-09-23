@@ -15,9 +15,8 @@ class SampleInfo(db.Model):
     imageId = db.Column('imageId', db.JSON)                     # 照片号（多个）
     describe = db.Column('describe', db.UnicodeText)            # 描述
     explain = db.Column('explain', db.UnicodeText)              # 样品制备说明
-    experimentId = db.Column('experimentId', db.JSON)           # 实验编号（多个）
 
-    def __init__(self, id, type=None, source=None, year=None, people=None, imageId=None, describe=None, explain=None, experimentId=None):
+    def __init__(self, id, type=None, source=None, year=None, people=None, imageId=None, describe=None, explain=None):
         self.id = id
         self.type = type
         self.source = source
@@ -26,7 +25,6 @@ class SampleInfo(db.Model):
         self.imageId = imageId
         self.describe = describe
         self.explain = explain
-        self.experimentId = experimentId
 
     def to_json(self):
         return {
@@ -37,8 +35,7 @@ class SampleInfo(db.Model):
             'people': self.people,
             'imageId': self.imageId,
             'describe': self.describe,
-            'explain': self.explain,
-            'experimentId': self.experimentId
+            'explain': self.explain
         }
 
 # 显微组织观察

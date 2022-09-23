@@ -157,16 +157,6 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column prop="experimentId" :label="keyMap['experimentId']" miniwidth="160">
-            <template slot-scope="scope">
-              <el-input v-if="editModel[scope.row.id]" autosize v-model="nowEditSampleInfo.experimentId"></el-input>
-              <el-link v-else type="primary" @click="to_experiment_page(scope.row.id)">
-                <el-tag type="success" effect="plain" size="small" v-for="sc in scope.row.experimentId" :key="sc">
-                    {{ sc }}
-                </el-tag>
-              </el-link>
-            </template>
-          </el-table-column>
           <el-table-column label="操作" width="62">
             <template slot-scope="scope">
               <!-- <span style="display: none;">{{ scope.row.id }}</span> -->
@@ -197,8 +187,9 @@
         </div>
       </el-tab-pane>
       <el-tab-pane closable :label="v.label" :name="v.name" v-for="v in editableTabs" :key="v.label">
-        <sample-page v-if="v.type" :sampleId="v.sampleId"/>
-        <experiment-page v-else :sampleId="v.sampleId"/>
+        <sample-page :sampleId="v.sampleId"/>
+        <hr><hr>
+        <experiment-page :sampleId="v.sampleId"/>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -255,8 +246,7 @@ export default {
         people: '取样人',
         imageId: '照片号',
         describe: '描述',
-        explain: '样品制备说明',
-        experimentId: '实验编号',
+        explain: '样品制备说明'
       },
       currentTableData: [],
       filterItems: {
@@ -366,19 +356,8 @@ export default {
       this.editableTabs.push({
           label: id.trim() + ' 样品信息',
           name: String(this.editableTabs.length + 1),
-          sampleId: id.trim(),
-          type: 1
+          sampleId: id.trim()
         })
-      this.lastActiveTab = this.activeTab
-      this.activeTab = this.editableTabs.length
-    },
-    to_experiment_page(id) {
-      this.editableTabs.push({
-        label: id.trim() + ' 实验信息',
-        name: String(this.editableTabs.length + 1),
-        sampleId: id.trim(),
-        type: 0
-      })
       this.lastActiveTab = this.activeTab
       this.activeTab = this.editableTabs.length
     },
@@ -465,7 +444,6 @@ export default {
         var temp = this.sampleInfos.filter(v => v.id === sampleId)
         if (temp.length > 0) {
           this.nowEditSampleInfo = deepObjCopy(temp[0])
-          this.nowEditSampleInfo.experimentId = temp[0].experimentId.join('、')
           if (this.nowEditSampleInfo.year) {
             this.nowEditSampleInfo.year = new Date(this.nowEditSampleInfo.year, 1)
           }
@@ -494,7 +472,6 @@ export default {
       this.$refs.upload.submit()
     },
     submitEdit(sampleId) {
-      this.nowEditSampleInfo.experimentId = this.nowEditSampleInfo.experimentId.split('、').filter(v => v.trim())
       if (this.nowEditSampleInfo.year) {
         this.nowEditSampleInfo.year = this.nowEditSampleInfo.year.getFullYear()
       }
@@ -534,9 +511,6 @@ export default {
       var temp = deepObjCopy(this.currentTableData)
       temp.forEach((v, i) => {
         temp[i].imageId = v.imageId.join('、')
-      })
-      temp.forEach((v, i) => {
-        temp[i].experimentId = v.experimentId.join('、')
       })
       var exData = [];
       temp.forEach(v => {

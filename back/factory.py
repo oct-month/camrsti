@@ -7,9 +7,11 @@ from flask_sqlalchemy import SQLAlchemy
 app = None
 db = None
 
-def get_app(name: str) -> Tuple[Flask, SQLAlchemy]:
+def get_app(name: str=None) -> Tuple[Flask, SQLAlchemy]:
     global app, db
     if app is None or db is None:
+        if name is None:
+            raise RuntimeError('db initial fail')
         app = Flask(name)
         mysql_host = os.getenv('MYSQL_HOST')
         if mysql_host:
@@ -18,5 +20,6 @@ def get_app(name: str) -> Tuple[Flask, SQLAlchemy]:
             app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:camrsti@localhost:3306/camrstidb'
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
         app.config['SQLALCHEMY_COMMIT_TEARDOWN'] = True
+        app.config['SQLALCHEMY_ECHO'] = True
         db = SQLAlchemy(app)
     return app, db

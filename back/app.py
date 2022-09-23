@@ -1,8 +1,7 @@
 import json
 import os
 from typing import List, Optional
-from flask import request
-from werkzeug.utils import secure_filename
+from flask import request, send_from_directory
 from werkzeug.middleware.proxy_fix import ProxyFix
 from openpyxl import load_workbook
 from datetime import datetime
@@ -74,7 +73,6 @@ def modify_sampleinfo():
     sampleInfo.imageId = sampleInfo_json.get('imageId', sampleInfo.imageId)
     sampleInfo.describe = sampleInfo_json.get('describe', sampleInfo.describe)
     sampleInfo.explain = sampleInfo_json.get('explain', sampleInfo.explain)
-    sampleInfo.experimentId = sampleInfo_json.get('experimentId', sampleInfo.experimentId)
     db.session.commit()
     return {
         'status': 200
@@ -100,8 +98,7 @@ def add_sampleinfo():
             people=sampleInfo_json.get('people'),
             imageId=sampleInfo_json.get('imageId'),
             describe=sampleInfo_json.get('describe'),
-            explain=sampleInfo_json.get('explain'),
-            experimentId=sampleInfo_json.get('experimentId')
+            explain=sampleInfo_json.get('explain')
         )
         db.session.add(instance)
         db.session.commit()
@@ -206,11 +203,10 @@ def delete_microview_item(id):
 # 获取特定样本的矿物含量信息
 @app.route('/api/minecontentinfo/<sampleId>', methods=['GET'])
 def get_mine_content_infos(sampleId):
-    experimentIds = get_sampleinfo_dao(sampleId).experimentId
-    content_infos = MineContentInfo.query.filter(MineContentInfo.id.in_(experimentIds)).all()
+    content_info = MineContentInfo.query.filter_by(id=sampleId).first()
     return {
         'status': 200,
-        'data': [s.to_json() for s in content_infos]
+        'data': [content_info.to_json()] if content_info != None else []
     }
 
 # 修改特定矿物含量信息
@@ -243,11 +239,10 @@ def delete_mine_content_info(id):
 # 获取特定样本的矿物测量数据
 @app.route('/api/minesurveyinfo/<sampleId>', methods=['GET'])
 def get_mine_survey_infos(sampleId):
-    experimentIds = get_sampleinfo_dao(sampleId).experimentId
-    survey_infos = MineSurveyInfo.query.filter(MineSurveyInfo.id.in_(experimentIds)).all()
+    survey_info = MineSurveyInfo.query.filter_by(id=sampleId).first()
     return {
         'status': 200,
-        'data': [s.to_json() for s in survey_infos]
+        'data': [survey_info.to_json()] if survey_info != None else []
     }
 
 # 修改特定的矿物测量数据
@@ -275,11 +270,10 @@ def delete_mine_survey_info(id):
 # 获取特定样本的XRD分析数据
 @app.route('/api/minexrdinfo/<sampleId>', methods=['GET'])
 def get_mine_xrd_infos(sampleId):
-    experimentIds = get_sampleinfo_dao(sampleId).experimentId
-    xrd_infos = MineXRDInfo.query.filter(MineXRDInfo.id.in_(experimentIds)).all()
+    xrd_info = MineXRDInfo.query.filter_by(id=sampleId).first()
     return {
         'status': 200,
-        'data': [s.to_json() for s in xrd_infos]
+        'data': [xrd_info.to_json()] if xrd_info != None else []
     }
 
 # 修改特定的XRD数据
@@ -318,11 +312,10 @@ def delete_mine_xrd_info(id):
 # 获取特定样本的化学成分数据
 @app.route('/api/minechemistryinfo/<sampleId>', methods=['GET'])
 def get_mine_chemistry_infos(sampleId):
-    experimentIds = get_sampleinfo_dao(sampleId).experimentId
-    chem_infos = MineChemistryInfo.query.filter(MineChemistryInfo.id.in_(experimentIds)).all()
+    chem_info = MineChemistryInfo.query.filter_by(id=sampleId).first()
     return {
         'status': 200,
-        'data': [s.to_json() for s in chem_infos]
+        'data': [chem_info.to_json()] if chem_info != None else []
     }
 
 # 修改特定化学成分数据
@@ -390,11 +383,10 @@ def set_mine_physics_info():
 # 获取特定样本的热分析
 @app.route('/api/minethermalinfo/<sampleId>', methods=['GET'])
 def get_mine_thermal_infos(sampleId):
-    experimentIds = get_sampleinfo_dao(sampleId).experimentId
-    thermal_infos = MineThermalInfo.query.filter(MineThermalInfo.id.in_(experimentIds)).all()
+    thermal_info = MineThermalInfo.query.filter_by(id=sampleId).first()
     return {
         'status': 200,
-        'data': [s.to_json() for s in thermal_infos]
+        'data': [thermal_info.to_json()] if thermal_info != None else []
     }
 
 # 修改特定的热分析
@@ -425,18 +417,24 @@ def delete_mine_thermal_info(id):
 @app.route('/api/import', methods=['POST'])
 def upload_and_import():
     if 'upload' in request.files:
+        cover_flag = request.form.get('cover', False)
+        if cover_flag == 'true':
+            cover_flag = True
+        elif cover_flag == 'false':
+            cover_flag = False
         file = request.files['upload']
         if file.filename.endswith('.xlsx'):
             filename = datetime.now().isoformat().replace(':', '') + '.xlsx'
             path = os.path.join('./excels/', filename)
             file.save(path)
             wb = load_workbook(path)
-            instance_list = get_instances(wb)
+            instance_list, cover_num = get_instances(wb, cover_flag)
             db.session.add_all(instance_list)
             db.session.commit()
             return {
                 'status': 200,
-                'msg': '成功插入了' + str(len(instance_list)) + '条数据'
+                'msg': f'成功插入了{len(instance_list)}条数据，覆盖了{cover_num}条数据',
+                'data': filename
             }
         return {
             'status': 400,
@@ -446,6 +444,22 @@ def upload_and_import():
         'status': 400
     }
 
+# 获取上传历史
+@app.route('/api/import', methods=['GET'])
+def get_upload_history():
+    file_list = os.listdir('./excels/')
+    file_list = list(filter(lambda p: p.endswith('.xlsx') and p.startswith(('2', '3', '4')), file_list))
+    file_list.sort(reverse=True)
+    return {
+        'status': 200,
+        'data': file_list[:10]
+    }
+
+# 下载文件
+@app.route('/api/import/<filename>', methods=['GET'])
+def get_upload_file(filename):
+    return send_from_directory('./excels/', filename)
+
 # 告诉Flask我在使用代理
 app.wsgi_app = ProxyFix(
     app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
@@ -453,4 +467,4 @@ app.wsgi_app = ProxyFix(
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8081, debug=False)
+    app.run(host='0.0.0.0', port=8081, debug=True)

@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 8.0.30, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.30, for Win64 (x86_64)
 --
 -- Host: localhost    Database: camrstidb
 -- ------------------------------------------------------
@@ -42,7 +42,7 @@ CREATE TABLE `MicroView` (
 
 LOCK TABLES `MicroView` WRITE;
 /*!40000 ALTER TABLE `MicroView` DISABLE KEYS */;
-INSERT INTO `MicroView` VALUES (1,'矿相','[\"图片2.jpg\"]','红色区域，有较多的粗砂和岩屑，该部分黏土基质较多','徕卡2700P','11Y1:9');
+INSERT INTO `MicroView` VALUES (1,'矿相','[\"图片2.jpg\"]','红色区域，有较多的粗砂和岩屑，该部分黏土基质较多','徕卡2700P','11Y3:9-1');
 /*!40000 ALTER TABLE `MicroView` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -160,7 +160,7 @@ CREATE TABLE `MinePhysicsInfo` (
 
 LOCK TABLES `MinePhysicsInfo` WRITE;
 /*!40000 ALTER TABLE `MinePhysicsInfo` DISABLE KEYS */;
-INSERT INTO `MinePhysicsInfo` VALUES ('11Y3:9','砂泥质大块炉衬',39.5,2.612,24.8),('3344','fsf',243,234,234);
+INSERT INTO `MinePhysicsInfo` VALUES ('11Y3:9','砂泥质大块炉衬',39.5,2.612,24.8);
 /*!40000 ALTER TABLE `MinePhysicsInfo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -268,7 +268,6 @@ CREATE TABLE `SampleInfo` (
   `imageId` json DEFAULT NULL COMMENT '照片号',
   `describe` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '描述',
   `explain` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '样品制备说明',
-  `experimentId` json DEFAULT NULL COMMENT '实验编号',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='样品基本信息';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -279,7 +278,7 @@ CREATE TABLE `SampleInfo` (
 
 LOCK TABLES `SampleInfo` WRITE;
 /*!40000 ALTER TABLE `SampleInfo` DISABLE KEYS */;
-INSERT INTO `SampleInfo` VALUES ('11Y1:9','炉壁','北京延庆水泉沟',2019,'刘海峰','[\"IMG_20190512_33333.jpg\"]','取自炉体上半部分，红色，质地疏松多空','自内向外取三处，分别做薄片后矿相观察，制备粉末样品开展XRD分析','[\"11Y3:9-1\", \"11Y3:9-2\", \"11Y3:9-3\"]');
+INSERT INTO `SampleInfo` VALUES ('11Y3:9-1','炉壁','北京延庆水泉沟',2019,'刘海峰','[\"IMG_20190512_33333.jpg\"]','取自炉体上半部分，红色，质地疏松多空','自内向外取三处，分别做薄片后矿相观察，制备粉末样品开展XRD分析'),('11Y3:9-2','炉壁','北京延庆水泉沟',2019,'刘海峰','[\"IMG_20190512_33333.jpg\"]','取自炉体上半部分，红色，质地疏松多空','自内向外取三处，分别做薄片后矿相观察，制备粉末样品开展XRD分析'),('11Y3:9-3','炉壁','北京延庆水泉沟',2019,'刘海峰','[\"IMG_20190512_33333.jpg\"]','取自炉体上半部分，红色，质地疏松多空','自内向外取三处，分别做薄片后矿相观察，制备粉末样品开展XRD分析');
 /*!40000 ALTER TABLE `SampleInfo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -296,4 +295,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-09-17 13:52:08
+-- Dump completed on 2022-09-23 22:53:26

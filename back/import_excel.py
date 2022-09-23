@@ -56,7 +56,7 @@ def get_range(ws) -> List[Tuple[int, int, int, int]]:
     range_list.append((step, i + 1, c1, c2))
     return range_list
 
-def mine_content_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int) -> Dict[str, MineContentInfo]:
+def mine_content_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int, cover: bool) -> Tuple[List[MineContentInfo], int]:
     head_map = {
         "clay": 0,
         "debris": 0,
@@ -71,6 +71,7 @@ def mine_content_process(ws: Worksheet, min_row: int, max_row: int, min_col: int
             "quartz": 0
         }
     }
+    cover_num = 0
     instance_list = {}
     sand_list = []
     for i, row in enumerate(ws.iter_rows(min_row, max_row, min_col, max_col, values_only=False)):
@@ -126,8 +127,14 @@ def mine_content_process(ws: Worksheet, min_row: int, max_row: int, min_col: int
                 v = str(row[head_map['id'] - 1].value).strip()
                 instance.id = v if v != 'None' and v != 'n.d.' else None
             ins = MineContentInfo.query.filter_by(id=instance.id).first()
+            add_flag = True
             if ins:
-                continue
+                if cover:
+                    instance = ins
+                    add_flag = False
+                    cover_num += 1
+                else:
+                    continue
             if head_map['sampleName']:
                 v = str(row[head_map['sampleName'] - 1].value).strip()
                 instance.sampleName = v if v != 'None' and v!= 'n.d.' else None
@@ -155,10 +162,11 @@ def mine_content_process(ws: Worksheet, min_row: int, max_row: int, min_col: int
             if head_map['other']:
                 v = str(row[head_map['other'] - 1].value).strip()
                 instance.other = float(v) if is_number(v) else None
-            instance_list[instance.id] = instance
-    return instance_list
+            if add_flag:
+                instance_list[instance.id] = instance
+    return instance_list.values(), cover_num
 
-def mine_xrd_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int) -> Dict[str, MineXRDInfo]:
+def mine_xrd_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int, cover: bool) -> Tuple[List[MineXRDInfo], int]:
     head_map = {
         "albite": 0,
         "amphibole": 0,
@@ -175,6 +183,7 @@ def mine_xrd_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, ma
         "tridymite": 0,
         "type": 0
     }
+    cover_num = 0
     instance_list = {}
     for i, row in enumerate(ws.iter_rows(min_row, max_row, min_col, max_col, values_only=False)):
         if i == 0:
@@ -220,8 +229,14 @@ def mine_xrd_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, ma
                 v = str(row[head_map['id'] - 1].value).strip()
                 instance.id = v if v != 'None' and v != 'n.d.' else None
             ins = MineXRDInfo.query.filter_by(id=instance.id).first()
+            add_flag = True
             if ins:
-                continue
+                if cover:
+                    instance = ins
+                    add_flag = False
+                    cover_num += 1
+                else:
+                    continue
             if head_map['type']:
                 v = str(row[head_map['type'] - 1].value).strip()
                 instance.type = v if v != 'None' and v != 'n.d.' else None
@@ -261,10 +276,11 @@ def mine_xrd_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, ma
             if head_map['mullite']:
                 v = str(row[head_map['mullite'] - 1].value).strip()
                 instance.mullite = float(v) if is_number(v) else None
-            instance_list[instance.id] = instance
-    return instance_list
+            if add_flag:
+                instance_list[instance.id] = instance
+    return instance_list.values(), cover_num
 
-def mine_chemistry_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int) -> Dict[str, MineChemistryInfo]:
+def mine_chemistry_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int, cover: bool) -> Tuple[List[MineChemistryInfo], int]:
     head_map = {
         'id': 0,
         'type': 0,
@@ -276,6 +292,7 @@ def mine_chemistry_process(ws: Worksheet, min_row: int, max_row: int, min_col: i
         'CaO': 0,
         'Fe2O3': 0
     }
+    cover_num = 0
     instance_list = {}
     for i, row in enumerate(ws.iter_rows(min_row, max_row, min_col, max_col, values_only=False)):
         if i == 0:
@@ -311,8 +328,14 @@ def mine_chemistry_process(ws: Worksheet, min_row: int, max_row: int, min_col: i
                 v = str(row[head_map['id'] - 1].value).strip()
                 instance.id = v if v != 'None' and v != 'n.d.' else None
             ins = MineChemistryInfo.query.filter_by(id=instance.id).first()
+            add_flag = True
             if ins:
-                continue
+                if cover:
+                    instance = ins
+                    add_flag = False
+                    cover_num += 1
+                else:
+                    continue
             if head_map['type']:
                 v = str(row[head_map['type'] - 1].value).strip()
                 instance.type = v if v != 'None' and v != 'n.d.' else None
@@ -337,15 +360,17 @@ def mine_chemistry_process(ws: Worksheet, min_row: int, max_row: int, min_col: i
             if head_map['Fe2O3']:
                 v = str(row[head_map['Fe2O3'] - 1].value).strip()
                 instance.Fe2O3 = float(v) if is_number(v) else None
-            instance_list[instance.id] = instance
-    return instance_list
+            if add_flag:
+                instance_list[instance.id] = instance
+    return instance_list.values(), cover_num
 
-def mine_thermal_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int) -> Dict[str, MineThermalInfo]:
+def mine_thermal_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int, cover: bool) -> Tuple[List[MineThermalInfo], int]:
     head_map = {
         'id': 0,
         'termTemper': 0,
         'fireResis': 0
     }
+    cover_num = 0
     instance_list = {}
     for i, row in enumerate(ws.iter_rows(min_row, max_row, min_col, max_col, values_only=False)):
         if i == 0:
@@ -370,18 +395,25 @@ def mine_thermal_process(ws: Worksheet, min_row: int, max_row: int, min_col: int
                 v = re.sub(r'（.*?）', '', v)
                 instance.id = v if v != 'None' and v != 'n.d.' else None
             ins = MineThermalInfo.query.filter_by(id=instance.id).first()
+            add_flag = True
             if ins:
-                continue
+                if cover:
+                    instance = ins
+                    add_flag = False
+                    cover_num += 1
+                else:
+                    continue
             if head_map['termTemper']:
                 v = str(row[head_map['termTemper'] - 1].value).strip()
                 instance.termTemper = float(v) if is_number(v) else None
             if head_map['fireResis']:
                 v = str(row[head_map['fireResis'] - 1].value).strip()
                 instance.fireResis = float(v) if is_number(v) else None
-            instance_list[instance.id] = instance
-    return instance_list
+            if add_flag:
+                instance_list[instance.id] = instance
+    return instance_list, cover_num
 
-def mine_physics_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int) -> Dict[str, MinePhysicsInfo]:
+def mine_physics_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int, cover: bool) -> Tuple[List[MinePhysicsInfo], int]:
     head_map = {
         'id': 0,
         'type': 0,
@@ -389,6 +421,7 @@ def mine_physics_process(ws: Worksheet, min_row: int, max_row: int, min_col: int
         'trueDensity': 0,
         'waterAbsorption': 0
     }
+    cover_num = 0
     instance_list = {}
     for i, row in enumerate(ws.iter_rows(min_row, max_row, min_col, max_col, values_only=False)):
         if i == 0:
@@ -416,8 +449,14 @@ def mine_physics_process(ws: Worksheet, min_row: int, max_row: int, min_col: int
                 v = str(row[head_map['id'] - 1].value).strip()
                 instance.id = v if v != 'None' and v != 'n.d.' else None
             ins = MinePhysicsInfo.query.filter_by(id=instance.id).first()
+            add_flag = True
             if ins:
-                continue
+                if cover:
+                    instance = ins
+                    add_flag = False
+                    cover_num += 1
+                else:
+                    continue
             if head_map['type']:
                 v = str(row[head_map['type'] - 1].value).strip()
                 instance.type = v if v != 'None' and v != 'n.d.' else None
@@ -430,32 +469,44 @@ def mine_physics_process(ws: Worksheet, min_row: int, max_row: int, min_col: int
             if head_map['waterAbsorption']:
                 v = str(row[head_map['waterAbsorption'] - 1].value).strip()
                 instance.waterAbsorption = float(v) if is_number(v) else None
-            instance_list[instance.id] = instance
-    return instance_list
+            if add_flag:
+                instance_list[instance.id] = instance
+    return instance_list.values(), cover_num
 
-def get_instances(wb: Workbook) -> List:
+def get_instances(wb: Workbook, cover: bool) -> Tuple[List, int]:
+    cover_num = 0
     instance_list = []
     for sheetname in wb.sheetnames:
         ws = wb[sheetname]
         range_list = get_range(ws)
         if sheetname.strip() == '矿物含量':
             for a, b, c, d in range_list:
-                instance_list.extend(mine_content_process(ws, a, b, c, d).values())
+                il, con = mine_content_process(ws, a, b, c, d, cover)
+                instance_list.extend(il)
+                cover_num += con
         elif sheetname.strip() == '物相（XRD）成分':
             for a, b, c, d in range_list:
-                instance_list.extend(mine_xrd_process(ws, a, b, c, d).values())
+                il, con = mine_xrd_process(ws, a, b, c, d, cover)
+                instance_list.extend(il)
+                cover_num += con
         elif sheetname.strip() == '化学成分':
             for a, b, c, d in range_list:
-                instance_list.extend(mine_chemistry_process(ws, a, b, c, d).values())
+                il, con = mine_chemistry_process(ws, a, b, c, d, cover)
+                instance_list.extend(il)
+                cover_num += con
         elif sheetname.strip() == '热性能':
             for a, b, c, d in range_list:
-                instance_list.extend(mine_thermal_process(ws, a, b, c, d).values())
+                il, con = mine_thermal_process(ws, a, b, c, d, cover)
+                instance_list.extend(il)
+                cover_num += con
         elif sheetname.strip() == '物理性能':
             for a, b, c, d in range_list:
-                instance_list.extend(mine_physics_process(ws, a, b, c, d).values())
+                il, con = mine_physics_process(ws, a, b, c, d, cover)
+                instance_list.extend(il)
+                cover_num += con
         else:
             print(f'import_excel ----> 意料之外的sheet：{sheetname}')
-    return instance_list
+    return instance_list, cover_num
 
 
 if __name__ == '__main__':

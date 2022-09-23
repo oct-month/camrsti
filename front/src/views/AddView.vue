@@ -5,7 +5,14 @@
           <el-input v-model="form.id" placeholder="必填"></el-input>
         </el-form-item>
         <el-form-item label="样品类型">
-          <el-select v-model="form.type" placeholder="请选择样品类型" style="width: 100%">
+          <el-autocomplete
+            class="inline-input"
+            v-model="form.type"
+            :fetch-suggestions="typeSuggest"
+            placeholder="请输入内容"
+            style="width: 100%">
+          </el-autocomplete>
+          <!-- <el-select v-model="form.type" placeholder="请选择样品类型" style="width: 100%">
             <el-option label="炉渣" value="炉渣"></el-option>
             <el-option label="炉壁" value="炉壁"></el-option>
             <el-option label="陶范" value="陶范"></el-option>
@@ -14,7 +21,7 @@
             <el-option label="铜" value="铜"></el-option>
             <el-option label="铁" value="铁"></el-option>
             <el-option label="不明" value="不明"></el-option>
-          </el-select>
+          </el-select> -->
         </el-form-item>
         <el-form-item label="样品来源">
           <el-input v-model="form.source"></el-input>
@@ -49,15 +56,6 @@
         <el-form-item label="样品制备说明">
           <el-input type="textarea" autosize v-model="form.explain"></el-input>
         </el-form-item>
-        <el-form-item label="实验编号">
-          <el-autocomplete
-            style="width:100%;"
-            class="inline-input"
-            v-model="form.experimentId"
-            :fetch-suggestions="experimentIdInputIdea"
-            placeholder='以中文"、"分隔'></el-autocomplete>
-          <!-- <el-input v-model="form.experimentId" placeholder='以中文"、"分隔'></el-input> -->
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即增加</el-button>
           <el-button>取消</el-button>
@@ -88,8 +86,7 @@ export default {
         people: '',
         imageId: [],
         describe: '',
-        explain: '',
-        experimentId: ''
+        explain: ''
       },
       rules: {
         id: [
@@ -100,6 +97,23 @@ export default {
     }
   },
   methods: {
+    typeSuggest(qs, cb) {
+      if (qs && qs.trim()) {
+        cb([])
+      }
+      else {
+        cb([
+          {value: '炉渣'},
+          {value: '炉壁'},
+          {value: '陶范'},
+          {value: '坩埚'},
+          {value: '鼓风管'},
+          {value: '铜'},
+          {value: '铁'},
+          {value: '不明'}
+        ])
+      }
+    },
     handleUploadSuccess(res) {
       if (res.status == 200) {
         this.uploadFileList = this.uploadFileList.concat(res.data)
@@ -108,13 +122,9 @@ export default {
     handleUploadError(err, file) {
       this.$message.error(file.name + '没有上传成功：' + JSON.parse(err.message).msg)
     },
-    experimentIdInputIdea(qs, cb) {
-      cb([{value: `${this.form.id}-1、${this.form.id}-2、${this.form.id}-3`}])
-    },
     onSubmit() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.form.experimentId = this.form.experimentId.split('、').filter(v => v.trim())
           if (this.form.year){
             this.form.year = this.form.year.getFullYear()
           }
@@ -135,8 +145,7 @@ export default {
                   people: '',
                   imageId: [],
                   describe: '',
-                  explain: '',
-                  experimentId: ''
+                  explain: ''
                 }
                 this.uploadFileList = []
                 this.$refs.upload.clearFiles()
@@ -145,7 +154,6 @@ export default {
                 this.$message.error('出错啦！')
               }
             })
-          this.form.experimentId = this.form.experimentId.join('、')
         }
       })
     }

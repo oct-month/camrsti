@@ -1,6 +1,6 @@
 <template>
   <div id="ExperimentView">
-    <h3>矿物含量信息</h3>
+    <h4 align="left">矿物含量信息</h4>
     <el-table
       :data="mineContentInfos"
       :span-method="mineContentSpan"
@@ -112,7 +112,7 @@
 
     <hr>
 
-    <h3>矿物测量数据</h3>
+    <h4 align="left">矿物测量数据</h4>
 
     岩屑直径分布
     <el-table
@@ -255,7 +255,7 @@
 
     <hr>
 
-    <h3>XRD分析数据</h3>
+    <h4 align="left">XRD分析数据</h4>
 
     <el-table
       :data="mineXRDInfos"
@@ -364,7 +364,7 @@
 
     <hr>
 
-    <h3>化学成分数据</h3>
+    <h4 align="left">化学成分数据</h4>
 
     <el-table
       :data="mineChemistryInfos"
@@ -441,7 +441,7 @@
       </el-table-column>
     </el-table>
 
-    <h3>热分析</h3>
+    <h4 align="left">热分析</h4>
 
     <el-table
       :data="mineThermalInfos"
@@ -1142,7 +1142,7 @@ export default {
       })
       ws = xlsx.utils.json_to_sheet(temp)
       xlsx.utils.book_append_sheet(wb, ws, '8.热分析')
-      xlsx.writeFileXLSX(wb, `Export-${new Date().toISOString().split('T')[0]}.xlsx`)
+      xlsx.writeFileXLSX(wb, `Export-EXP-${new Date().toISOString().split('T')[0]}.xlsx`)
     }
   }
 }
