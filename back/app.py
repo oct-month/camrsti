@@ -200,6 +200,15 @@ def delete_microview_item(id):
         'status': 200
     }
 
+# 获取全部样本的矿物含量信息
+@app.route('/api/minecontentinfo', methods=['GET'])
+def get_mine_content_infos_all():
+    content_infos = MineContentInfo.query.all()
+    return {
+        'status': 200,
+        'data': [content_info.to_json() for content_info in content_infos] if content_infos != None else []
+    }
+
 # 获取特定样本的矿物含量信息
 @app.route('/api/minecontentinfo/<sampleId>', methods=['GET'])
 def get_mine_content_infos(sampleId):
@@ -236,6 +245,15 @@ def delete_mine_content_info(id):
         'status': 200
     }
 
+# 获取全部样本的矿物测量数据
+@app.route('/api/minesurveyinfo', methods=['GET'])
+def get_mine_survey_infos_all():
+    survey_infos = MineSurveyInfo.query.all()
+    return {
+        'status': 200,
+        'data': [survey_info.to_json() for survey_info in survey_infos] if survey_infos != None else []
+    }
+
 # 获取特定样本的矿物测量数据
 @app.route('/api/minesurveyinfo/<sampleId>', methods=['GET'])
 def get_mine_survey_infos(sampleId):
@@ -265,6 +283,15 @@ def delete_mine_survey_info(id):
     db.session.commit()
     return {
         'status': 200
+    }
+
+# 获取全部样本的XRD分析数据
+@app.route('/api/minexrdinfo', methods=['GET'])
+def get_mine_xrd_infos_all():
+    xrd_infos = MineXRDInfo.query.all()
+    return {
+        'status': 200,
+        'data': [xrd_info.to_json() for xrd_info in xrd_infos] if xrd_infos != None else []
     }
 
 # 获取特定样本的XRD分析数据
@@ -309,6 +336,15 @@ def delete_mine_xrd_info(id):
         'status': 200
     }
 
+# 获取全部样本的化学成分数据
+@app.route('/api/minechemistryinfo', methods=['GET'])
+def get_mine_chemistry_infos_all():
+    chem_infos = MineChemistryInfo.query.all()
+    return {
+        'status': 200,
+        'data': [chem_info.to_json() for chem_info in chem_infos] if chem_infos != None else []
+    }
+
 # 获取特定样本的化学成分数据
 @app.route('/api/minechemistryinfo/<sampleId>', methods=['GET'])
 def get_mine_chemistry_infos(sampleId):
@@ -346,6 +382,15 @@ def delete_mine_chemistry_info(id):
         'status': 200
     }
 
+# 获取全部样本的物理结构数据
+@app.route('/api/minephysicsinfo', methods=['GET'])
+def get_mine_physics_all():
+    physics_infos = MinePhysicsInfo.query.all()
+    return {
+        'status': 200,
+        'data': [physics_info.to_json() for physics_info in physics_infos] if physics_infos != None else []
+    }
+
 # 获取特定样本的物理结构数据
 @app.route('/api/minephysicsinfo/<sampleId>', methods=['GET'])
 def get_mine_physics_info(sampleId):
@@ -378,6 +423,15 @@ def set_mine_physics_info():
         db.session.commit()
     return {
         'status': 200
+    }
+
+# 获取全部样本的热分析
+@app.route('/api/minethermalinfo', methods=['GET'])
+def get_mine_thermal_infos_all():
+    thermal_infos = MineThermalInfo.query.all()
+    return {
+        'status': 200,
+        'data': [thermal_info.to_json() for thermal_info in thermal_infos] if thermal_infos != None else []
     }
 
 # 获取特定样本的热分析

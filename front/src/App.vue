@@ -42,7 +42,7 @@
               </template>
               <el-menu-item-group>
                 <template slot="title">统计</template>
-                <el-menu-item index="4-1">显微组织</el-menu-item>
+                <!-- <el-menu-item index="4-1">显微组织</el-menu-item> -->
                 <el-menu-item index="4-2">矿物含量+矿物测量</el-menu-item>
                 <el-menu-item index="4-3">XRD+化学成分</el-menu-item>
                 <el-menu-item index="4-4">物理结构+热分析</el-menu-item>
@@ -54,9 +54,9 @@
           <el-main>
             <router-view/>
           </el-main>
-          <el-footer>
+          <!-- <el-footer>
             Created By Ablocker © <router-link to="/about">关于</router-link>
-          </el-footer>
+          </el-footer> -->
         </el-container>
       </el-container>
     </el-container>
@@ -163,22 +163,22 @@ export default {
           break
         case '4-1':
           router.push({
-            name: 'AboutView'
+            name: 'StatisticView1'
           })
           break
         case '4-2':
           router.push({
-            name: 'AboutView'
+            name: 'StatisticView2'
           })
           break
         case '4-3':
           router.push({
-            name:'AboutView'
+            name:'StatisticView3'
           })
           break
         case '4-4':
           router.push({
-            name: 'AboutView'
+            name: 'StatisticView4'
           })
           break
         default:

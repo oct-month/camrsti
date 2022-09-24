@@ -272,73 +272,73 @@
       <el-table-column prop="quartz" label="石英" miniwidth="100">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.quartz"></el-input>
-          <span v-else>{{ scope.row.quartz ? scope.row.quartz + '%' : '' }}</span>
+          <span v-else>{{ scope.row.quartz ? scope.row.quartz * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="albite" label="钠长石" miniwidth="100">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.albite"></el-input>
-          <span v-else>{{ scope.row.albite ? scope.row.albite + '%' : '' }}</span>
+          <span v-else>{{ scope.row.albite ? scope.row.albite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="potashFeldspar" label="钾长石" miniwidth="100">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.potashFeldspar"></el-input>
-          <span v-else>{{ scope.row.potashFeldspar ? scope.row.potashFeldspar + '%' : '' }}</span>
+          <span v-else>{{ scope.row.potashFeldspar ? scope.row.potashFeldspar * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="mica" label="云母" miniwidth="100">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.mica"></el-input>
-          <span v-else>{{ scope.row.mica ? scope.row.mica + '%' : '' }}</span>
+          <span v-else>{{ scope.row.mica ? scope.row.mica * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="amphibole" label="闪石" miniwidth="100">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.amphibole"></el-input>
-          <span v-else>{{ scope.row.amphibole ? scope.row.amphibole + '%' : '' }}</span>
+          <span v-else>{{ scope.row.amphibole ? scope.row.amphibole * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="hematite" label="赤铁矿" miniwidth="100">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.hematite"></el-input>
-          <span v-else>{{ scope.row.hematite ? scope.row.hematite + '%' : '' }}</span>
+          <span v-else>{{ scope.row.hematite ? scope.row.hematite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="magnetite" label="磁铁矿" miniwidth="100">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.magnetite"></el-input>
-          <span v-else>{{ scope.row.magnetite ? scope.row.magnetite + '%' : '' }}</span>
+          <span v-else>{{ scope.row.magnetite ? scope.row.magnetite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="dolomite" label="白云石" miniwidth="100">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.dolomite"></el-input>
-          <span v-else>{{ scope.row.dolomite ? scope.row.dolomite + '%' : '' }}</span>
+          <span v-else>{{ scope.row.dolomite ? scope.row.dolomite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="analcite" label="方沸石" miniwidth="100">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.analcite"></el-input>
-          <span v-else>{{ scope.row.analcite ? scope.row.analcite + '%' : '' }}</span>
+          <span v-else>{{ scope.row.analcite ? scope.row.analcite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="tridymite" label="磷石英" miniwidth="100">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.tridymite"></el-input>
-          <span v-else>{{ scope.row.tridymite ? scope.row.tridymite + '%' : '' }}</span>
+          <span v-else>{{ scope.row.tridymite ? scope.row.tridymite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="cristobalite" label="方石英" miniwidth="100">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.cristobalite"></el-input>
-          <span v-else>{{ scope.row.cristobalite ? scope.row.cristobalite + '%' : '' }}</span>
+          <span v-else>{{ scope.row.cristobalite ? scope.row.cristobalite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="mullite" label="莫来石" miniwidth="100">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.mullite"></el-input>
-          <span v-else>{{ scope.row.mullite ? scope.row.mullite + '%' : '' }}</span>
+          <span v-else>{{ scope.row.mullite ? scope.row.mullite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="118">

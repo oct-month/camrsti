@@ -1,6 +1,6 @@
 <template>
   <div id="AboutView">
-    <h1>This is an about page</h1>
+    <h1>中国古代冶金耐火材料科技信息数据库</h1>
   </div>
 </template>
 

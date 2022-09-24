@@ -7,6 +7,10 @@ import AddView from '@/views/AddView'
 import ImportView from '@/views/ImportView'
 import AboutView from '@/views/AboutView'
 import TestView from '@/views/TestView'
+import StatisticView1 from '@/views/StatisticView1'
+import StatisticView2 from '@/views/StatisticView2'
+import StatisticView3 from '@/views/StatisticView3'
+import StatisticView4 from '@/views/StatisticView4'
 
 
 const routes = [
@@ -24,6 +28,26 @@ const routes = [
     path: '/import',
     name: 'ImportView',
     component: ImportView
+  },
+  {
+    path: '/statistic1',
+    name: 'StatisticView1',
+    component: StatisticView1
+  },
+  {
+    path: '/statistic2',
+    name: 'StatisticView2',
+    component: StatisticView2
+  },
+  {
+    path: '/statistic3',
+    name: 'StatisticView3',
+    component: StatisticView3
+  },
+  {
+    path: '/statistic4',
+    name: 'StatisticView4',
+    component: StatisticView4
   },
   {
     path: '/about',

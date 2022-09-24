@@ -6,9 +6,10 @@
     <p align="left">1. 导入功能需要确保各sheet命名正确</p>
     <p align="left">2. 导入功能需要各sheet内的表格规范放置</p>
     <p align="left">3. 表头请加粗，表格内数据请不要加粗</p>
-    <p align="left">4. 表格内的数据请不要使用合并单元格，表头也尽量减少合并单元格的使用</p>
-    <p align="left">5. 一个sheet内可放置多个表格，请注意按照<el-link href="/api/txt/导入模板.xlsx" type="primary" icon="el-icon-document-copy">导入模板.xlsx</el-link>的样式排版</p>
-    <p align="left">6. 仅支持<b>.xlsx</b>格式的文件，<b>.xls</b>旧格式不支持</p>
+    <p align="left">4. 表格数据的样品编号中的中文括号"（）"及内容将被忽略</p>
+    <p align="left">5. 表格内的数据请不要使用合并单元格，表头也尽量减少合并单元格的使用</p>
+    <p align="left">6. 一个sheet内可放置多个表格，请注意按照<el-link href="/api/txt/导入模板.xlsx" type="primary" icon="el-icon-document-copy">导入模板.xlsx</el-link>的样式排版</p>
+    <p align="left">7. 仅支持<b>.xlsx</b>格式的文件，<b>.xls</b>旧格式不支持</p>
 
     <el-divider></el-divider>
 
