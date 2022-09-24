@@ -8,7 +8,7 @@
               检索
             </template>
           </el-table-column>
-          <el-table-column width="90">
+          <el-table-column width="110">
             <template slot="header" slot-scope="scope">
               <el-input size="mini" placeholder="样品号" v-model="filterItems.id" @input="forceUpdate" @change="inputFilterHandler"></el-input>
             </template>
@@ -51,17 +51,17 @@
         </el-table>
 
         <el-table
-          :data="currentTableData"
+          :data="afterTableData"
           stripe
           border
           height="80vh"
           style="width:100%">
           <el-table-column type="index" width="50">
             <template slot-scope="scope">
-              <div style="text-align:center;">{{scope.$index + 1}}</div>
+              <div style="text-align:center;">{{scope.$index + 1 + pageSize * (currentPage - 1)}}</div>
             </template>
           </el-table-column>
-          <el-table-column sortable prop="id" :label="keyMap['id']" width="90">
+          <el-table-column sortable prop="id" :label="keyMap['id']" width="110">
             <template slot-scope="scope">
               <el-link type="primary" @click="to_sample_page(scope.row.id)">
                 <el-tag type="info" effect="plain" size="small">
@@ -72,7 +72,15 @@
           </el-table-column>
           <el-table-column sortable prop="type" :label="keyMap['type']" width="110">
             <template slot-scope="scope">
-              <el-select v-if="editModel[scope.row.id]" v-model="nowEditSampleInfo.type" placeholder="请选择样品类型" style="width: 100%">
+              <el-autocomplete
+                class="inline-input"
+                v-if="editModel[scope.row.id]"
+                v-model="nowEditSampleInfo.type"
+                :fetch-suggestions="typeSuggest"
+                placeholder="请选择样品类型"
+                style="width: 100%">
+              </el-autocomplete>
+              <!-- <el-select v-if="editModel[scope.row.id]" v-model="nowEditSampleInfo.type" placeholder="请选择样品类型" style="width: 100%">
                 <el-option label="炉渣" value="炉渣"></el-option>
                 <el-option label="炉壁" value="炉壁"></el-option>
                 <el-option label="陶范" value="陶范"></el-option>
@@ -81,7 +89,7 @@
                 <el-option label="铜" value="铜"></el-option>
                 <el-option label="铁" value="铁"></el-option>
                 <el-option label="不明" value="不明"></el-option>
-              </el-select>
+              </el-select> -->
               <span v-else>
                 {{ scope.row.type }}
               </span>
@@ -149,7 +157,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column prop="explain" :label="keyMap['explain']" miniwidth="300">
+          <el-table-column prop="explain" :label="keyMap['explain']" width="350">
             <template slot-scope="scope">
               <el-input v-if="editModel[scope.row.id]" type="textarea" autosize v-model="nowEditSampleInfo.explain"></el-input>
               <span v-else>
@@ -178,8 +186,18 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-pagination
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[100, 200, 300, 400]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="currentTableData.length">
+        </el-pagination>
         <div style="text-align:center; width:100%; display:inline-block;">
-          <span style="float:left;">总计：{{ currentTableData.length }}条</span>
+          <!-- <span style="float:left;">总计：{{ currentTableData.length }}条</span> -->
           <div style="float:right;">
             导出：
             <el-button size="small" type="success" icon="el-icon-download" @click="exportTableData"></el-button>
@@ -238,6 +256,8 @@ export default {
   },
   data() {
     return {
+      currentPage: 1,
+      pageSize: 100,
       keyMap: {
         id: '样品号',
         type: '样品类型',
@@ -249,6 +269,7 @@ export default {
         explain: '样品制备说明'
       },
       currentTableData: [],
+      afterTableData: [],
       filterItems: {
         id: '',
         type: '',
@@ -273,6 +294,20 @@ export default {
       editModel: {},
       nowEditSampleInfo: null,
       uploadFileList: []
+    }
+  },
+  watch: {
+    sampleInfos: {
+      handler() {
+        this.inputFilterHandler()
+      },
+      deep: true
+    },
+    currentTableData: {
+      handler() {
+        this.afterTableData = this.currentTableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+      },
+      deep: true
     }
   },
   mounted() {
@@ -329,7 +364,8 @@ export default {
               value: v
             })
           })
-          this.currentTableData = this.sampleInfos
+          this.currentTableData = this.sampleInfos.slice(0, this.pageSize)
+          this.afterTableData = this.sampleInfos.slice(0, this.pageSize)
         }
         else {
           this.$message.error('出错啦！')
@@ -337,6 +373,35 @@ export default {
       })
   },
   methods: {
+    typeSuggest(qs, cb) {
+      if (qs && qs.trim()) {
+        cb([])
+      }
+      else {
+        cb([
+          {value: '炉渣'},
+          {value: '炉壁'},
+          {value: '陶范'},
+          {value: '坩埚'},
+          {value: '鼓风管'},
+          {value: '铜'},
+          {value: '铁'},
+          {value: '不明'}
+        ])
+      }
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.afterTableData = this.currentTableData.slice((val - 1) * this.pageSize, val * this.pageSize)
+    },
+    handleSizeChange(val) {
+      this.pageSize = val
+      let max_page = Math.ceil(this.currentTableData.length / this.pageSize)
+      if (this.currentPage > max_page) {
+        this.currentPage = 1
+      }
+      this.afterTableData = this.currentTableData.slice((this.currentPage - 1) * val, this.currentPage * val)
+    },
     transTab({ name }) {
       if (name != this.activeTab) {
         this.lastActiveTab = this.activeTab
@@ -430,7 +495,6 @@ export default {
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.sampleInfos = this.sampleInfos.filter(v => v.id != sampleId)
-            this.currentTableData = this.currentTableData.filter(v => v.id != sampleId)
             this.$message.success('删除' + sampleId + '成功！')
           }
           else {
@@ -490,11 +554,6 @@ export default {
                 this.$set(this.sampleInfos, i, this.nowEditSampleInfo)
               }
             })
-            this.currentTableData.forEach((v, i) => {
-              if (v.id == sampleId) {
-                this.$set(this.currentTableData, i, this.nowEditSampleInfo)
-              }
-            })
             this.nowEditSampleInfo = null
             this.editModel[sampleId] = false
           }
@@ -509,9 +568,6 @@ export default {
     },
     exportTableData() {
       var temp = deepObjCopy(this.currentTableData)
-      temp.forEach((v, i) => {
-        temp[i].imageId = v.imageId.join('、')
-      })
       var exData = [];
       temp.forEach(v => {
         let obj = {};

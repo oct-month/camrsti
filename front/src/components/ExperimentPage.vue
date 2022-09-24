@@ -7,7 +7,7 @@
       stripe
       border
       style="width: 100%">
-      <el-table-column prop="id" label="样品号" width="80"></el-table-column>
+      <el-table-column prop="id" label="样品号" width="110"></el-table-column>
       <el-table-column prop="sampleName" label="样品名称" width="90">
         <template slot-scope="scope">
           <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.sampleName"></el-input>
@@ -120,7 +120,7 @@
       stripe
       border
       style="width: 100%">
-      <el-table-column prop="id" label="样品号" width="80"></el-table-column>
+      <el-table-column prop="id" label="样品号" width="110"></el-table-column>
       <el-table-column prop="debrisData.≤67μm" label="≤67μm" miniwidth="100">
         <template slot-scope="scope">
           <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debrisData['≤67μm']"></el-input>
@@ -189,7 +189,7 @@
       stripe
       border
       style="width: 100%">
-      <el-table-column prop="id" label="样品号" width="80"></el-table-column>
+      <el-table-column prop="id" label="样品号" width="110"></el-table-column>
       <el-table-column prop="hollowData.≤167" label="≤167" miniwidth="100">
         <template slot-scope="scope">
           <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollowData['≤167']"></el-input>
@@ -262,7 +262,7 @@
       stripe
       border
       style="width: 100%">
-      <el-table-column prop="id" label="样品编号" width="80"></el-table-column>
+      <el-table-column prop="id" label="样品编号" width="110"></el-table-column>
       <el-table-column prop="type" label="类型" width="90">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.type"></el-input>
@@ -371,7 +371,7 @@
       stripe
       border
       style="width: 100%">
-      <el-table-column prop="id" label="样品号" width="80"></el-table-column>
+      <el-table-column prop="id" label="样品号" width="110"></el-table-column>
       <el-table-column prop="type" label="类型" width="90">
         <template slot-scope="scope">
           <el-input v-if="editChemistryModel[scope.row.id]" v-model="nowEditChemistry.type"></el-input>
@@ -449,7 +449,7 @@
       stripe
       border
       style="width: 100%">
-      <el-table-column prop="id" label="样品号" width="80"></el-table-column>
+      <el-table-column prop="id" label="样品号" width="110"></el-table-column>
       <el-table-column prop="termTemper" label="终止温度" miniwidth="100">
         <template slot-scope="scope">
           <el-input v-if="editThermalModel[scope.row.id]" v-model="nowEditThermal.termTemper"></el-input>

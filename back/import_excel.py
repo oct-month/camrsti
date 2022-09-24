@@ -4,7 +4,7 @@ from openpyxl import Workbook, load_workbook
 from openpyxl.cell import MergedCell
 from openpyxl.worksheet.worksheet import Worksheet
 
-from table_structure import MineChemistryInfo, MineContentInfo, MinePhysicsInfo, MineThermalInfo, MineXRDInfo
+from table_structure import MineChemistryInfo, MineContentInfo, MinePhysicsInfo, MineThermalInfo, MineXRDInfo, SampleInfo
 
 
 '''
@@ -56,7 +56,7 @@ def get_range(ws) -> List[Tuple[int, int, int, int]]:
     range_list.append((step, i + 1, c1, c2))
     return range_list
 
-def mine_content_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int, cover: bool) -> Tuple[List[MineContentInfo], int]:
+def mine_content_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int, cover: bool) -> Tuple[Dict[str, MineContentInfo], int]:
     head_map = {
         "clay": 0,
         "debris": 0,
@@ -164,9 +164,9 @@ def mine_content_process(ws: Worksheet, min_row: int, max_row: int, min_col: int
                 instance.other = float(v) if is_number(v) else None
             if add_flag:
                 instance_list[instance.id] = instance
-    return instance_list.values(), cover_num
+    return instance_list, cover_num
 
-def mine_xrd_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int, cover: bool) -> Tuple[List[MineXRDInfo], int]:
+def mine_xrd_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int, cover: bool) -> Tuple[Dict[str, MineXRDInfo], int]:
     head_map = {
         "albite": 0,
         "amphibole": 0,
@@ -278,9 +278,9 @@ def mine_xrd_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, ma
                 instance.mullite = float(v) if is_number(v) else None
             if add_flag:
                 instance_list[instance.id] = instance
-    return instance_list.values(), cover_num
+    return instance_list, cover_num
 
-def mine_chemistry_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int, cover: bool) -> Tuple[List[MineChemistryInfo], int]:
+def mine_chemistry_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int, cover: bool) -> Tuple[Dict[str, MineChemistryInfo], int]:
     head_map = {
         'id': 0,
         'type': 0,
@@ -362,9 +362,9 @@ def mine_chemistry_process(ws: Worksheet, min_row: int, max_row: int, min_col: i
                 instance.Fe2O3 = float(v) if is_number(v) else None
             if add_flag:
                 instance_list[instance.id] = instance
-    return instance_list.values(), cover_num
+    return instance_list, cover_num
 
-def mine_thermal_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int, cover: bool) -> Tuple[List[MineThermalInfo], int]:
+def mine_thermal_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int, cover: bool) -> Tuple[Dict[str, MineThermalInfo], int]:
     head_map = {
         'id': 0,
         'termTemper': 0,
@@ -413,7 +413,7 @@ def mine_thermal_process(ws: Worksheet, min_row: int, max_row: int, min_col: int
                 instance_list[instance.id] = instance
     return instance_list, cover_num
 
-def mine_physics_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int, cover: bool) -> Tuple[List[MinePhysicsInfo], int]:
+def mine_physics_process(ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int, cover: bool) -> Tuple[Dict[str, MinePhysicsInfo], int]:
     head_map = {
         'id': 0,
         'type': 0,
@@ -471,10 +471,11 @@ def mine_physics_process(ws: Worksheet, min_row: int, max_row: int, min_col: int
                 instance.waterAbsorption = float(v) if is_number(v) else None
             if add_flag:
                 instance_list[instance.id] = instance
-    return instance_list.values(), cover_num
+    return instance_list, cover_num
 
-def get_instances(wb: Workbook, cover: bool) -> Tuple[List, int]:
+def get_instances(wb: Workbook, cover: bool) -> Tuple[List, List[SampleInfo], int]:
     cover_num = 0
+    sample_list = set()
     instance_list = []
     for sheetname in wb.sheetnames:
         ws = wb[sheetname]
@@ -482,31 +483,37 @@ def get_instances(wb: Workbook, cover: bool) -> Tuple[List, int]:
         if sheetname.strip() == '矿物含量':
             for a, b, c, d in range_list:
                 il, con = mine_content_process(ws, a, b, c, d, cover)
-                instance_list.extend(il)
+                instance_list.extend(il.values())
+                sample_list.update(il.keys())
                 cover_num += con
         elif sheetname.strip() == '物相（XRD）成分':
             for a, b, c, d in range_list:
                 il, con = mine_xrd_process(ws, a, b, c, d, cover)
-                instance_list.extend(il)
+                instance_list.extend(il.values())
+                sample_list.update(il.keys())
                 cover_num += con
         elif sheetname.strip() == '化学成分':
             for a, b, c, d in range_list:
                 il, con = mine_chemistry_process(ws, a, b, c, d, cover)
-                instance_list.extend(il)
+                instance_list.extend(il.values())
+                sample_list.update(il.keys())
                 cover_num += con
         elif sheetname.strip() == '热性能':
             for a, b, c, d in range_list:
                 il, con = mine_thermal_process(ws, a, b, c, d, cover)
-                instance_list.extend(il)
+                instance_list.extend(il.values())
+                sample_list.update(il.keys())
                 cover_num += con
         elif sheetname.strip() == '物理性能':
             for a, b, c, d in range_list:
                 il, con = mine_physics_process(ws, a, b, c, d, cover)
-                instance_list.extend(il)
+                instance_list.extend(il.values())
+                sample_list.update(il.keys())
                 cover_num += con
         else:
             print(f'import_excel ----> 意料之外的sheet：{sheetname}')
-    return instance_list, cover_num
+    sample_list = [SampleInfo(v) for v in sample_list]
+    return instance_list, sample_list, cover_num
 
 
 if __name__ == '__main__':

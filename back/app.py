@@ -428,12 +428,13 @@ def upload_and_import():
             path = os.path.join('./excels/', filename)
             file.save(path)
             wb = load_workbook(path)
-            instance_list, cover_num = get_instances(wb, cover_flag)
+            instance_list, sample_list, cover_num = get_instances(wb, cover_flag)
             db.session.add_all(instance_list)
+            db.session.add_all(sample_list)
             db.session.commit()
             return {
                 'status': 200,
-                'msg': f'成功插入了{len(instance_list)}条数据，覆盖了{cover_num}条数据',
+                'msg': f'成功插入了{len(sample_list)}条数据，覆盖了{cover_num}条数据',
                 'data': filename
             }
         return {
