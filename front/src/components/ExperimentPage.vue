@@ -513,10 +513,10 @@
         </template>
       </el-table-column>
     </el-table>
-    <div style="float:right;">
+    <!-- <div style="float:right;">
       导出：
       <el-button size="small" type="success" icon="el-icon-download" @click="exportTableData"></el-button>
-    </div>
+    </div> -->
   </div>
 </template>
 

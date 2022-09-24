@@ -160,7 +160,7 @@ CREATE TABLE `MinePhysicsInfo` (
 
 LOCK TABLES `MinePhysicsInfo` WRITE;
 /*!40000 ALTER TABLE `MinePhysicsInfo` DISABLE KEYS */;
-INSERT INTO `MinePhysicsInfo` VALUES ('11Y3:9','砂泥质大块炉衬',39.5,2.612,24.8);
+INSERT INTO `MinePhysicsInfo` VALUES ('11Y3:9-1','砂泥质大块炉衬',39.5,2.612,24.8);
 /*!40000 ALTER TABLE `MinePhysicsInfo` ENABLE KEYS */;
 UNLOCK TABLES;
 

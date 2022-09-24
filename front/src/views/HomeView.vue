@@ -204,10 +204,14 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane closable :label="v.label" :name="v.name" v-for="v in editableTabs" :key="v.label">
-        <sample-page :sampleId="v.sampleId"/>
+      <el-tab-pane closable :label="v.label" :name="v.name" v-for="v in editableTabs" :key="v.sampleId">
+        <sample-page :ref="el => {if (el) samplePageComs[v.sampleId] = el}" :sampleId="v.sampleId"/>
         <hr><hr>
-        <experiment-page :sampleId="v.sampleId"/>
+        <experiment-page :ref="el => {if (el) extPageComs[v.sampleId] = el}" :sampleId="v.sampleId"/>
+        <div style="float:right;">
+          导出：
+          <el-button size="small" type="success" icon="el-icon-download" @click="exportExTableData(v.sampleId)"></el-button>
+        </div>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -243,6 +247,7 @@
 
 <script>
 import xlsx from 'xlsx'
+import { ref, onBeforeUpdate } from 'vue'
 
 import { deepObjCopy } from '@/utils'
 import SamplePage from '@/components/SamplePage.vue'
@@ -253,6 +258,18 @@ export default {
   components: {
     SamplePage,
     ExperimentPage
+  },
+  setup() {
+    const samplePageComs = ref({})
+    const extPageComs = ref({})
+    onBeforeUpdate(() => {
+      samplePageComs.value = {}
+      extPageComs.value = {}
+    })
+    return {
+      samplePageComs,
+      extPageComs
+    }
   },
   data() {
     return {
@@ -418,13 +435,22 @@ export default {
       this.activeTab = this.lastActiveTab
     },
     to_sample_page(id) {
-      this.editableTabs.push({
-          label: id.trim() + ' 样品信息',
-          name: String(this.editableTabs.length + 1),
-          sampleId: id.trim()
-        })
-      this.lastActiveTab = this.activeTab
-      this.activeTab = this.editableTabs.length
+      let flag = false
+      this.editableTabs.forEach((v, i) => {
+        if (v.sampleId == id) {
+          this.activeTab = i + 1
+          flag = true
+        }
+      })
+      if (!flag) {
+        this.editableTabs.push({
+            label: id.trim() + ' 样品信息',
+            name: String(this.editableTabs.length + 1),
+            sampleId: id.trim()
+          })
+        this.lastActiveTab = this.activeTab
+        this.activeTab = this.editableTabs.length
+      }
     },
     filterHandler: property => (value, row) => {
       return value === row[property]
@@ -580,6 +606,172 @@ export default {
       var wb = xlsx.utils.book_new()
       xlsx.utils.book_append_sheet(wb, ws, 'Sheet')
       xlsx.writeFileXLSX(wb, `Export-${new Date().toISOString().split('T')[0]}.xlsx`)
+    },
+    exportExTableData(sampleId) {
+      let sp = this.samplePageComs[sampleId]
+      let ep = this.extPageComs[sampleId]
+      var wb = xlsx.utils.book_new()
+
+      var temp = []
+      var si = this.sampleInfos.filter(v => v.id == sampleId)[0]
+      var ins = {};
+      Object.keys(this.keyMap).forEach(k => {
+        ins[this.keyMap[k]] = si[k]
+      })
+      temp.push(ins)
+      var ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '1.样品基本信息')
+      temp = []
+      var temp2 = []
+      var temp3 = []
+      ins = {
+        '金相': sp.jinxiang ? '有' : '无',
+        '样品全图': sp.jinxiang ? sp.jinxiang.sampleImage : '',
+        '描述': sp.jinxiang ? sp.jinxiang.sampleDescribe : '',
+        '设备': sp.jinxiang ? sp.jinxiang.device : ''
+      }
+      sp.jinxiang?.imageData.forEach((v, i) => {
+        ins['放大倍数' + (i + 1)] = v.zoom
+        ins['拍摄模式' + (i + 1)] = v.photoMode
+        ins['金相照片' + (i + 1)] = v.image
+        ins['描述' + (i + 1)] = v.describe
+      })
+      temp.push(ins)
+      ins = {
+        '矿相': sp.kuangxiang ? '有' : '无',
+        '薄片扫描图': sp.kuangxiang ? sp.kuangxiang.sampleImage : '',
+        '描述': sp.kuangxiang ? sp.kuangxiang.sampleDescribe : '',
+        '设备': sp.kuangxiang ? sp.kuangxiang.device : ''
+      }
+      sp.kuangxiang?.imageData.forEach((v, i) => {
+        ins['放大倍数' + (i + 1)] = v.zoom
+        ins['拍摄模式' + (i + 1)] = v.photoMode
+        ins['矿相照片' + (i + 1)] = v.image
+        ins['描述' + (i + 1)] = v.describe
+      })
+      temp2.push(ins)
+      ins = {
+        '电子显微照片': sp.dianzi ? '有' : '无',
+        '样品全图': sp.dianzi ? sp.dianzi.sampleImage : '',
+        '描述': sp.dianzi ? sp.dianzi.sampleDescribe : '',
+        '设备': sp.dianzi ? sp.dianzi.device : ''
+      }
+      sp.dianzi?.imageData.forEach((v, i) => {
+        ins['放大倍数' + (i + 1)] = v.zoom
+        ins['拍摄模式' + (i + 1)] = v.photoMode
+        ins['电子显微照片' + (i + 1)] = v.image
+        ins['描述' + (i + 1)] = v.describe
+      })
+      temp3.push(ins)
+      ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '2.显微组织观察-金相')
+      ws = xlsx.utils.json_to_sheet(temp2)
+      xlsx.utils.book_append_sheet(wb, ws, '2.显微组织观察-矿相')
+      ws = xlsx.utils.json_to_sheet(temp3)
+      xlsx.utils.book_append_sheet(wb, ws, '2.显微组织观察-金电子显微照片')
+      temp = []
+      ep.mineContentInfos.forEach(v => {
+        temp.push({
+          '样品号': v.id,
+          '样品名称': v.sampleName,
+          '黏土基质': v.clay,
+          '石英粉砂': v.quartz,
+          '石英': v.sand.quartz,
+          '长石': v.sand.feldspar,
+          '其他矿物': v.sand.Ominerals,
+          '小计': ep.sum(Object.values(v.sand)),
+          '岩屑': v.debris,
+          '空洞': v.hollow,
+          '其他': v.other
+        })
+      })
+      ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '3.矿物含量信息')
+      temp = []
+      temp2 = []
+      ep.mineSurveyInfos.forEach(v => {
+        temp.push({
+          '样品号': v.id,
+          '≤67μm': v.debrisData['≤67μm'],
+          '67-167μm': v.debrisData['67-167μm'],
+          '167-501': v.debrisData['167-501'],
+          '501-1002': v.debrisData['501-1002'],
+          '≥1002': v.debrisData['≥1002']
+        })
+        temp2.push({
+          '样品号': v.id,
+          '≤167': v.hollowData['≤167'],
+          '167-501': v.hollowData['167-501'],
+          '501-1002': v.hollowData['501-1002'],
+          '1002-2004': v.hollowData['1002-2004'],
+          '＞2004': v.hollowData['＞2004']
+        })
+      })
+      ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '4.矿物测量数据-岩屑直径分布')
+      ws = xlsx.utils.json_to_sheet(temp2)
+      xlsx.utils.book_append_sheet(wb, ws, '4.矿物测量数据-空洞长度分布')
+      temp = []
+      ep.mineXRDInfos.forEach(v => {
+        temp.push({
+          '样品编号': v.id,
+          '类型': v.type,
+          '石英': v.quartz,
+          '钠长石': v.albite,
+          '钾长石': v.potashFeldspar,
+          '云母': v.mica,
+          '闪石': v.amphibole,
+          '赤铁矿': v.hematite,
+          '磁铁矿': v.magnetite,
+          '白云石': v.dolomite,
+          '方沸石': v.analcite,
+          '磷石英': v.tridymite,
+          '方石英': v.cristobalite,
+          '莫来石': v.mullite
+        })
+      })
+      ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '5.XRD分析数据')
+      temp = []
+      ep.mineChemistryInfos.forEach(v => {
+        temp.push({
+          '样品号': v.id,
+          '类型': v.type,
+          'Na₂O': v.Na2O,
+          'MgO': v.MgO,
+          'Al₂O₃': v.Al2O3,
+          'SiO₂': v.SiO2,
+          'K₂O': v.K2O,
+          'CaO': v.CaO,
+          'Fe₂O₃': v.Fe2O3
+        })
+      })
+      ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '6.化学成分数据')
+      temp = []
+      temp.push({
+        '样品编号': sp.physicalInfo ? sp.physicalInfo.id : '',
+        '类型': sp.physicalInfo ? sp.physicalInfo.type : '',
+        '显气孔率': sp.physicalInfo ? sp.physicalInfo.apparentPorosity : '',
+        '真密度': sp.physicalInfo ? sp.physicalInfo.trueDensity : '',
+        '吸水率': sp.physicalInfo ? sp.physicalInfo.waterAbsorption : ''
+      })
+      ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '7.物理结构数据')
+      temp = []
+      ep.mineThermalInfos.forEach(v => {
+        temp.push({
+          '样品号': v.id,
+          '终止温度': v.termTemper,
+          '耐火度': v.fireResis,
+          '热分析数据': v.data,
+          '热分析曲线': '' //v.surveImage
+        })
+      })
+      ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '8.热分析')
+
+      xlsx.writeFileXLSX(wb, `Export-EXP-${new Date().toISOString().split('T')[0]}.xlsx`)
     }
   }
 }

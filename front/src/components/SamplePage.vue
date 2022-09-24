@@ -1,7 +1,13 @@
 <template>
   <div id="SampleView">
     <!-- 物理结构数据 -->
-    <el-descriptions class="margin-top" title="物理结构数据" :column="2" border>
+    <el-descriptions
+      class="margin-top"
+      title="物理结构数据"
+      :column="2"
+      :labelStyle="{width: '15%'}"
+      :contentStyle="{width: '35%'}"
+      border>
       <template slot="extra">
         <div v-if="physicalInfoFlag" style="text-align:center;">
           <el-button size="small" type="success" icon="el-icon-check" circle @click="submitPhysicalInfoEdit"></el-button>
@@ -46,7 +52,13 @@
     <hr>
 
     <!-- 金相 -->
-    <el-descriptions class="margin-top" title="金相" :column="2" border>
+    <el-descriptions
+      class="margin-top"
+      title="金相"
+      :column="2"
+      :labelStyle="{width: '15%'}"
+      :contentStyle="{width: '35%'}"
+      border>
       <template slot="extra">
         <div v-if="jinxiangFlag" style="text-align:center;">
           <el-button size="small" type="success" icon="el-icon-check" circle @click="submitjinxiangEdit"></el-button>
@@ -219,7 +231,13 @@
     <hr>
 
     <!-- 矿相 -->
-    <el-descriptions class="margin-top" title="矿相" :column="2" border>
+    <el-descriptions
+      class="margin-top"
+      title="矿相"
+      :column="2"
+      :labelStyle="{width: '15%'}"
+      :contentStyle="{width: '35%'}"
+      border>
       <template slot="extra">
         <div v-if="kuangxiangFlag" style="text-align:center;">
           <el-button size="small" type="success" icon="el-icon-check" circle @click="submitkuangxiangEdit"></el-button>
@@ -392,7 +410,13 @@
     <hr>
 
     <!-- 电子显微照片 -->
-    <el-descriptions class="margin-top" title="电子显微照片" :column="2" border>
+    <el-descriptions
+      class="margin-top"
+      title="电子显微照片"
+      :column="2"
+      :labelStyle="{width: '15%'}"
+      :contentStyle="{width: '35%'}"
+      border>
       <template slot="extra">
         <div v-if="dianziFlag" style="text-align:center;">
           <el-button size="small" type="success" icon="el-icon-check" circle @click="submitdianziEdit"></el-button>
