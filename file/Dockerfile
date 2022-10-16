@@ -1,10 +1,10 @@
 FROM node:lts-alpine
 LABEL maintainer="ablocker ablocker@163.com"
 
-# RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+# RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.cloud.tencent.com/g' /etc/apk/repositories
 # RUN apk update
 
-RUN yarn config set registry https://repo.nju.edu.cn/repository/npm/
+RUN yarn config set registry http://mirrors.cloud.tencent.com/npm/
 ENV NODE_ENV=product
 
 WORKDIR /camrsti-file
