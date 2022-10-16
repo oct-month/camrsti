@@ -54,10 +54,33 @@ def get_sampleinfo(sampleId):
 # 删除特定样本信息
 @app.route('/api/sampleinfo/<sampleId>', methods=['DELETE'])
 def delete_sampleinfo(sampleId):
-    db.session.delete(get_sampleinfo_dao(sampleId))
+    instance = get_sampleinfo_dao(sampleId)
+    if instance is not None:
+        db.session.delete(instance)
+        db.session.commit()
+        return {
+            'status': 200
+        }
+    else:
+        return {
+            'status': 404,
+            'msg': f'{sampleId} Not Found!'
+        }
+
+# 删除多个样本信息
+@app.route('/api/sampleinfo', methods=['DELETE'])
+def delete_sampleinfos():
+    sample_list = json.loads(request.data)
+    deleted_list = []
+    for sampleId in sample_list:
+        instance = get_sampleinfo_dao(sampleId)
+        if instance is not None:
+            db.session.delete(instance)
+            deleted_list.append(sampleId)
     db.session.commit()
     return {
-        'status': 200
+        'status': 200,
+        'deleted_list': deleted_list
     }
 
 # 更改特定样本信息

@@ -5,7 +5,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    sampleInfos: []
+    sampleInfos: [],
+    statisticInfos: []
   },
   getters: {
     getSampleInfo: (state) => (id) => {
@@ -20,6 +21,9 @@ export default new Vuex.Store({
   mutations: {
     setSampleInfos(state, sampleInfos) {
       state.sampleInfos = sampleInfos
+    },
+    setStatisticInfos(state, sampleInfoIds) {
+      state.statisticInfos = sampleInfoIds
     }
   },
   actions: {

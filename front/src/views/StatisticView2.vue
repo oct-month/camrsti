@@ -86,28 +86,53 @@ export default {
   data() {
     return {
       mineContentInfos: [],
-      mineSurveyInfos: {}
+      mineSurveyInfos: []
     }
   },
   mounted() {
-    this.axios.get('/api/minecontentinfo')
-      .then(res => {
-        if (res.status == 200 && res.data.status == 200) {
-          this.mineContentInfos = res.data.data
-        }
-        else {
-          this.$message.error('出错啦！')
-        }
+    let ids = this.$store.state.statisticInfos
+    if (ids.length > 0) {
+      ids.forEach(id => {
+        this.axios.get('/api/minecontentinfo/' + id)
+          .then(res => {
+            if (res.status == 200 && res.data.status == 200) {
+              this.mineContentInfos.push.apply(this.mineContentInfos, res.data.data)
+            }
+            else {
+              this.$message.error('出错啦！')
+            }
+          })
+        this.axios.get('/api/minesurveyinfo/' + id)
+          .then(res => {
+            if (res.status == 200 && res.data.status == 200) {
+              this.mineSurveyInfos.push.apply(this.mineSurveyInfos, res.data.data)
+            }
+            else {
+              this.$message.error('出错啦！')
+            }
+          })
       })
-    this.axios.get('/api/minesurveyinfo')
-      .then(res => {
-        if (res.status == 200 && res.data.status == 200) {
-          this.mineSurveyInfos = res.data.data
-        }
-        else {
-          this.$message.error('出错啦！')
-        }
-      })
+    }
+    else {
+      this.axios.get('/api/minecontentinfo')
+        .then(res => {
+          if (res.status == 200 && res.data.status == 200) {
+            this.mineContentInfos = res.data.data
+          }
+          else {
+            this.$message.error('出错啦！')
+          }
+        })
+      this.axios.get('/api/minesurveyinfo')
+        .then(res => {
+          if (res.status == 200 && res.data.status == 200) {
+            this.mineSurveyInfos = res.data.data
+          }
+          else {
+            this.$message.error('出错啦！')
+          }
+        })
+    }
   },
   methods: {
     sum(array) {

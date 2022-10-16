@@ -68,24 +68,49 @@ export default {
     }
   },
   mounted() {
-    this.axios.get('/api/minephysicsinfo')
-      .then(res => {
-        if (res.status == 200 && res.data.status == 200) {
-          this.minePhysicalInfos = res.data.data
-        }
-        else {
-          this.$message.error('出错啦！')
-        }
+    let ids = this.$store.state.statisticInfos
+    if (ids.length > 0) {
+      ids.forEach(id => {
+        this.axios.get('/api/minephysicsinfo/' + id)
+          .then(res => {
+            if (res.status == 200 && res.data.status == 200) {
+              this.minePhysicalInfos.push(res.data.data)
+            }
+            else {
+              this.$message.error('出错啦！')
+            }
+          })
+        this.axios.get('/api/minethermalinfo/' + id)
+          .then(res => {
+            if (res.status == 200 && res.data.status == 200) {
+              this.mineThermalInfos.push.apply(this.mineThermalInfos, res.data.data)
+            }
+            else {
+              this.$message.error('出错啦！')
+            }
+          })
       })
-    this.axios.get('/api/minethermalinfo')
-      .then(res => {
-        if (res.status == 200 && res.data.status == 200) {
-          this.mineThermalInfos = res.data.data
-        }
-        else {
-          this.$message.error('出错啦！')
-        }
-      })
+    }
+    else {
+      this.axios.get('/api/minephysicsinfo')
+        .then(res => {
+          if (res.status == 200 && res.data.status == 200) {
+            this.minePhysicalInfos = res.data.data
+          }
+          else {
+            this.$message.error('出错啦！')
+          }
+        })
+      this.axios.get('/api/minethermalinfo')
+        .then(res => {
+          if (res.status == 200 && res.data.status == 200) {
+            this.mineThermalInfos = res.data.data
+          }
+          else {
+            this.$message.error('出错啦！')
+          }
+        })
+    }
   }
 }
 </script>

@@ -2,7 +2,42 @@
   <div id="HomeView">
     <el-tabs type="card" :value="String(activeTab)" @tab-click="transTab" @tab-remove="removeTab">
       <el-tab-pane label="主页" name="0">
-        <el-table stripe border empty-text=" " height="50" style="width:100%">
+        <!-- 数据列表页面 -->
+        <el-table v-if="multiModeFlag" stripe border empty-text=" " height="50" style="width:100%">
+          <el-table-column width="50">
+            <template slot="header" slot-scope="scope">
+              <el-button type="danger" icon="el-icon-delete" size="mini" circle plain @click="multiDeletePre"></el-button>
+              <el-dialog title="确认" :visible.sync="multiDeleteDialogVisible" width="30%">
+                <span>删除{{multiSelectedList}}?</span>
+                <span slot="footer" class="dialog-footer">
+                  <el-button @click="multiDeleteDialogVisible=false">取 消</el-button>
+                  <el-button type="primary" @click="deleteSelectedSample">确 定</el-button>
+                </span>
+              </el-dialog>
+            </template>
+          </el-table-column>
+          <el-table-column width="160">
+            <template slot="header" slot-scope="scope">
+              <el-button type="success" size="small" round plain @click="toStatisticPage('4-2')">矿物含量+矿物测量</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column width="130">
+            <template slot="header" slot-scope="scope">
+              <el-button type="success" size="small" round plain @click="toStatisticPage('4-3')">XRD+化学成分</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column width="140">
+            <template slot="header" slot-scope="scope">
+              <el-button type="success" size="small" round plain @click="toStatisticPage('4-4')">物理结构+热分析</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column width="50">
+            <template slot="header" slot-scope="scope">
+              <el-button type="warning" icon="el-icon-close" size="mini" circle plain @click="cancelMultiMode"></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-table v-else stripe border empty-text=" " height="50" style="width:100%">
           <el-table-column width="50">
             <template slot="header" slot-scope="scope">
               检索
@@ -33,7 +68,7 @@
               <el-input size="mini" placeholder="取样人" v-model="filterItems.people" @input="forceUpdate" @change="inputFilterHandler"></el-input>
             </template>
           </el-table-column>
-          <el-table-column width="240">
+          <el-table-column width="190">
             <template slot="header" slot-scope="scope">
               <el-input size="mini" placeholder="照片号" v-model="filterItems.imageId" @input="forceUpdate" @change="inputFilterHandler"></el-input>
             </template>
@@ -52,16 +87,21 @@
 
         <el-table
           :data="afterTableData"
+          @selection-change="handleSelectionChange"
           stripe
           border
           height="80vh"
           style="width:100%">
-          <el-table-column type="index" width="50">
+          <el-table-column key="1" v-if="multiModeFlag" type="selection" width="50"></el-table-column>
+          <el-table-column key="2" v-else type="index" width="50">
+            <template slot="header">
+              <el-button type="success" size="small" circle plain icon="el-icon-s-operation" @click="doMultiOps"></el-button>
+            </template>
             <template slot-scope="scope">
               <div style="text-align:center;">{{scope.$index + 1 + pageSize * (currentPage - 1)}}</div>
             </template>
           </el-table-column>
-          <el-table-column sortable prop="id" :label="keyMap['id']" width="110">
+          <el-table-column key="3" sortable prop="id" :label="keyMap['id']" width="110">
             <template slot-scope="scope">
               <el-link type="primary" @click="to_sample_page(scope.row.id)">
                 <el-tag type="info" effect="plain" size="small">
@@ -70,7 +110,7 @@
               </el-link>
             </template>
           </el-table-column>
-          <el-table-column sortable prop="type" :label="keyMap['type']" width="110">
+          <el-table-column key="4" sortable prop="type" :label="keyMap['type']" width="110">
             <template slot-scope="scope">
               <el-autocomplete
                 class="inline-input"
@@ -95,7 +135,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column sortable prop="source" :label="keyMap['source']" width="120">
+          <el-table-column key="5" sortable prop="source" :label="keyMap['source']" width="120">
             <template slot-scope="scope">
               <el-input v-if="editModel[scope.row.id]" v-model="nowEditSampleInfo.source"></el-input>
               <span v-else>
@@ -103,7 +143,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column sortable prop="year" :label="keyMap['year']" width="113">
+          <el-table-column key="6" sortable prop="year" :label="keyMap['year']" width="113">
             <template slot-scope="scope">
               <el-date-picker v-if="editModel[scope.row.id]" type="year" placeholder="日期" v-model="nowEditSampleInfo.year" style="width: 100%"></el-date-picker>
               <div v-else-if="scope.row.year">
@@ -112,13 +152,13 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column sortable prop="people" :label="keyMap['people']" width="110">
+          <el-table-column key="7" sortable prop="people" :label="keyMap['people']" width="110">
             <template slot-scope="scope">
               <el-input v-if="editModel[scope.row.id]" v-model="nowEditSampleInfo.people"></el-input>
               <el-tag v-else-if="scope.row.people" size="medium">{{ scope.row.people }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="imageId" :label="keyMap['imageId']" width="240">
+          <el-table-column key="8" prop="imageId" :label="keyMap['imageId']" width="190">
             <template slot-scope="scope">
               <el-upload
                 v-if="editModel[scope.row.id]"
@@ -149,7 +189,7 @@
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column prop="describe" :label="keyMap['describe']" miniwidth="190">
+          <el-table-column key="9" prop="describe" :label="keyMap['describe']" miniwidth="200">
             <template slot-scope="scope">
               <el-input v-if="editModel[scope.row.id]" type="textarea" autosize v-model="nowEditSampleInfo.describe"></el-input>
               <span v-else>
@@ -157,7 +197,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column prop="explain" :label="keyMap['explain']" width="350">
+          <el-table-column key="10" prop="explain" :label="keyMap['explain']" width="300">
             <template slot-scope="scope">
               <el-input v-if="editModel[scope.row.id]" type="textarea" autosize v-model="nowEditSampleInfo.explain"></el-input>
               <span v-else>
@@ -165,7 +205,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="62">
+          <el-table-column v-if="!multiModeFlag" key="11" label="操作" width="62">
             <template slot-scope="scope">
               <!-- <span style="display: none;">{{ scope.row.id }}</span> -->
               <div v-if="editModel[scope.row.id]" style="text-align:center;">
@@ -205,6 +245,7 @@
         </div>
       </el-tab-pane>
       <el-tab-pane closable :label="v.label" :name="v.name" v-for="v in editableTabs" :key="v.sampleId">
+        <!-- 详细页面 -->
         <sample-page :ref="el => {if (el) samplePageComs[v.sampleId] = el}" :sampleId="v.sampleId"/>
         <hr><hr>
         <experiment-page :ref="el => {if (el) extPageComs[v.sampleId] = el}" :sampleId="v.sampleId"/>
@@ -249,6 +290,7 @@
 import xlsx from 'xlsx'
 import { ref, onBeforeUpdate } from 'vue'
 
+import router from '@/router'
 import { deepObjCopy } from '@/utils'
 import SamplePage from '@/components/SamplePage.vue'
 import ExperimentPage from '@/components/ExperimentPage.vue'
@@ -310,7 +352,10 @@ export default {
       deleteDialogVisible: {},
       editModel: {},
       nowEditSampleInfo: null,
-      uploadFileList: []
+      uploadFileList: [],
+      multiModeFlag: false,
+      multiSelectedList: [],
+      multiDeleteDialogVisible: false
     }
   },
   watch: {
@@ -772,6 +817,87 @@ export default {
       xlsx.utils.book_append_sheet(wb, ws, '8.热分析')
 
       xlsx.writeFileXLSX(wb, `Export-EXP-${new Date().toISOString().split('T')[0]}.xlsx`)
+    },
+    doMultiOps() {
+      this.multiModeFlag = true
+    },
+    cancelMultiMode() {
+      this.multiModeFlag = false
+      // this.multiSelectedList = []
+    },
+    handleSelectionChange(val) {
+      this.multiSelectedList = val
+      // this.multiSelectedList = []
+      // val.forEach(v => {
+      //   this.multiSelectedList.push(v.id)
+      // })
+    },
+    multiSelectedListPre() {
+      if (this.multiSelectedList.length > 0) {
+        if (typeof this.multiSelectedList[0] != 'string') {
+          let temp = this.multiSelectedList
+          this.multiSelectedList = []
+          temp.forEach(v => {
+            this.multiSelectedList.push(v.id)
+          })
+        }
+      }
+    },
+    multiDeletePre() {
+      if (this.multiSelectedList.length > 0) {
+        this.multiSelectedListPre()
+        this.multiDeleteDialogVisible = true
+      }
+      else {
+        this.$message.warning('请选择要删除的样本')
+      }
+    },
+    deleteSelectedSample() {
+      this.axios.delete('/api/sampleinfo', {
+        data: this.multiSelectedList
+      })
+        .then(res => {
+          if (res.status == 200 && res.data.status == 200) {
+            let deleted_list = res.data.deleted_list
+            this.sampleInfos = this.sampleInfos.filter(v => !deleted_list.includes(v.id))
+            this.multiDeleteDialogVisible = false
+            this.$message.success('删除[' + deleted_list + ']成功！')
+            this.multiModeFlag = false
+          }
+          else {
+            this.multiDeleteDialogVisible = false
+            this.$message.error('出错啦！')
+          }
+        })
+        .catch(err => {
+          console.error(err)
+          this.multiDeleteDialogVisible = false
+          this.$message.error('出错啦！')
+        })
+    },
+    toStatisticPage(key) {
+      this.multiSelectedListPre()
+      this.$store.commit('setStatisticInfos', this.multiSelectedList)
+      this.$emit('changeSideMenuIndex', key)
+      switch (key) {
+        case '4-2':
+          router.push({
+            name: 'StatisticView2'
+          })
+          break
+        case '4-3':
+          router.push({
+            name:'StatisticView3'
+          })
+          break
+        case '4-4':
+          router.push({
+            name: 'StatisticView4'
+          })
+          break
+        default:
+          break
+      }
     }
   }
 }

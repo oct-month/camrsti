@@ -17,6 +17,7 @@
       <el-container style="height: 94vh" direction="horizontal">
         <el-aside width="200px">
           <el-menu
+            ref="sidemenu"
             default-active="1"
             :default-openeds="['4']"
             @select="handleMenuSelect"
@@ -52,7 +53,7 @@
         </el-aside>
         <el-container>
           <el-main>
-            <router-view/>
+            <router-view @changeSideMenuIndex="changeSideMenuIndex"/>
           </el-main>
           <!-- <el-footer>
             Created By Ablocker © <router-link to="/about">关于</router-link>
@@ -143,8 +144,47 @@ body > .el-container {
 import router from '@/router'
 
 export default {
+  data() {
+    return {
+      index: '1'
+    }
+  },
+  watch: {
+    index: {
+      handler() {
+        this.$refs.sidemenu.activeIndex = this.index
+      },
+      deep: true
+    }
+  },
+  mounted() {
+    switch (this.$route.name) {
+      case 'HomeView':
+        this.index = '1'
+        break
+      case 'AddView':
+        this.index = '2'
+        break
+      case 'ImportView':
+        this.index = '3'
+        break
+      case 'StatisticView1':
+        this.index = '4-1'
+        break
+      case 'StatisticView2':
+        this.index = '4-2'
+        break
+      case 'StatisticView3':
+        this.index = '4-3'
+        break
+      case 'StatisticView4':
+        this.index = '4-4'
+        break
+    }
+  },
   methods: {
     handleMenuSelect(key) {
+      this.index = key
       switch (key) {
         case '1':
           router.push({
@@ -173,7 +213,7 @@ export default {
           break
         case '4-3':
           router.push({
-            name:'StatisticView3'
+            name: 'StatisticView3'
           })
           break
         case '4-4':
@@ -184,6 +224,9 @@ export default {
         default:
           break
       }
+    },
+    changeSideMenuIndex(key) {
+      this.index = key
     }
   }
 }
