@@ -34,6 +34,11 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <div style="float:right;">
+      导出：
+      <el-button size="small" type="success" icon="el-icon-download" @click="exportExtData"></el-button>
+    </div>
   </div>
 </template>
 
@@ -59,6 +64,8 @@
 </style>
 
 <script>
+import xlsx from 'xlsx'
+
 export default {
   name: 'StatisticView4',
   data() {
@@ -110,6 +117,47 @@ export default {
             this.$message.error('出错啦！')
           }
         })
+    }
+  },
+  methods: {
+    sum(array) {
+      var res = 0
+      array.forEach(v => {
+        res += Number(v)
+      })
+      return res
+    },
+    exportExtData() {
+      var wb = xlsx.utils.book_new()
+      let temp = []
+      this.minePhysicalInfos.forEach(v => {
+        if (v != null) {
+          temp.push({
+            '样品编号': v.id,
+            '类型': v.type,
+            '显气孔率': v.apparentPorosity,
+            '真密度': v.trueDensity,
+            '吸水率': v.waterAbsorption
+          })
+        }
+      })
+      let ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '7.物理结构数据')
+      temp = []
+      this.mineThermalInfos.forEach(v => {
+        if (v != null) {
+          temp.push({
+            '样品号': v.id,
+            '终止温度': v.termTemper,
+            '耐火度': v.fireResis,
+            '热分析数据': v.data,
+            '热分析曲线': '' //v.surveImage
+          })
+        }
+      })
+      ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '8.热分析')
+      xlsx.writeFileXLSX(wb, `Export-STATISTIC4-${new Date().toISOString().split('T')[0]}.xlsx`)
     }
   }
 }

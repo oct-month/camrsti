@@ -56,6 +56,11 @@
       <el-table-column prop="hollowData.1002-2004" label="1002-2004" miniwidth="100"></el-table-column>
       <el-table-column prop="hollowData.＞2004" label="＞2004" miniwidth="100"></el-table-column>
     </el-table>
+
+    <div style="float:right;">
+      导出：
+      <el-button size="small" type="success" icon="el-icon-download" @click="exportExtData"></el-button>
+    </div>
   </div>
 </template>
 
@@ -81,6 +86,8 @@
 </style>
 
 <script>
+import xlsx from 'xlsx'
+
 export default {
   name: 'StatisticView2',
   data() {
@@ -163,6 +170,56 @@ export default {
         }
       }
     },
+    exportExtData() {
+      var wb = xlsx.utils.book_new()
+      let temp = []
+      this.mineContentInfos.forEach(v => {
+        if (v != null) {
+          temp.push({
+            '样品号': v.id,
+            '样品名称': v.sampleName,
+            '黏土基质': v.clay,
+            '石英粉砂': v.quartz,
+            '石英': v.sand.quartz,
+            '长石': v.sand.feldspar,
+            '其他矿物': v.sand.Ominerals,
+            '小计': this.sum(Object.values(v.sand)),
+            '岩屑': v.debris,
+            '空洞': v.hollow,
+            '其他': v.other
+          })
+        }
+      })
+      let ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '3.矿物含量信息')
+      temp = []
+      let temp2 = []
+      this.mineSurveyInfos.forEach(v => {
+        if (v != null) {
+          temp.push({
+            '样品号': v.id,
+            '≤67μm': v.debrisData['≤67μm'],
+            '67-167μm': v.debrisData['67-167μm'],
+            '167-501': v.debrisData['167-501'],
+            '501-1002': v.debrisData['501-1002'],
+            '≥1002': v.debrisData['≥1002']
+          })
+          temp2.push({
+            '样品号': v.id,
+            '≤167': v.hollowData['≤167'],
+            '167-501': v.hollowData['167-501'],
+            '501-1002': v.hollowData['501-1002'],
+            '1002-2004': v.hollowData['1002-2004'],
+            '＞2004': v.hollowData['＞2004']
+          })
+        }
+      })
+      ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '4.矿物测量数据-岩屑直径分布')
+      ws = xlsx.utils.json_to_sheet(temp2)
+      xlsx.utils.book_append_sheet(wb, ws, '4.矿物测量数据-空洞长度分布')
+      xlsx.writeFileXLSX(wb, `Export-STATISTIC2-${new Date().toISOString().split('T')[0]}.xlsx`)
+    }
   }
 }
 </script>

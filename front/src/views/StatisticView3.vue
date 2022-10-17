@@ -42,6 +42,11 @@
       <el-table-column prop="CaO" label="CaO" miniwidth="100"></el-table-column>
       <el-table-column prop="Fe2O3" label="Fe₂O₃" miniwidth="100"></el-table-column>
     </el-table>
+
+    <div style="float:right;">
+      导出：
+      <el-button size="small" type="success" icon="el-icon-download" @click="exportExtData"></el-button>
+    </div>
   </div>
 </template>
 
@@ -67,6 +72,8 @@
 </style>
 
 <script>
+import xlsx from 'xlsx'
+
 export default {
   name: 'StatisticView3',
   data() {
@@ -118,6 +125,60 @@ export default {
             this.$message.error('出错啦！')
           }
         })
+    }
+  },
+  methods: {
+    sum(array) {
+      var res = 0
+      array.forEach(v => {
+        res += Number(v)
+      })
+      return res
+    },
+    exportExtData() {
+      var wb = xlsx.utils.book_new()
+      let temp = []
+      this.mineXRDInfos.forEach(v => {
+        if (v != null) {
+          temp.push({
+            '样品编号': v.id,
+            '类型': v.type,
+            '石英': v.quartz,
+            '钠长石': v.albite,
+            '钾长石': v.potashFeldspar,
+            '云母': v.mica,
+            '闪石': v.amphibole,
+            '赤铁矿': v.hematite,
+            '磁铁矿': v.magnetite,
+            '白云石': v.dolomite,
+            '方沸石': v.analcite,
+            '磷石英': v.tridymite,
+            '方石英': v.cristobalite,
+            '莫来石': v.mullite
+          })
+        }
+      })
+      let ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '5.XRD分析数据')
+      temp = []
+      this.mineChemistryInfos.forEach(v => {
+        if (v != null) {
+          temp.push({
+            '样品号': v.id,
+            '类型': v.type,
+            'Na₂O': v.Na2O,
+            'MgO': v.MgO,
+            'Al₂O₃': v.Al2O3,
+            'SiO₂': v.SiO2,
+            'K₂O': v.K2O,
+            'CaO': v.CaO,
+            'Fe₂O₃': v.Fe2O3
+          })
+        }
+      })
+      ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '6.化学成分数据')
+      xlsx.writeFileXLSX(wb, `Export-STATISTIC3-${new Date().toISOString().split('T')[0]}.xlsx`)
     }
   }
 }
