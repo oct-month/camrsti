@@ -1,14 +1,17 @@
 import json
+import functools
 import os
 from typing import List, Optional
-from flask import request, send_from_directory
+from flask import request, send_from_directory, redirect
 from werkzeug.middleware.proxy_fix import ProxyFix
 from openpyxl import load_workbook
 from datetime import datetime
+import hashlib
 
 from factory import get_app
-from table_structure import MicroViewData, SampleInfo, MicroView, MineContentInfo, MineSurveyInfo, MineXRDInfo, MineChemistryInfo, MinePhysicsInfo, MineThermalInfo
+from table_structure import *
 from import_excel import get_instances
+import jwt_helper
 
 app, db = get_app(__name__)
 
@@ -28,6 +31,67 @@ def error_404(e):
     return {
         'status': 404,
         'msg': 'Not Found'
+    }
+
+def get_login_username() -> Optional[str]:
+    token = request.args.get('token', None)
+    if token is not None:
+        info = jwt_helper.decode(token)
+        if info is not None:
+            return info.get('username', None)
+    return None
+
+# 登录检测
+def login_needed(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kw):
+        if get_login_username() is None:
+            return redirect('/', code=401)
+        else:
+            return func(*args, **kw)
+    return wrapper
+
+# 登录
+@app.route('/api/login', methods=['POST'])
+def login():
+    login_info = json.loads(request.data)
+    username = login_info.get('username', None)
+    if username is not None:
+        passwd = hashlib.sha256(login_info.get('passwd').encode('utf-8')).hexdigest()
+        user = User.query.filter_by(username=username).first()
+        if passwd == user.passwd:
+            token = jwt_helper.encode({
+                'username': user.username
+            })
+            return {
+                'status': 200,
+                'token': token
+            }
+    return {
+        'status': 401,
+        'msg': 'username or password is wrong!'
+    }
+
+# 密码修改
+@app.route('/api/passwd', methods=['PUT'])
+def change_passwd():
+    username = get_login_username()
+    user_info = json.loads(request.data)
+    uname = user_info.get('username', None)
+    opasswd = user_info.get('passwd', None)
+    upasswd = user_info.get('npasswd', None)
+    if username is not None and username == uname and upasswd is not None:
+        opasswd2 = hashlib.sha256(opasswd.encode('utf-8')).hexdigest()
+        upasswd2 = hashlib.sha256(upasswd.encode('utf-8')).hexdigest()
+        user_entity = User.query.filter_by(username=uname).first()
+        if user_entity.passwd == opasswd2:
+            user_entity.passwd = upasswd2
+            db.session.commit()
+            return {
+                'status': 200
+            }
+    return {
+        'status': 403
     }
 
 # 获取样本信息

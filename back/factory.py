@@ -1,23 +1,20 @@
-from typing import Tuple
-import os
+from typing import Tuple, Optional
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+
+from config import DATABASE_URI
 
 # 单例模式
 app = None
 db = None
 
-def get_app(name: str=None) -> Tuple[Flask, SQLAlchemy]:
+def get_app(name: Optional[str]=None) -> Tuple[Flask, SQLAlchemy]:
     global app, db
     if app is None or db is None:
         if name is None:
             raise RuntimeError('db initial fail')
         app = Flask(name)
-        mysql_host = os.getenv('MYSQL_HOST')
-        if mysql_host:
-            app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://root:camrsti@{mysql_host}:3306/camrstidb'
-        else:
-            app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:camrsti@localhost:3306/camrstidb'
+        app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
         app.config['SQLALCHEMY_COMMIT_TEARDOWN'] = True
         app.config['SQLALCHEMY_ECHO'] = True

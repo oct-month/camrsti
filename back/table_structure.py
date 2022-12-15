@@ -1,7 +1,36 @@
 from factory import get_app
 
+__all__ = [
+    'User',
+    'MicroViewData',
+    'SampleInfo',
+    'MicroView',
+    'MineContentInfo',
+    'MineSurveyInfo',
+    'MineXRDInfo',
+    'MineChemistryInfo',
+    'MinePhysicsInfo',
+    'MineThermalInfo'
+]
 
 _, db = get_app(__name__)
+
+# 管理员
+class User(db.Model):
+    __tablename__ = 'User'
+
+    username = db.Column('username', db.Unicode(40), primary_kay=True)  # 用户名
+    passwd = db.Column('passwd', db.Unicode(65))                        # 密码
+
+    def __init__(self, username, passwd) -> None:
+        self.username = username
+        self.passwd = passwd
+    
+    def to_json(self):
+        return {
+            'username': self.username,
+            'passwd': self.passwd
+        }
 
 # 样品基本信息
 class SampleInfo(db.Model):
