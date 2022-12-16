@@ -619,6 +619,7 @@ export default {
   },
   data() {
     return {
+      token: '',
       // sampleInfo: null,
       physicalInfo: null,
       jinxiang: null,
@@ -647,12 +648,28 @@ export default {
     }
   },
   mounted() {
+    if (this.$route.query.token) {
+      this.token = this.$route.query.token
+    }
+    else if (this.$cookies.isKey('token')) {
+      this.token = this.$cookies.get('token')
+    }
+    else {
+      this.$router.replace({
+        name: 'SignView'
+      })
+    }
+
     if (!this.sampleId) {
       this.$message.error('出错啦！')
       return
     }
     // this.sampleInfo = this.$store.getters.getSampleInfo(this.sampleId)
-    this.axios.get('/api/microview/' + this.sampleId)
+    this.axios.get('/api/microview/' + this.sampleId, {
+      params: {
+        token: this.token
+      }
+    })
       .then((res) => {
         if (res.status == 200 && res.data.status == 200) {
           var microInfos = res.data.data
@@ -677,7 +694,11 @@ export default {
           this.$message.error('出错啦！')
         }
       })
-    this.axios.get('/api/minephysicsinfo/' + this.sampleId)
+    this.axios.get('/api/minephysicsinfo/' + this.sampleId, {
+      params: {
+        token: this.token
+      }
+    })
       .then((res) => {
         if (res.status == 200 && res.data.status == 200) {
           this.physicalInfo = res.data.data
@@ -724,7 +745,11 @@ export default {
       this.physicalInfo_E.apparentPorosity = Number(this.physicalInfo_E.apparentPorosity)
       this.physicalInfo_E.trueDensity = Number(this.physicalInfo_E.trueDensity)
       this.physicalInfo_E.waterAbsorption = Number(this.physicalInfo_E.waterAbsorption)
-      this.axios.put('/api/minephysicsinfo', this.physicalInfo_E)
+      this.axios.put('/api/minephysicsinfo', this.physicalInfo_E, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.physicalInfo =this.physicalInfo_E
@@ -764,7 +789,11 @@ export default {
         this.jinxiang_E.sampleImage = this.jinxiang_E_up1
         this.jinxiang_E_up1 = []
       }
-      this.axios.put('/api/microview', this.jinxiang_E)
+      this.axios.put('/api/microview', this.jinxiang_E, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.jinxiang = this.jinxiang_E
@@ -813,7 +842,11 @@ export default {
         this.kuangxiang_E.sampleImage = this.kuangxiang_E_up1
         this.kuangxiang_E_up1 = []
       }
-      this.axios.put('/api/microview', this.kuangxiang_E)
+      this.axios.put('/api/microview', this.kuangxiang_E, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.kuangxiang = this.kuangxiang_E
@@ -859,7 +892,11 @@ export default {
         this.dianzi_E.sampleImage = this.dianzi_E_up1
         this.dianzi_E_up1 = []
       }
-      this.axios.put('/api/microview', this.dianzi_E)
+      this.axios.put('/api/microview', this.dianzi_E, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.dianzi = this.dianzi_E
@@ -910,7 +947,11 @@ export default {
     },
     submitjinxiangItemEdit() {
       this.jinxiangItem_E.zoom = Number(this.jinxiangItem_E.zoom)
-      this.axios.post('/api/microview/' + this.jinxiang.id, this.jinxiangItem_E)
+      this.axios.post('/api/microview/' + this.jinxiang.id, this.jinxiangItem_E, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.jinxiangItem_E.id = res.data.id
@@ -958,7 +999,11 @@ export default {
     },
     submitkuangxiangItemEdit() {
       this.kuangxiangItem_E.zoom = Number(this.kuangxiangItem_E.zoom)
-      this.axios.post('/api/microview/' + this.kuangxiang.id, this.kuangxiangItem_E)
+      this.axios.post('/api/microview/' + this.kuangxiang.id, this.kuangxiangItem_E, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.kuangxiangItem_E.id = res.data.id
@@ -1006,7 +1051,11 @@ export default {
     },
     submitdianziItemEdit() {
       this.dianziItem_E.zoom = Number(this.dianziItem_E.zoom)
-      this.axios.post('/api/microview/' + this.dianzi.id, this.dianziItem_E)
+      this.axios.post('/api/microview/' + this.dianzi.id, this.dianziItem_E, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.dianziItem_E.id = res.data.id
@@ -1110,7 +1159,11 @@ export default {
       this.editItemModel[id] = false
     },
     deleteItem(id) {
-      this.axios.delete('/api/microview/' + id)
+      this.axios.delete('/api/microview/' + id, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.deleteDialogVisible[id] = false
@@ -1124,7 +1177,11 @@ export default {
     },
     submitItemEdit(id) {
       this.nowEditItem.zoom = Number(this.nowEditItem.zoom)
-      this.axios.put('/api/microview/' + id, this.nowEditItem)
+      this.axios.put('/api/microview/' + id, this.nowEditItem, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.setItem(this.nowEditItem)

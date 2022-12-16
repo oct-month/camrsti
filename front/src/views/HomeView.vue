@@ -290,7 +290,6 @@
 import xlsx from 'xlsx'
 import { ref, onBeforeUpdate } from 'vue'
 
-import router from '@/router'
 import { deepObjCopy } from '@/utils'
 import SamplePage from '@/components/SamplePage.vue'
 import ExperimentPage from '@/components/ExperimentPage.vue'
@@ -315,6 +314,7 @@ export default {
   },
   data() {
     return {
+      token: '',
       currentPage: 1,
       pageSize: 100,
       keyMap: {
@@ -373,7 +373,23 @@ export default {
     }
   },
   mounted() {
-    this.axios.get('/api/sampleinfo')
+    if (this.$route.query.token) {
+      this.token = this.$route.query.token
+    }
+    else if (this.$cookies.isKey('token')) {
+      this.token = this.$cookies.get('token')
+    }
+    else {
+      this.$router.replace({
+        name: 'SignView'
+      })
+    }
+
+    this.axios.get('/api/sampleinfo', {
+      params: {
+        token: this.token
+      }
+    })
       .then(res => {
         if (res.status ==200 && res.data.status == 200) {
           this.sampleInfos = res.data.data.reverse()
@@ -429,9 +445,9 @@ export default {
           this.currentTableData = this.sampleInfos.slice(0, this.pageSize)
           this.afterTableData = this.sampleInfos.slice(0, this.pageSize)
         }
-        else {
-          this.$message.error('出错啦！')
-        }
+      })
+      .catch(() => {
+        this.$message.error('出错啦！')
       })
   },
   methods: {
@@ -562,7 +578,11 @@ export default {
       }
     },
     deleteSampleInfo(sampleId) {
-      this.axios.delete('/api/sampleinfo/' + sampleId)
+      this.axios.delete('/api/sampleinfo/' + sampleId, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.sampleInfos = this.sampleInfos.filter(v => v.id != sampleId)
@@ -617,7 +637,11 @@ export default {
         this.nowEditSampleInfo.imageId = this.uploadFileList
       }
       this.uploadFileList = []
-      this.axios.put('/api/sampleinfo', this.nowEditSampleInfo)
+      this.axios.put('/api/sampleinfo', this.nowEditSampleInfo, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.sampleInfos.forEach((v, i) => {
@@ -854,7 +878,10 @@ export default {
     },
     deleteSelectedSample() {
       this.axios.delete('/api/sampleinfo', {
-        data: this.multiSelectedList
+        data: this.multiSelectedList,
+        params: {
+          token: this.token
+        }
       })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
@@ -881,17 +908,17 @@ export default {
       this.$emit('changeSideMenuIndex', key)
       switch (key) {
         case '4-2':
-          router.push({
+          this.$router.replace({
             name: 'StatisticView2'
           })
           break
         case '4-3':
-          router.push({
+          this.$router.replace({
             name:'StatisticView3'
           })
           break
         case '4-4':
-          router.push({
+          this.$router.replace({
             name: 'StatisticView4'
           })
           break

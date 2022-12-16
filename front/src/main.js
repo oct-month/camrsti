@@ -1,5 +1,8 @@
 import Vue from 'vue'
 
+import VueCookies from 'vue-cookies'
+Vue.use(VueCookies, { expires: '1d'})
+
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 axios.defaults.headers.common['Content-Type'] = 'application/json'
@@ -13,6 +16,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI)
 
+/*
 import 'echarts';
 import ECharts from 'vue-echarts';
 Vue.component('ECharts', ECharts);
@@ -39,6 +43,7 @@ use([
 
 // register globally (or you can do it locally)
 Vue.component('v-chart', ECharts)
+*/
 
 Vue.config.productionTip = false
 

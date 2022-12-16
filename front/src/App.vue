@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <el-container>
+    <el-container v-if="flag">
       <el-header>
         <el-container direction="horizontal">
           <el-image
@@ -12,6 +12,16 @@
             </div>
           </el-image>
           <span>中国古代冶金耐火材料科技信息数据库</span>
+          <el-dropdown id="usericon" szie="medium" @command="handleCommand">
+            <el-button size="medium" plain icon="el-icon-user-solid">
+              {{ username }}
+              <i class="el-icon-arrow-down"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="c">修改密码</el-dropdown-item>
+              <el-dropdown-item command="l">注销登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </el-container>
       </el-header>
       <el-container style="height: 94vh" direction="horizontal">
@@ -61,6 +71,9 @@
         </el-container>
       </el-container>
     </el-container>
+    <div v-else style="height: 100%;">
+      <router-view/>
+    </div>
   </div>
   <!--
     <nav>
@@ -73,11 +86,18 @@
 
 <style>
 #app {
+  height: 100%;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+#usericon {
+  margin-bottom: auto;
+  margin-top: auto;
+  margin-left: auto;
 }
 
 nav {
@@ -87,6 +107,11 @@ nav {
 nav a {
   font-weight: bold;
   color: #2c3e50;
+}
+
+html,
+body {
+  height: 100%;
 }
 
 body {
@@ -141,12 +166,12 @@ body > .el-container {
 </style>
 
 <script>
-import router from '@/router'
-
 export default {
   data() {
     return {
-      index: '1'
+      index: '1',
+      flag: true,
+      username: ''
     }
   },
   watch: {
@@ -155,9 +180,20 @@ export default {
         this.$refs.sidemenu.activeIndex = this.index
       },
       deep: true
+    },
+    $route(to) {
+      if (to.name == 'SignView' || to.name == 'PasswdView') {
+      this.flag = false
+      }
+      else {
+        this.flag = true
+      }
     }
   },
   mounted() {
+    if (this.$cookies.isKey('username')) {
+      this.username = this.$cookies.get('username')
+    }
     switch (this.$route.name) {
       case 'HomeView':
         this.index = '1'
@@ -180,44 +216,65 @@ export default {
       case 'StatisticView4':
         this.index = '4-4'
         break
+      case 'SignView':
+      case 'PasswdView':
+        this.flag = false
+        break
     }
   },
   methods: {
+    handleCommand(command) {
+      switch (command) {
+        case 'c':
+          this.$router.replace({
+            name: 'PasswdView'
+          })
+          break
+        case 'l':
+          this.$cookies.remove('token')
+          this.$router.replace({
+            name: 'SignView'
+          })
+          break
+        default:
+          break
+      }
+    },
     handleMenuSelect(key) {
       this.index = key
       switch (key) {
         case '1':
-          router.push({
+          this.$router.replace({
             name: 'HomeView'
           })
           break
         case '2':
-          router.push({
+          this.$router.replace({
             name: 'AddView'
           })
           break
         case '3':
-          router.push({
+          this.$router.replace({
             name: 'ImportView'
           })
           break
         case '4-1':
-          router.push({
+          this.$router.replace({
             name: 'StatisticView1'
           })
           break
         case '4-2':
-          router.push({
+          this.$router.replace({
             name: 'StatisticView2'
           })
           break
         case '4-3':
-          router.push({
+          this.$router.replace({
             name: 'StatisticView3'
           })
           break
         case '4-4':
-          router.push({
+          this.$router.replace({
             name: 'StatisticView4'
           })
           break

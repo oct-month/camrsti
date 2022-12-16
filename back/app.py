@@ -46,7 +46,10 @@ def login_needed(func):
     @functools.wraps(func)
     def wrapper(*args, **kw):
         if get_login_username() is None:
-            return redirect('/', code=401)
+            return {
+                'status': 401,
+                'msg': 'Login needed!'
+            }
         else:
             return func(*args, **kw)
     return wrapper
@@ -59,7 +62,7 @@ def login():
     if username is not None:
         passwd = hashlib.sha256(login_info.get('passwd').encode('utf-8')).hexdigest()
         user = User.query.filter_by(username=username).first()
-        if passwd == user.passwd:
+        if user is not None and passwd == user.passwd:
             token = jwt_helper.encode({
                 'username': user.username
             })

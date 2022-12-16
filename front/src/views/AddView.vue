@@ -78,6 +78,7 @@ export default {
   name: 'AddView',
   data() {
     return {
+      token: '',
       form: {
         id: '',
         type: '',
@@ -94,6 +95,19 @@ export default {
         ]
       },
       uploadFileList: []
+    }
+  },
+  mounted() {
+    if (this.$route.query.token) {
+      this.token = this.$route.query.token
+    }
+    else if (this.$cookies.isKey('token')) {
+      this.token = this.$cookies.get('token')
+    }
+    else {
+      this.$router.replace({
+        name: 'SignView'
+      })
     }
   },
   methods: {
@@ -132,7 +146,11 @@ export default {
             this.form.imageId = this.uploadFileList
           }
           this.uploadFileList = []
-          this.axios.post('/api/sampleinfo', this.form)
+          this.axios.post('/api/sampleinfo', this.form, {
+            params: {
+              token: this.token
+            }
+          })
             .then(res => {
               if (res.status == 200 && res.data.status == 200) {
                 this.$message.success('添加成功!')

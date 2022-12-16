@@ -11,13 +11,24 @@ import StatisticView1 from '@/views/StatisticView1'
 import StatisticView2 from '@/views/StatisticView2'
 import StatisticView3 from '@/views/StatisticView3'
 import StatisticView4 from '@/views/StatisticView4'
-
+import SignView from '@/views/SignView'
+import PasswdView from '@/views/PasswdView'
 
 const routes = [
   {
     path: '/',
     name: 'HomeView',
     component: HomeView
+  },
+  {
+    path: '/login',
+    name: 'SignView',
+    component: SignView
+  },
+  {
+    path: '/passwd',
+    name: 'PasswdView',
+    component: PasswdView
   },
   {
     path: '/add',
@@ -63,6 +74,22 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+// token跨页面传递
+router.beforeEach((to, from, next) => {
+  if (to.name == 'SignView') {
+    next()
+  }
+  else if ((!to.query || !to.query.token) && from.query && from.query.token) {
+    next({
+      name: to.name,
+      query: from.query
+    })
+  }
+  else {
+    next()
+  }
 })
 
 const VueRouterPush = VueRouter.prototype.push

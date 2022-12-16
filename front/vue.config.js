@@ -12,19 +12,19 @@ module.exports = defineConfig({
     open: false,
     proxy: {
       '/api/image': {
-        target: 'http://localhost:8082',
+        target: 'http://127.0.0.1:8082',
         ws: false,
         secure: false,
         changeOrigin: true
       },
       '/api/txt': {
-        target: 'http://localhost:8082',
+        target: 'http://127.0.0.1:8082',
         ws: false,
         secure: false,
         changeOrigin: true
       },
       '/api': {
-        target: 'http://localhost:8081',
+        target: 'http://127.0.0.1:8081',
         ws: true,
         secure: false,
         changeOrigin: true

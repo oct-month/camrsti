@@ -893,6 +893,17 @@
 			}
 		},
 		mounted() {
+			if (this.$route.query.token) {
+				this.token = this.$route.query.token
+			}
+			else if (this.$cookies.isKey('token')) {
+				this.token = this.$cookies.get('token')
+			}
+			else {
+				this.$router.replace({
+					name: 'SignView'
+				})
+			}
 			this.getData();
 		},
 		methods: {
@@ -1080,7 +1091,7 @@
 				this.metalPhaseData.sfImgList.push(fileList.map((item) => {
 					return item.name
 				}))
-				console.log(this.metalPhaseData.sfImgList)
+				// console.log(this.metalPhaseData.sfImgList)
 			},
 			mpSingleHandleChange: function(file) {
 				this.minePhaseData.mpFullImg = file.name;
@@ -1103,8 +1114,8 @@
 				let form = new FormData();
 				form.append('fileToUpload', fileObj)
 				httpPost.post("api/upload/img", form)
-					.then(response => {
-						console.log(response);
+					.then(() => {
+						// console.log(response);
 					})
 					.catch(err => {
 						console.log(err);

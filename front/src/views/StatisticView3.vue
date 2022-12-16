@@ -78,15 +78,32 @@ export default {
   name: 'StatisticView3',
   data() {
     return {
+      token: '',
       mineXRDInfos: [],
       mineChemistryInfos: []
     }
   },
   mounted() {
+    if (this.$route.query.token) {
+      this.token = this.$route.query.token
+    }
+    else if (this.$cookies.isKey('token')) {
+      this.token = this.$cookies.get('token')
+    }
+    else {
+      this.$router.replace({
+        name: 'SignView'
+      })
+    }
+
     let ids = this.$store.state.statisticInfos
     if (ids.length > 0) {
       ids.forEach(id => {
-        this.axios.get('/api/minexrdinfo/' + id)
+        this.axios.get('/api/minexrdinfo/' + id, {
+          params: {
+            token: this.token
+          }
+        })
           .then(res => {
             if (res.status == 200 && res.data.status == 200) {
               this.mineXRDInfos.push.apply(this.mineXRDInfos, res.data.data)
@@ -95,7 +112,11 @@ export default {
               this.$message.error('出错啦！')
             }
           })
-        this.axios.get('/api/minechemistryinfo/' + id)
+        this.axios.get('/api/minechemistryinfo/' + id, {
+          params: {
+            token: this.token
+          }
+        })
           .then(res => {
             if (res.status == 200 && res.data.status == 200) {
               this.mineChemistryInfos.push.apply(this.mineChemistryInfos, res.data.data)
@@ -107,7 +128,11 @@ export default {
       })
     }
     else {
-      this.axios.get('/api/minexrdinfo')
+      this.axios.get('/api/minexrdinfo', {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.mineXRDInfos = res.data.data
@@ -116,7 +141,11 @@ export default {
             this.$message.error('出错啦！')
           }
         })
-      this.axios.get('/api/minechemistryinfo')
+      this.axios.get('/api/minechemistryinfo', {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.mineChemistryInfos = res.data.data

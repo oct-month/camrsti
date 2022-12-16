@@ -246,14 +246,14 @@
       confirm(id){
 
         this.tabsList.forEach((tab) => {
-          console.log(tab.sampleId)
+          // console.log(tab.sampleId)
           if(tab.id ===id ){
             tab.chartshow = true
             httpGet.get('api/request/phase/' + tab.sampleId)
 
                 .then(response => {
-                  console.log(response)
-                  console.log(tab.sampleId)
+                  // console.log(response)
+                  // console.log(tab.sampleId)
 
                   tab.physical={
                     backgroundColor: 'white',

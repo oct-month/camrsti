@@ -70,15 +70,32 @@ export default {
   name: 'StatisticView4',
   data() {
     return {
+      token: '',
       minePhysicalInfos: [],
       mineThermalInfos: []
     }
   },
   mounted() {
+    if (this.$route.query.token) {
+      this.token = this.$route.query.token
+    }
+    else if (this.$cookies.isKey('token')) {
+      this.token = this.$cookies.get('token')
+    }
+    else {
+      this.$router.replace({
+        name: 'SignView'
+      })
+    }
+
     let ids = this.$store.state.statisticInfos
     if (ids.length > 0) {
       ids.forEach(id => {
-        this.axios.get('/api/minephysicsinfo/' + id)
+        this.axios.get('/api/minephysicsinfo/' + id, {
+          params: {
+            token: this.token
+          }
+        })
           .then(res => {
             if (res.status == 200 && res.data.status == 200) {
               this.minePhysicalInfos.push(res.data.data)
@@ -87,7 +104,11 @@ export default {
               this.$message.error('出错啦！')
             }
           })
-        this.axios.get('/api/minethermalinfo/' + id)
+        this.axios.get('/api/minethermalinfo/' + id, {
+          params: {
+            token: this.token
+          }
+        })
           .then(res => {
             if (res.status == 200 && res.data.status == 200) {
               this.mineThermalInfos.push.apply(this.mineThermalInfos, res.data.data)
@@ -99,7 +120,11 @@ export default {
       })
     }
     else {
-      this.axios.get('/api/minephysicsinfo')
+      this.axios.get('/api/minephysicsinfo', {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.minePhysicalInfos = res.data.data
@@ -108,7 +133,11 @@ export default {
             this.$message.error('出错啦！')
           }
         })
-      this.axios.get('/api/minethermalinfo')
+      this.axios.get('/api/minethermalinfo', {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.mineThermalInfos = res.data.data

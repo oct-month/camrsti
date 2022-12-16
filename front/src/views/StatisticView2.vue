@@ -92,15 +92,32 @@ export default {
   name: 'StatisticView2',
   data() {
     return {
+      token: '',
       mineContentInfos: [],
       mineSurveyInfos: []
     }
   },
   mounted() {
+    if (this.$route.query.token) {
+      this.token = this.$route.query.token
+    }
+    else if (this.$cookies.isKey('token')) {
+      this.token = this.$cookies.get('token')
+    }
+    else {
+      this.$router.replace({
+        name: 'SignView'
+      })
+    }
+
     let ids = this.$store.state.statisticInfos
     if (ids.length > 0) {
       ids.forEach(id => {
-        this.axios.get('/api/minecontentinfo/' + id)
+        this.axios.get('/api/minecontentinfo/' + id, {
+          params: {
+            token: this.token
+          }
+        })
           .then(res => {
             if (res.status == 200 && res.data.status == 200) {
               this.mineContentInfos.push.apply(this.mineContentInfos, res.data.data)
@@ -109,7 +126,11 @@ export default {
               this.$message.error('出错啦！')
             }
           })
-        this.axios.get('/api/minesurveyinfo/' + id)
+        this.axios.get('/api/minesurveyinfo/' + id, {
+          params: {
+            token: this.token
+          }
+        })
           .then(res => {
             if (res.status == 200 && res.data.status == 200) {
               this.mineSurveyInfos.push.apply(this.mineSurveyInfos, res.data.data)
@@ -121,7 +142,11 @@ export default {
       })
     }
     else {
-      this.axios.get('/api/minecontentinfo')
+      this.axios.get('/api/minecontentinfo', {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.mineContentInfos = res.data.data
@@ -130,7 +155,11 @@ export default {
             this.$message.error('出错啦！')
           }
         })
-      this.axios.get('/api/minesurveyinfo')
+      this.axios.get('/api/minesurveyinfo', {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.mineSurveyInfos = res.data.data

@@ -553,6 +553,7 @@ export default {
   },
   data() {
     return {
+      token: '',
       mineContentInfos: [],
       editContentModel: {},
       deleteContentDialogVisible: {},
@@ -576,11 +577,27 @@ export default {
     }
   },
   mounted() {
+    if (this.$route.query.token) {
+      this.token = this.$route.query.token
+    }
+    else if (this.$cookies.isKey('token')) {
+      this.token = this.$cookies.get('token')
+    }
+    else {
+      this.$router.replace({
+        name: 'SignView'
+      })
+    }
+
     if (!this.sampleId) {
       this.$message.error('出错啦！')
       return
     }
-    this.axios.get('/api/minecontentinfo/' + this.sampleId)
+    this.axios.get('/api/minecontentinfo/' + this.sampleId, {
+      params: {
+        token: this.token
+      }
+    })
       .then((res) => {
         if (res.status == 200 && res.data.status == 200) {
           if (res.data.data.length <= 0) {
@@ -598,7 +615,11 @@ export default {
           this.$message.error('出错啦！')
         }
       })
-    this.axios.get('/api/minesurveyinfo/' + this.sampleId)
+    this.axios.get('/api/minesurveyinfo/' + this.sampleId, {
+      params: {
+        token: this.token
+      }
+    })
       .then((res) => {
         if (res.status == 200 && res.data.status == 200) {
           this.mineSurveyInfos = res.data.data
@@ -611,7 +632,11 @@ export default {
           this.$message.error('出错啦！')
         }
       })
-    this.axios.get('/api/minexrdinfo/' + this.sampleId)
+    this.axios.get('/api/minexrdinfo/' + this.sampleId, {
+      params: {
+        token: this.token
+      }
+    })
       .then(res => {
         if (res.status == 200 && res.data.status == 200) {
           this.mineXRDInfos = res.data.data
@@ -624,7 +649,11 @@ export default {
           this.$message.error('出错啦！')
         }
       })
-    this.axios.get('/api/minechemistryinfo/' + this.sampleId)
+    this.axios.get('/api/minechemistryinfo/' + this.sampleId, {
+      params: {
+        token: this.token
+      }
+    })
       .then(res => {
         if (res.status == 200 && res.data.status == 200) {
           this.mineChemistryInfos = res.data.data
@@ -637,7 +666,11 @@ export default {
           this.$message.error('出错啦！')
         }
       })
-    this.axios.get('/api/minethermalinfo/' + this.sampleId)
+    this.axios.get('/api/minethermalinfo/' + this.sampleId, {
+      params: {
+        token: this.token
+      }
+    })
       .then(res => {
         if (res.status == 200 && res.data.status == 200) {
           this.mineThermalInfos = res.data.data
@@ -794,7 +827,11 @@ export default {
       t.sand.feldspar = Number(t.sand.feldspar)
       t.sand.quartz = Number(t.sand.quartz)
       t.other = Number(t.other)
-      this.axios.put('/api/minecontentinfo/' + id, t)
+      this.axios.put('/api/minecontentinfo/' + id, t, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             for (let i = 0; i < this.mineContentInfos.length; ++ i) {
@@ -818,7 +855,11 @@ export default {
       this.nowEditContent= null
     },
     deleteContent(id) {
-      this.axios.delete('/api/minecontentinfo/' + id)
+      this.axios.delete('/api/minecontentinfo/' + id, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.mineContentInfos = this.mineContentInfos.filter(v => v.id != id || v.temp)
@@ -853,7 +894,11 @@ export default {
       t.tridymite = Number(t.tridymite)  
       t.cristobalite = Number(t.cristobalite)
       t.mullite = Number(t.mullite)
-      this.axios.put('/api/minexrdinfo/' + id, t)
+      this.axios.put('/api/minexrdinfo/' + id, t, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             for (let i = 0; i < this.mineXRDInfos.length; ++ i) {
@@ -876,7 +921,11 @@ export default {
       this.nowEditXRD= null
     },
     deleteXRD(id) {
-      this.axios.delete('/api/minexrdinfo/' + id)
+      this.axios.delete('/api/minexrdinfo/' + id, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.mineXRDInfos = this.mineXRDInfos.filter(v => v.id != id || v.temp)
@@ -905,7 +954,11 @@ export default {
       t.K2O = Number(t.K2O)
       t.CaO = Number(t.CaO)
       t.Fe2O3 = Number(t.Fe2O3)
-      this.axios.put('/api/minechemistryinfo/' + id, t)
+      this.axios.put('/api/minechemistryinfo/' + id, t, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             for (let i = 0; i < this.mineChemistryInfos.length; ++ i) {
@@ -928,7 +981,11 @@ export default {
       this.nowEditChemistry= null
     },
     deleteChemistry(id) {
-      this.axios.delete('/api/minechemistryinfo/' + id)
+      this.axios.delete('/api/minechemistryinfo/' + id, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.mineChemistryInfos = this.mineChemistryInfos.filter(v => v.id != id || v.temp)
@@ -952,7 +1009,11 @@ export default {
       let t = this.nowEditThermal
       t.termTemper = Number(t.termTemper)
       t.fireResis = Number(t.fireResis)
-      this.axios.put('/api/minethermalinfo/' + id, t)
+      this.axios.put('/api/minethermalinfo/' + id, t, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             for (let i = 0; i < this.mineThermalInfos.length; ++ i) {
@@ -975,7 +1036,11 @@ export default {
       this.nowEditThermal= null
     },
     deleteThermal(id) {
-      this.axios.delete('/api/minethermalinfo/' + id)
+      this.axios.delete('/api/minethermalinfo/' + id, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.mineThermalInfos = this.mineThermalInfos.filter(v => v.id != id || v.temp)
@@ -1015,7 +1080,11 @@ export default {
       t.hollowData['501-1002'] = Number(t.hollowData['501-1002'])
       t.hollowData['≤167'] = Number(t.hollowData['≤167'])
       t.hollowData['＞2004'] = Number(t.hollowData['＞2004'])
-      this.axios.put('/api/minesurveyinfo/' + id, t)
+      this.axios.put('/api/minesurveyinfo/' + id, t, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             for (let i = 0; i < this.mineSurveyInfos.length; ++ i) {
@@ -1038,7 +1107,11 @@ export default {
       this.nowEditSurvey= null
     },
     deleteSurvey(id) {
-      this.axios.delete('/api/minesurveyinfo/' + id)
+      this.axios.delete('/api/minesurveyinfo/' + id, {
+        params: {
+          token: this.token
+        }
+      })
         .then(res => {
           if (res.status == 200 && res.data.status == 200) {
             this.mineSurveyInfos = this.mineSurveyInfos.filter(v => v.id != id || v.temp)

@@ -61,12 +61,29 @@ export default {
   name: "ImportView",
   data() {
     return {
+      token: '',
       history: [],
       cover: false
     }
   },
   mounted() {
-    this.axios.get('/api/import')
+    if (this.$route.query.token) {
+      this.token = this.$route.query.token
+    }
+    else if (this.$cookies.isKey('token')) {
+      this.token = this.$cookies.get('token')
+    }
+    else {
+      this.$router.replace({
+        name: 'SignView'
+      })
+    }
+
+    this.axios.get('/api/import', {
+      params: {
+        token: this.token
+      }
+    })
       .then(res => {
         if (res.status == 200 && res.data.status == 200) {
           this.history = res.data.data
