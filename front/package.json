@@ -11,12 +11,10 @@
   "dependencies": {
     "axios": "^0.27.2",
     "core-js": "^3.8.3",
-    "echarts": "^5.3.3",
     "element-ui": "2.15.8",
     "vue": "^2.7.8",
     "vue-axios": "^3.4.1",
     "vue-cookies": "^1.8.2",
-    "vue-echarts": "^6.2.3",
     "vue-router": "^3.5.1",
     "vuex": "^3.6.2",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.18.11/xlsx-0.18.11.tgz"

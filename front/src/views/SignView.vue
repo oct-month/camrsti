@@ -106,6 +106,7 @@ export default {
               this.token = res.data.token
               this.$message.success('登录成功!')
               this.$cookies.set('username', this.username)
+              this.$parent.$data.username = this.username
               // 记住登录状态
               if (this.remember) {
                 this.$cookies.set('token', this.token)
