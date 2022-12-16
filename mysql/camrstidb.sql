@@ -33,7 +33,6 @@ CREATE TABLE `User` (
 --
 -- Dumping data for table `MicroView`
 --
---1234567890
 
 LOCK TABLES `User` WRITE;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
