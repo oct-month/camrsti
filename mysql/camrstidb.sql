@@ -31,6 +31,17 @@ CREATE TABLE `User` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `MicroView`
+--
+
+LOCK TABLES `User` WRITE;
+/*!40000 ALTER TABLE `User` DISABLE KEYS */;
+--1234567890
+INSERT INTO `User` VALUES ('admin', 'c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646');
+/*!40000 ALTER TABLE `User` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `MicroView`
 --
 

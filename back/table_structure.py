@@ -19,7 +19,7 @@ _, db = get_app(__name__)
 class User(db.Model):
     __tablename__ = 'User'
 
-    username = db.Column('username', db.Unicode(40), primary_kay=True)  # 用户名
+    username = db.Column('username', db.Unicode(40), primary_key=True)  # 用户名
     passwd = db.Column('passwd', db.Unicode(65))                        # 密码
 
     def __init__(self, username, passwd) -> None:

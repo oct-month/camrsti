@@ -96,6 +96,7 @@ def change_passwd():
 
 # 获取样本信息
 @app.route('/api/sampleinfo', methods=['GET'])
+@login_needed
 def get_sampleinfos():
     sample_infos = SampleInfo.query.all()
     return {
@@ -108,6 +109,7 @@ def get_sampleinfo_dao(sampleId) -> SampleInfo:
 
 # 获取特定样本信息
 @app.route('/api/sampleinfo/<sampleId>', methods=['GET'])
+@login_needed
 def get_sampleinfo(sampleId):
     sample_info = get_sampleinfo_dao(sampleId)
     return {
@@ -117,6 +119,7 @@ def get_sampleinfo(sampleId):
 
 # 删除特定样本信息
 @app.route('/api/sampleinfo/<sampleId>', methods=['DELETE'])
+@login_needed
 def delete_sampleinfo(sampleId):
     instance = get_sampleinfo_dao(sampleId)
     if instance is not None:
@@ -133,6 +136,7 @@ def delete_sampleinfo(sampleId):
 
 # 删除多个样本信息
 @app.route('/api/sampleinfo', methods=['DELETE'])
+@login_needed
 def delete_sampleinfos():
     sample_list = json.loads(request.data)
     deleted_list = []
@@ -149,6 +153,7 @@ def delete_sampleinfos():
 
 # 更改特定样本信息
 @app.route('/api/sampleinfo', methods=['PUT'])
+@login_needed
 def modify_sampleinfo():
     sampleInfo_json = json.loads(request.data)
     sampleId = sampleInfo_json.get('id')
@@ -167,6 +172,7 @@ def modify_sampleinfo():
 
 # 增加样本信息
 @app.route('/api/sampleinfo', methods=['POST'])
+@login_needed
 def add_sampleinfo():
     sampleInfo_json = json.loads(request.data)
     sampleId = sampleInfo_json.get('id')
@@ -207,6 +213,7 @@ def get_microview_dao(sampleId, type_) -> Optional[MicroView]:
 
 # 获取特定样本的显微观察信息
 @app.route('/api/microview/<sampleId>', methods=['GET'])
+@login_needed
 def get_microviews(sampleId):
     micro_views = get_microviews_dao(sampleId)
     return {
@@ -216,6 +223,7 @@ def get_microviews(sampleId):
 
 # 设置特定样本的显微数据
 @app.route('/api/microview', methods=['PUT'])
+@login_needed
 def set_microview():
     micro_json = json.loads(request.data)
     sampleId = micro_json.get('sampleId')
@@ -246,6 +254,7 @@ def set_microview():
 
 # 增加特定显微数据的条目
 @app.route('/api/microview/<microId>', methods=['POST'])
+@login_needed
 def add_microview_item(microId):
     image_data_json = json.loads(request.data)
     instance = MicroViewData(
@@ -265,6 +274,7 @@ def add_microview_item(microId):
 
 # 修改特定显微数据的条目
 @app.route('/api/microview/<id>', methods=['PUT'])
+@login_needed
 def set_microview_item(id):
     imD_json = json.loads(request.data)
     imD = MicroViewData.query.filter_by(id=id).first()
@@ -279,6 +289,7 @@ def set_microview_item(id):
 
 # 删除特定显微数据的条目
 @app.route('/api/microview/<id>', methods=['DELETE'])
+@login_needed
 def delete_microview_item(id):
     imD = MicroViewData.query.filter_by(id=id).first()
     db.session.delete(imD)
@@ -289,6 +300,7 @@ def delete_microview_item(id):
 
 # 获取全部样本的矿物含量信息
 @app.route('/api/minecontentinfo', methods=['GET'])
+@login_needed
 def get_mine_content_infos_all():
     content_infos = MineContentInfo.query.all()
     return {
@@ -298,6 +310,7 @@ def get_mine_content_infos_all():
 
 # 获取特定样本的矿物含量信息
 @app.route('/api/minecontentinfo/<sampleId>', methods=['GET'])
+@login_needed
 def get_mine_content_infos(sampleId):
     content_info = MineContentInfo.query.filter_by(id=sampleId).first()
     return {
@@ -307,6 +320,7 @@ def get_mine_content_infos(sampleId):
 
 # 修改特定矿物含量信息
 @app.route('/api/minecontentinfo/<id>', methods=['PUT'])
+@login_needed
 def set_mine_content_info(id):
     ci_json = json.loads(request.data)
     content_info = MineContentInfo.query.filter_by(id=id).first()
@@ -324,6 +338,7 @@ def set_mine_content_info(id):
 
 # 删除特定矿物含量信息
 @app.route('/api/minecontentinfo/<id>', methods=['DELETE'])
+@login_needed
 def delete_mine_content_info(id):
     content_info = MineContentInfo.query.filter_by(id=id).first()
     db.session.delete(content_info)
@@ -334,6 +349,7 @@ def delete_mine_content_info(id):
 
 # 获取全部样本的矿物测量数据
 @app.route('/api/minesurveyinfo', methods=['GET'])
+@login_needed
 def get_mine_survey_infos_all():
     survey_infos = MineSurveyInfo.query.all()
     return {
@@ -343,6 +359,7 @@ def get_mine_survey_infos_all():
 
 # 获取特定样本的矿物测量数据
 @app.route('/api/minesurveyinfo/<sampleId>', methods=['GET'])
+@login_needed
 def get_mine_survey_infos(sampleId):
     survey_info = MineSurveyInfo.query.filter_by(id=sampleId).first()
     return {
@@ -352,6 +369,7 @@ def get_mine_survey_infos(sampleId):
 
 # 修改特定的矿物测量数据
 @app.route('/api/minesurveyinfo/<id>', methods=['PUT'])
+@login_needed
 def set_mine_survey_info(id):
     si_json = json.loads(request.data)
     survey_info = MineSurveyInfo.query.filter_by(id=id).first()
@@ -364,6 +382,7 @@ def set_mine_survey_info(id):
 
 # 删除特定的矿物测量数据
 @app.route('/api/minesurveyinfo/<id>', methods=['DELETE'])
+@login_needed
 def delete_mine_survey_info(id):
     survey_info = MineSurveyInfo.query.filter_by(id=id).first()
     db.session.delete(survey_info)
@@ -374,6 +393,7 @@ def delete_mine_survey_info(id):
 
 # 获取全部样本的XRD分析数据
 @app.route('/api/minexrdinfo', methods=['GET'])
+@login_needed
 def get_mine_xrd_infos_all():
     xrd_infos = MineXRDInfo.query.all()
     return {
@@ -383,6 +403,7 @@ def get_mine_xrd_infos_all():
 
 # 获取特定样本的XRD分析数据
 @app.route('/api/minexrdinfo/<sampleId>', methods=['GET'])
+@login_needed
 def get_mine_xrd_infos(sampleId):
     xrd_info = MineXRDInfo.query.filter_by(id=sampleId).first()
     return {
@@ -392,6 +413,7 @@ def get_mine_xrd_infos(sampleId):
 
 # 修改特定的XRD数据
 @app.route('/api/minexrdinfo/<id>', methods=['PUT'])
+@login_needed
 def set_mine_xrd_info(id):
     xi_json = json.loads(request.data)
     xrd_info = MineXRDInfo.query.filter_by(id=id).first()
@@ -415,6 +437,7 @@ def set_mine_xrd_info(id):
 
 # 删除特定的XRD数据
 @app.route('/api/minexrdinfo/<id>', methods=['DELETE'])
+@login_needed
 def delete_mine_xrd_info(id):
     xrd_info = MineXRDInfo.query.filter_by(id=id).first()
     db.session.delete(xrd_info)
@@ -425,6 +448,7 @@ def delete_mine_xrd_info(id):
 
 # 获取全部样本的化学成分数据
 @app.route('/api/minechemistryinfo', methods=['GET'])
+@login_needed
 def get_mine_chemistry_infos_all():
     chem_infos = MineChemistryInfo.query.all()
     return {
@@ -434,6 +458,7 @@ def get_mine_chemistry_infos_all():
 
 # 获取特定样本的化学成分数据
 @app.route('/api/minechemistryinfo/<sampleId>', methods=['GET'])
+@login_needed
 def get_mine_chemistry_infos(sampleId):
     chem_info = MineChemistryInfo.query.filter_by(id=sampleId).first()
     return {
@@ -443,6 +468,7 @@ def get_mine_chemistry_infos(sampleId):
 
 # 修改特定化学成分数据
 @app.route('/api/minechemistryinfo/<id>', methods=['PUT'])
+@login_needed
 def set_mine_chemistry_info(id):
     ci_json = json.loads(request.data)
     chem_info = MineChemistryInfo.query.filter_by(id=id).first()
@@ -461,6 +487,7 @@ def set_mine_chemistry_info(id):
 
 # 删除特定化学成分数据
 @app.route('/api/minechemistryinfo/<id>', methods=['DELETE'])
+@login_needed
 def delete_mine_chemistry_info(id):
     chem_info = MineChemistryInfo.query.filter_by(id=id).first()
     db.session.delete(chem_info)
@@ -471,6 +498,7 @@ def delete_mine_chemistry_info(id):
 
 # 获取全部样本的物理结构数据
 @app.route('/api/minephysicsinfo', methods=['GET'])
+@login_needed
 def get_mine_physics_all():
     physics_infos = MinePhysicsInfo.query.all()
     return {
@@ -480,6 +508,7 @@ def get_mine_physics_all():
 
 # 获取特定样本的物理结构数据
 @app.route('/api/minephysicsinfo/<sampleId>', methods=['GET'])
+@login_needed
 def get_mine_physics_info(sampleId):
     physics_info = MinePhysicsInfo.query.filter_by(id=sampleId).first()
     return {
@@ -489,6 +518,7 @@ def get_mine_physics_info(sampleId):
 
 # 修改特定样本的物理结构数据
 @app.route('/api/minephysicsinfo', methods=['PUT'])
+@login_needed
 def set_mine_physics_info():
     phy_info_json = json.loads(request.data)
     physics_info = MinePhysicsInfo.query.filter_by(id=phy_info_json.get('id')).first()
@@ -514,6 +544,7 @@ def set_mine_physics_info():
 
 # 获取全部样本的热分析
 @app.route('/api/minethermalinfo', methods=['GET'])
+@login_needed
 def get_mine_thermal_infos_all():
     thermal_infos = MineThermalInfo.query.all()
     return {
@@ -523,6 +554,7 @@ def get_mine_thermal_infos_all():
 
 # 获取特定样本的热分析
 @app.route('/api/minethermalinfo/<sampleId>', methods=['GET'])
+@login_needed
 def get_mine_thermal_infos(sampleId):
     thermal_info = MineThermalInfo.query.filter_by(id=sampleId).first()
     return {
@@ -532,6 +564,7 @@ def get_mine_thermal_infos(sampleId):
 
 # 修改特定的热分析
 @app.route('/api/minethermalinfo/<id>', methods=['PUT'])
+@login_needed
 def set_mine_thermal_info(id):
     th_json = json.loads(request.data)
     thermal_info = MineThermalInfo.query.filter_by(id=id).first()
@@ -546,6 +579,7 @@ def set_mine_thermal_info(id):
 
 # 删除特定的热分析
 @app.route('/api/minethermalinfo/<id>', methods=['DELETE'])
+@login_needed
 def delete_mine_thermal_info(id):
     thermal_info = MineThermalInfo.query.filter_by(id=id).first()
     db.session.delete(thermal_info)
@@ -556,6 +590,7 @@ def delete_mine_thermal_info(id):
 
 # 导入功能
 @app.route('/api/import', methods=['POST'])
+@login_needed
 def upload_and_import():
     if 'upload' in request.files:
         cover_flag = request.form.get('cover', False)
@@ -588,6 +623,7 @@ def upload_and_import():
 
 # 获取上传历史
 @app.route('/api/import', methods=['GET'])
+@login_needed
 def get_upload_history():
     file_list = os.listdir('./excels/')
     file_list = list(filter(lambda p: p.endswith('.xlsx') and p.startswith(('2', '3', '4')), file_list))
@@ -599,6 +635,7 @@ def get_upload_history():
 
 # 下载文件
 @app.route('/api/import/<filename>', methods=['GET'])
+@login_needed
 def get_upload_file(filename):
     return send_from_directory('./excels/', filename)
 
