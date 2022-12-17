@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List, Mapping, Tuple
+from typing import Dict, List, Tuple
 from openpyxl import Workbook, load_workbook
 from openpyxl.cell import MergedCell
 from openpyxl.worksheet.worksheet import Worksheet
@@ -517,4 +517,4 @@ def get_instances(wb: Workbook, cover: bool) -> Tuple[List, List[SampleInfo], in
 
 
 if __name__ == '__main__':
-    print(get_instances(load_workbook('./excels/测试数据.xlsx', read_only=True)))
+    print(get_instances(load_workbook('./excels/导入模板.xlsx', read_only=True), cover=True))

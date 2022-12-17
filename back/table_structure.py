@@ -1,3 +1,5 @@
+import copy
+
 from factory import get_app
 
 __all__ = [
@@ -143,12 +145,15 @@ class MineContentInfo(db.Model):
     hollow = db.Column('hollow', db.Float)                  # 空洞
     other = db.Column('other', db.Float)                    # 其他
 
-    def __init__(self, id=None, sampleName=None, clay=None, quartz=None, sand={}, debris=None, hollow=None, other=None):
+    def __init__(self, id=None, sampleName=None, clay=None, quartz=None, sand=None, debris=None, hollow=None, other=None):
         self.id = id
         self.sampleName = sampleName
         self.clay = clay
         self.quartz = quartz
-        self.sand = sand
+        if sand is None:
+            self.sand = copy.deepcopy({'feldspar': None, 'Ominerals': None, 'quartz': None})
+        else:
+            self.sand = sand
         self.debris = debris
         self.hollow = hollow
         self.other = other
