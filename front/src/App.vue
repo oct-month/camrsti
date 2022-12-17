@@ -53,10 +53,12 @@
               </template>
               <el-menu-item-group>
                 <template slot="title">统计</template>
-                <!-- <el-menu-item index="4-1">显微组织</el-menu-item> -->
-                <el-menu-item index="4-2">矿物含量+矿物测量</el-menu-item>
-                <el-menu-item index="4-3">XRD+化学成分</el-menu-item>
-                <el-menu-item index="4-4">物理结构+热分析</el-menu-item>
+                <el-menu-item index="4-1">矿物含量</el-menu-item>
+                <el-menu-item index="4-2">矿物测量</el-menu-item>
+                <el-menu-item index="4-3">XRD</el-menu-item>
+                <el-menu-item index="4-4">化学成分</el-menu-item>
+                <el-menu-item index="4-5">物理结构</el-menu-item>
+                <el-menu-item index="4-6">热分析</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
           </el-menu>
@@ -216,6 +218,12 @@ export default {
       case 'StatisticView4':
         this.index = '4-4'
         break
+      case 'StatisticView5':
+        this.index = '4-5'
+        break
+      case 'StatisticView6':
+        this.index = '4-6'
+        break
       case 'SignView':
       case 'PasswdView':
         this.flag = false
@@ -276,6 +284,16 @@ export default {
         case '4-4':
           this.$router.replace({
             name: 'StatisticView4'
+          })
+          break
+        case '4-5':
+          this.$router.replace({
+            name: 'StatisticView5'
+          })
+          break
+        case '4-6':
+          this.$router.replace({
+            name: 'StatisticView6'
           })
           break
         default:

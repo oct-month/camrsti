@@ -500,7 +500,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="surveImage" label="热分析曲线" miniwidth="400">
+      <!-- <el-table-column prop="surveImage" label="热分析曲线" miniwidth="400">
         <template slot-scope="scope">
           <el-image
             style="height: 200px"
@@ -511,7 +511,7 @@
             </div>
           </el-image>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <!-- <div style="float:right;">
       导出：
@@ -1209,8 +1209,8 @@ export default {
           '样品号': v.id,
           '终止温度': v.termTemper,
           '耐火度': v.fireResis,
-          '热分析数据': v.data,
-          '热分析曲线': '' //v.surveImage
+          '热分析数据': v.data
+          // '热分析曲线': '' //v.surveImage
         })
       })
       ws = xlsx.utils.json_to_sheet(temp)

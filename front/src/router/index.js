@@ -11,6 +11,8 @@ import StatisticView1 from '@/views/StatisticView1'
 import StatisticView2 from '@/views/StatisticView2'
 import StatisticView3 from '@/views/StatisticView3'
 import StatisticView4 from '@/views/StatisticView4'
+import StatisticView5 from '@/views/StatisticView5'
+import StatisticView6 from '@/views/StatisticView6'
 import SignView from '@/views/SignView'
 import PasswdView from '@/views/PasswdView'
 
@@ -59,6 +61,16 @@ const routes = [
     path: '/statistic4',
     name: 'StatisticView4',
     component: StatisticView4
+  },
+  {
+    path: '/statistic5',
+    name: 'StatisticView5',
+    component: StatisticView5
+  },
+  {
+    path: '/statistic6',
+    name: 'StatisticView6',
+    component: StatisticView6
   },
   {
     path: '/about',

@@ -3,7 +3,7 @@
     <el-tabs type="card" :value="String(activeTab)" @tab-click="transTab" @tab-remove="removeTab">
       <el-tab-pane label="主页" name="0">
         <!-- 数据列表页面 -->
-        <el-table v-if="multiModeFlag" stripe border empty-text=" " height="50" style="width:100%">
+        <el-table v-show="multiModeFlag" stripe border empty-text=" " height="50" style="width:100%">
           <el-table-column width="50">
             <template slot="header" slot-scope="scope">
               <el-button type="danger" icon="el-icon-delete" size="mini" circle plain @click="multiDeletePre"></el-button>
@@ -16,19 +16,39 @@
               </el-dialog>
             </template>
           </el-table-column>
-          <el-table-column width="160">
+          <el-table-column width="50">
             <template slot="header" slot-scope="scope">
-              <el-button type="success" size="small" round plain @click="toStatisticPage('4-2')">矿物含量+矿物测量</el-button>
+              <el-button type="info" icon="el-icon-picture" size="small" circle plain @click="downloadSelectedImages"></el-button>
             </template>
           </el-table-column>
-          <el-table-column width="130">
+          <el-table-column width="100">
             <template slot="header" slot-scope="scope">
-              <el-button type="success" size="small" round plain @click="toStatisticPage('4-3')">XRD+化学成分</el-button>
+              <el-button type="success" size="small" round plain @click="toStatisticPage('4-1')">矿物含量</el-button>
             </template>
           </el-table-column>
-          <el-table-column width="140">
+          <el-table-column width="100">
             <template slot="header" slot-scope="scope">
-              <el-button type="success" size="small" round plain @click="toStatisticPage('4-4')">物理结构+热分析</el-button>
+              <el-button type="success" size="small" round plain @click="toStatisticPage('4-2')">矿物测量</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column width="75">
+            <template slot="header" slot-scope="scope">
+              <el-button type="success" size="small" round plain @click="toStatisticPage('4-3')">XRD</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column width="100">
+            <template slot="header" slot-scope="scope">
+              <el-button type="success" size="small" round plain @click="toStatisticPage('4-4')">化学成分</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column width="100">
+            <template slot="header" slot-scope="scope">
+              <el-button type="success" size="small" round plain @click="toStatisticPage('4-5')">物理结构</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column width="88">
+            <template slot="header" slot-scope="scope">
+              <el-button type="success" size="small" round plain @click="toStatisticPage('4-6')">热分析</el-button>
             </template>
           </el-table-column>
           <el-table-column width="50">
@@ -37,7 +57,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-table v-else stripe border empty-text=" " height="50" style="width:100%">
+        <el-table v-show="!multiModeFlag" stripe border empty-text=" " height="50" style="width:100%">
           <el-table-column width="50">
             <template slot="header" slot-scope="scope">
               检索
@@ -68,7 +88,7 @@
               <el-input size="mini" placeholder="取样人" v-model="filterItems.people" @input="forceUpdate" @change="inputFilterHandler"></el-input>
             </template>
           </el-table-column>
-          <el-table-column width="241">
+          <el-table-column width="245">
             <template slot="header" slot-scope="scope">
               <el-input size="mini" placeholder="照片号" v-model="filterItems.imageId" @input="forceUpdate" @change="inputFilterHandler"></el-input>
             </template>
@@ -158,7 +178,7 @@
               <el-tag v-else-if="scope.row.people" size="medium">{{ scope.row.people }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column key="8" prop="imageId" :label="keyMap['imageId']" width="241">
+          <el-table-column key="8" prop="imageId" :label="keyMap['imageId']" width="245">
             <template slot-scope="scope">
               <el-upload
                 v-if="editModel[scope.row.id]"
@@ -289,6 +309,8 @@
 <script>
 import xlsx from 'xlsx'
 import { ref, onBeforeUpdate } from 'vue'
+import JSZip from 'jszip'
+import { saveAs } from 'file-saver';
 
 import { deepObjCopy } from '@/utils'
 import SamplePage from '@/components/SamplePage.vue'
@@ -867,6 +889,37 @@ export default {
         }
       }
     },
+    async downloadSelectedImages() {
+      if (this.multiSelectedList.length > 0) {
+        this.multiSelectedListPre()
+        const zip = new JSZip()
+        for (let i in this.multiSelectedList) {
+          let ids = this.multiSelectedList[i]
+          let si = this.sampleInfos.filter(v => v.id == ids)[0]
+          let ims = zip.folder(ids)
+          for (let j in si.imageId) {
+            let imid
+            try {
+              imid = si.imageId[j]
+              let dt = await this.axios.get('/api/image/' + imid, {
+                responseType: 'blob'
+              })
+              ims.file(imid, dt.data, {
+                binary: true
+              })
+            }
+            catch (err) {
+              this.$message.error(ids + '/' + imid + ' 下载失败！')
+              console.log(err)
+            }
+          }
+        }
+        zip.generateAsync({type: 'blob'})
+          .then(content => {
+            saveAs(content, `Export-IMG-${new Date().toISOString().split('T')[0]}.zip`)
+          })
+      }
+    },
     multiDeletePre() {
       if (this.multiSelectedList.length > 0) {
         this.multiSelectedListPre()
@@ -907,6 +960,11 @@ export default {
       this.$store.commit('setStatisticInfos', this.multiSelectedList)
       this.$emit('changeSideMenuIndex', key)
       switch (key) {
+        case '4-1':
+          this.$router.replace({
+            name: 'StatisticView1'
+          })
+          break
         case '4-2':
           this.$router.replace({
             name: 'StatisticView2'
@@ -920,6 +978,16 @@ export default {
         case '4-4':
           this.$router.replace({
             name: 'StatisticView4'
+          })
+          break
+        case '4-5':
+          this.$router.replace({
+            name: 'StatisticView5'
+          })
+          break
+        case '4-6':
+          this.$router.replace({
+            name: 'StatisticView6'
           })
           break
         default:

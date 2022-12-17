@@ -38,7 +38,7 @@
 
     <el-divider></el-divider>
 
-    <div>
+    <div v-if="history.length > 0">
       <h3 align="left">导入历史</h3>
       <p align="left" v-for="h in history" :key="h">
         <el-link :href="'/api/import/'+h+'?token='+token" type="primary" icon="el-icon-document-copy">{{ h }}</el-link>
