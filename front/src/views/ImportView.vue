@@ -16,7 +16,7 @@
     <el-form inline class="form" ref="form" label-width="100px" label-position="right" style="text-align:left;width:800px;">
       <el-form-item label="数据导入">
         <el-upload
-          action="/api/import"
+          :action="'/api/import?token='+token"
           accept=".xlsx"
           ref="upload"
           name="upload"
@@ -41,7 +41,7 @@
     <div>
       <h3 align="left">导入历史</h3>
       <p align="left" v-for="h in history" :key="h">
-        <el-link :href="'/api/import/'+h" type="primary" icon="el-icon-document-copy">{{ h }}</el-link>
+        <el-link :href="'/api/import/'+h+'?token='+token" type="primary" icon="el-icon-document-copy">{{ h }}</el-link>
       </p>
     </div>
   </div>

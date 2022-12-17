@@ -68,7 +68,7 @@
               <el-input size="mini" placeholder="取样人" v-model="filterItems.people" @input="forceUpdate" @change="inputFilterHandler"></el-input>
             </template>
           </el-table-column>
-          <el-table-column width="190">
+          <el-table-column width="241">
             <template slot="header" slot-scope="scope">
               <el-input size="mini" placeholder="照片号" v-model="filterItems.imageId" @input="forceUpdate" @change="inputFilterHandler"></el-input>
             </template>
@@ -158,7 +158,7 @@
               <el-tag v-else-if="scope.row.people" size="medium">{{ scope.row.people }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column key="8" prop="imageId" :label="keyMap['imageId']" width="190">
+          <el-table-column key="8" prop="imageId" :label="keyMap['imageId']" width="241">
             <template slot-scope="scope">
               <el-upload
                 v-if="editModel[scope.row.id]"
