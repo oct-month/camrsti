@@ -1,52 +1,65 @@
--- MySQL dump 10.13  Distrib 8.0.30, for Win64 (x86_64)
---
--- Host: localhost    Database: camrstidb
--- ------------------------------------------------------
--- Server version	8.0.30
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 USE camrstidb;
+
+UNLOCK TABLES;
+DROP TABLE IF EXISTS `User`;
+DROP TABLE IF EXISTS `MicroViewData`;
+DROP TABLE IF EXISTS `MicroView`;
+DROP TABLE IF EXISTS `SampleInfo`;
+DROP TABLE IF EXISTS `MineContentInfo`;
+DROP TABLE IF EXISTS `MineSurveyInfo`;
+DROP TABLE IF EXISTS `MineXRDInfo`;
+DROP TABLE IF EXISTS `MineChemistryInfo`;
+DROP TABLE IF EXISTS `MineChemistryInfoSingle`;
+DROP TABLE IF EXISTS `MinePhysicsInfo`;
+DROP TABLE IF EXISTS `MineThermalInfo`;
 
 --
 -- Table structure for table `User`
 --
 
-DROP TABLE IF EXISTS `User`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `User` (
   `username` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户名',
   `passwd` varchar(65) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '密码',
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `MicroView`
 --
 
 LOCK TABLES `User` WRITE;
-/*!40000 ALTER TABLE `User` DISABLE KEYS */;
 INSERT INTO `User` VALUES ('admin', 'c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646');
-/*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `SampleInfo`
+--
+
+CREATE TABLE `SampleInfo` (
+  `id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '样品号',
+  `type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '样品类型',
+  `source` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '样品来源',
+  `year` year DEFAULT NULL COMMENT '取样年份',
+  `people` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '取样人',
+  `imageId` json DEFAULT NULL COMMENT '照片号',
+  `describe` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '描述',
+  `explain` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '样品制备说明',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='样品基本信息';
+
+--
+-- Dumping data for table `SampleInfo`
+--
+
+LOCK TABLES `SampleInfo` WRITE;
+INSERT INTO `SampleInfo` VALUES ('11Y3:9-1','炉壁','北京延庆水泉沟',2019,'刘海峰','[\"IMG_20190512_33333.jpg\"]','取自炉体上半部分，红色，质地疏松多空','自内向外取三处，分别做薄片后矿相观察，制备粉末样品开展XRD分析'),('11Y3:9-2','炉壁','北京延庆水泉沟',2019,'刘海峰','[\"IMG_20190512_33333.jpg\"]','取自炉体上半部分，红色，质地疏松多空','自内向外取三处，分别做薄片后矿相观察，制备粉末样品开展XRD分析'),('11Y3:9-3','炉壁','北京延庆水泉沟',2019,'刘海峰','[\"IMG_20190512_33333.jpg\"]','取自炉体上半部分，红色，质地疏松多空','自内向外取三处，分别做薄片后矿相观察，制备粉末样品开展XRD分析');
+UNLOCK TABLES;
+
 
 --
 -- Table structure for table `MicroView`
 --
 
-DROP TABLE IF EXISTS `MicroView`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MicroView` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '金相、矿相、电子显微照片',
@@ -58,25 +71,19 @@ CREATE TABLE `MicroView` (
   KEY `NewTable_FK` (`sampleId`),
   CONSTRAINT `NewTable_FK` FOREIGN KEY (`sampleId`) REFERENCES `SampleInfo` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `MicroView`
 --
 
 LOCK TABLES `MicroView` WRITE;
-/*!40000 ALTER TABLE `MicroView` DISABLE KEYS */;
 INSERT INTO `MicroView` VALUES (1,'矿相','[\"图片2.jpg\"]','红色区域，有较多的粗砂和岩屑，该部分黏土基质较多','徕卡2700P','11Y3:9-1');
-/*!40000 ALTER TABLE `MicroView` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
 -- Table structure for table `MicroViewData`
 --
 
-DROP TABLE IF EXISTS `MicroViewData`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MicroViewData` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `zoom` double DEFAULT NULL COMMENT '放大倍数',
@@ -88,165 +95,72 @@ CREATE TABLE `MicroViewData` (
   KEY `MicroViewData_FK` (`microId`),
   CONSTRAINT `MicroViewData_FK` FOREIGN KEY (`microId`) REFERENCES `MicroView` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `MicroViewData`
 --
 
 LOCK TABLES `MicroViewData` WRITE;
-/*!40000 ALTER TABLE `MicroViewData` DISABLE KEYS */;
 INSERT INTO `MicroViewData` VALUES (1,10,'图片3.jpg','XPL','整体结构为大量的岩石和砂颗粒和少量黏土基质，图中上下为石英砂岩和花岗岩颗粒，中间为黏土+粉砂',1),(2,10,'图片4.jpg','PPL','与左图正交偏光图像综合对比，可以辅助判定矿相、空洞和不透明物质',1);
-/*!40000 ALTER TABLE `MicroViewData` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `MineChemistryInfo`
---
-
-DROP TABLE IF EXISTS `MineChemistryInfo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `MineChemistryInfo` (
-  `id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '样品编号',
-  `type` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
-  `Na2O` double DEFAULT NULL,
-  `MgO` double DEFAULT NULL,
-  `Al2O3` double DEFAULT NULL,
-  `SiO2` double DEFAULT NULL,
-  `K2O` double DEFAULT NULL,
-  `CaO` double DEFAULT NULL,
-  `Fe2O3` double DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='化学成分数据';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `MineChemistryInfo`
---
-
-LOCK TABLES `MineChemistryInfo` WRITE;
-/*!40000 ALTER TABLE `MineChemistryInfo` DISABLE KEYS */;
-INSERT INTO `MineChemistryInfo` VALUES ('11Y3:9-1','炉衬',2.2,1.4,17.8,60.3,2.9,1,4.8),('11Y3:9-2','炉衬',2.2,1.4,21.2,61.9,3,1,4.2),('11Y3:9-3','炉衬',2.2,1.4,14.3,58.6,2.8,1,5.5);
-/*!40000 ALTER TABLE `MineChemistryInfo` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
 -- Table structure for table `MineContentInfo`
 --
 
-DROP TABLE IF EXISTS `MineContentInfo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MineContentInfo` (
   `id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '样品号',
-  `sampleName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '样品名称',
-  `clay` double DEFAULT NULL COMMENT '粘土基质',
-  `quartz` double DEFAULT NULL COMMENT '石英粉砂',
-  `sand` json DEFAULT NULL COMMENT '砂',
+  `clay` double DEFAULT NULL COMMENT '粘土',
+  `quartz` double DEFAULT NULL COMMENT '粉砂',
+  `sand_quartz` double DEFAULT NULL COMMENT '砂-石英',
+  `sand_feldspar` double DEFAULT NULL COMMENT '砂-长石',
+  `sand_other` double DEFAULT NULL COMMENT '砂-其他矿物',
   `debris` double DEFAULT NULL COMMENT '岩屑',
-  `hollow` double DEFAULT NULL COMMENT '空洞',
-  `other` double DEFAULT NULL COMMENT '其他',
+  `hollow_close` double DEFAULT NULL COMMENT '空洞-闭气孔',
+  `hollow_open` double DEFAULT NULL COMMENT '空洞-开气孔',
+  `hollow_through` double DEFAULT NULL COMMENT '空洞-贯通气孔',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='矿物含量信息';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `MineContentInfo`
 --
 
 LOCK TABLES `MineContentInfo` WRITE;
-/*!40000 ALTER TABLE `MineContentInfo` DISABLE KEYS */;
-INSERT INTO `MineContentInfo` VALUES ('11Y3:9-1','炉衬',34.7,7.3,'{\"quartz\": 12.5, \"feldspar\": 2, \"Ominerals\": 3}',25,15.4,NULL),('11Y3:9-2','炉衬',31.8,6.4,'{\"quartz\": 10.9, \"feldspar\": 1.6, \"Ominerals\": 4.5}',29.1,15.7,NULL),('11Y3:9-3','炉衬',34.2,8.2,'{\"quartz\": 13.9, \"feldspar\": 1.6, \"Ominerals\": 1.3}',22.9,17.9,NULL);
-/*!40000 ALTER TABLE `MineContentInfo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `MinePhysicsInfo`
---
-
-DROP TABLE IF EXISTS `MinePhysicsInfo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `MinePhysicsInfo` (
-  `id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '样品编号',
-  `type` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
-  `apparentPorosity` double DEFAULT NULL COMMENT '显气孔率',
-  `trueDensity` double DEFAULT NULL COMMENT '真密度',
-  `waterAbsorption` double DEFAULT NULL COMMENT '吸水率',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='物理结构数据';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `MinePhysicsInfo`
---
-
-LOCK TABLES `MinePhysicsInfo` WRITE;
-/*!40000 ALTER TABLE `MinePhysicsInfo` DISABLE KEYS */;
-INSERT INTO `MinePhysicsInfo` VALUES ('11Y3:9-1','砂泥质大块炉衬',39.5,2.612,24.8);
-/*!40000 ALTER TABLE `MinePhysicsInfo` ENABLE KEYS */;
+INSERT INTO `MineContentInfo` VALUES ('11Y3:9-1',34.7,7.3,12.5,2,3,25,null,null,null),('11Y3:9-2',31.8,6.4,10.9,1.6,4.5,29.1,null,null,null),('11Y3:9-3',34.2,8.2,13.9,1.6,1.3,22.9,null,null,null);
 UNLOCK TABLES;
 
 --
 -- Table structure for table `MineSurveyInfo`
 --
 
-DROP TABLE IF EXISTS `MineSurveyInfo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MineSurveyInfo` (
   `id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '样品号',
-  `debrisData` json DEFAULT NULL COMMENT '岩屑直径分布',
-  `hollowData` json DEFAULT NULL COMMENT '空洞长度分布',
+  `debris_0um` double DEFAULT NULL COMMENT '岩屑直径≤67μm',
+  `debris_67um` double DEFAULT NULL COMMENT '岩屑直径67-167μm',
+  `debris_167um` double DEFAULT NULL COMMENT '岩屑直径167-501μm',
+  `debris_501um` double DEFAULT NULL COMMENT '岩屑直径501-1002μm',
+  `debris_1002um` double DEFAULT NULL COMMENT '岩屑直径≥1002μm',
+  `hollow_0um` double DEFAULT NULL COMMENT '岩屑直径≤67μm',
+  `hollow_67um` double DEFAULT NULL COMMENT '岩屑直径67-501μm',
+  `hollow_501um` double DEFAULT NULL COMMENT '岩屑直径501-1002μm',
+  `hollow_1002um` double DEFAULT NULL COMMENT '岩屑直径1002-2004μm',
+  `hollow_2004um` double DEFAULT NULL COMMENT '岩屑直径≥2004μm',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='矿物测量数据';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `MineSurveyInfo`
 --
 
 LOCK TABLES `MineSurveyInfo` WRITE;
-/*!40000 ALTER TABLE `MineSurveyInfo` DISABLE KEYS */;
-INSERT INTO `MineSurveyInfo` VALUES ('11Y3:9-1','{\"167-501\": 11.8, \"≥1002\": 30.6, \"501-1002\": 13.4, \"≤67μm\": 20.7, \"67-167μm\": 23.5}','{\"≤167\": 61.2, \"167-501\": 8.7, \"＞2004\": 7.1, \"501-1002\": 10.4, \"1002-2004\": 12.6}'),('11Y3:9-2','{\"167-501\": 6.4, \"≥1002\": 32.1, \"501-1002\": 9.3, \"≤67μm\": 21.7, \"67-167μm\": 30.6}','{\"≤167\": 59.1, \"167-501\": 11, \"＞2004\": null, \"501-1002\": 18.8, \"1002-2004\": 11}'),('11Y3:9-3','{\"167-501\": 13.6, \"≥1002\": 22.4, \"501-1002\": 12.2, \"≤67μm\": 24.2, \"67-167μm\": 27.5}','{\"≤167\": 68.9, \"167-501\": 12.6, \"＞2004\": 10.2, \"501-1002\": 3.6, \"1002-2004\": 4.8}');
-/*!40000 ALTER TABLE `MineSurveyInfo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `MineThermalInfo`
---
-
-DROP TABLE IF EXISTS `MineThermalInfo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `MineThermalInfo` (
-  `id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '样品号',
-  `termTemper` double DEFAULT NULL COMMENT '终止温度',
-  `fireResis` double DEFAULT NULL COMMENT '耐火度',
-  `data` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '热分析数据',
-  `surveImage` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '热分析曲线',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='热分析';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `MineThermalInfo`
---
-
-LOCK TABLES `MineThermalInfo` WRITE;
-/*!40000 ALTER TABLE `MineThermalInfo` DISABLE KEYS */;
-INSERT INTO `MineThermalInfo` VALUES ('11Y3:9-1',1015,1303,NULL,'图片1.png'),('11Y3:9-2',929,1306,NULL,'图片1.png'),('11Y3:9-3',1025,1307,NULL,'图片1.png');
-/*!40000 ALTER TABLE `MineThermalInfo` ENABLE KEYS */;
+INSERT INTO `MineSurveyInfo` VALUES ('11Y3:9-1',20.7,23.5,11.8,13.4,30.6,61.2,8.7,10.4,12.6,7.1),('11Y3:9-2',21.7,30.6,6.4,9.3,32.1,59.1,11,18.8,11,null),('11Y3:9-3',24.2,27.5,13.6,12.2,22.4,68.9,12.6,3.6,4.8,10.2);
 UNLOCK TABLES;
 
 --
 -- Table structure for table `MineXRDInfo`
 --
 
-DROP TABLE IF EXISTS `MineXRDInfo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MineXRDInfo` (
   `id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '样品编号',
   `type` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
@@ -262,61 +176,132 @@ CREATE TABLE `MineXRDInfo` (
   `tridymite` double DEFAULT NULL COMMENT '磷石英',
   `cristobalite` double DEFAULT NULL COMMENT '方石英',
   `mullite` double DEFAULT NULL COMMENT '莫来石',
+  `other` double DEFAULT NULL COMMENT '其他',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='XRD分析数据';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `MineXRDInfo`
 --
 
 LOCK TABLES `MineXRDInfo` WRITE;
-/*!40000 ALTER TABLE `MineXRDInfo` DISABLE KEYS */;
-INSERT INTO `MineXRDInfo` VALUES ('11Y3:9-1','炉衬',0.76,0.24,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),('11Y3:9-2','炉衬',0.63,0.14,0.2,NULL,NULL,0.04,NULL,NULL,NULL,NULL,NULL,NULL),('11Y3:9-3','炉衬',0.45,0.19,0.22,NULL,0.06,NULL,0.02,0.06,NULL,NULL,NULL,NULL);
-/*!40000 ALTER TABLE `MineXRDInfo` ENABLE KEYS */;
+INSERT INTO `MineXRDInfo` VALUES ('11Y3:9-1','炉衬',0.76,0.24,null,null,null,null,null,null,null,null,null,null,null),('11Y3:9-2','炉衬',0.63,0.14,0.2,null,null,0.04,null,null,null,null,null,null,null),('11Y3:9-3','炉衬',0.45,0.19,0.22,null,0.06,null,0.02,0.06,null,null,null,null,null);
 UNLOCK TABLES;
 
 --
--- Table structure for table `SampleInfo`
+-- Table structure for table `MineChemistryInfo`
 --
 
-DROP TABLE IF EXISTS `SampleInfo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `SampleInfo` (
+CREATE TABLE `MineChemistryInfo` (
   `id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '样品号',
-  `type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '样品类型',
-  `source` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '样品来源',
-  `year` year DEFAULT NULL COMMENT '取样年份',
-  `people` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '取样人',
-  `imageId` json DEFAULT NULL COMMENT '照片号',
-  `describe` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '描述',
-  `explain` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '样品制备说明',
+  `Na2O` double DEFAULT NULL,
+  `MgO` double DEFAULT NULL,
+  `Al2O3` double DEFAULT NULL,
+  `SiO2` double DEFAULT NULL,
+  `P2O5` double DEFAULT NULL,
+  `SO2` double DEFAULT NULL,
+  `K2O` double DEFAULT NULL,
+  `CaO` double DEFAULT NULL,
+  `TiO2` double DEFAULT NULL,
+  `MnO` double DEFAULT NULL,
+  `FeO` double DEFAULT NULL,
+  `CuO` double DEFAULT NULL,
+  `ZnO` double DEFAULT NULL,
+  `As2O3` double DEFAULT NULL,
+  `SnO2` double DEFAULT NULL,
+  `PbO` double DEFAULT NULL,
+  `other` double DEFAULT NULL COMMENT '其他',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='样品基本信息';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='化学成分数据-氧化物';
 
 --
--- Dumping data for table `SampleInfo`
+-- Dumping data for table `MineChemistryInfo`
 --
 
-LOCK TABLES `SampleInfo` WRITE;
-/*!40000 ALTER TABLE `SampleInfo` DISABLE KEYS */;
-INSERT INTO `SampleInfo` VALUES ('11Y3:9-1','炉壁','北京延庆水泉沟',2019,'刘海峰','[\"IMG_20190512_33333.jpg\"]','取自炉体上半部分，红色，质地疏松多空','自内向外取三处，分别做薄片后矿相观察，制备粉末样品开展XRD分析'),('11Y3:9-2','炉壁','北京延庆水泉沟',2019,'刘海峰','[\"IMG_20190512_33333.jpg\"]','取自炉体上半部分，红色，质地疏松多空','自内向外取三处，分别做薄片后矿相观察，制备粉末样品开展XRD分析'),('11Y3:9-3','炉壁','北京延庆水泉沟',2019,'刘海峰','[\"IMG_20190512_33333.jpg\"]','取自炉体上半部分，红色，质地疏松多空','自内向外取三处，分别做薄片后矿相观察，制备粉末样品开展XRD分析');
-/*!40000 ALTER TABLE `SampleInfo` ENABLE KEYS */;
+LOCK TABLES `MineChemistryInfo` WRITE;
+INSERT INTO `MineChemistryInfo` VALUES ('11Y3:9-1',2.2,1.4,17.8,60.3,null,null,2.9,1,null,null,null,null,null,null,null,null,null),('11Y3:9-2',2.3,1.4,21.2,61.9,null,null,3,1,null,null,null,null,null,null,null,null,null),('11Y3:9-3',2.2,1.4,14.3,58.6,null,null,2.8,1,null,null,null,null,null,null,null,null,null);
 UNLOCK TABLES;
 
 --
--- Dumping routines for database 'camrstidb'
+-- Table structure for table `MineChemistryInfoSingle`
 --
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+CREATE TABLE `MineChemistryInfoSingle` (
+  `id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '样品号',
+  `C` double DEFAULT NULL,
+  `Na` double DEFAULT NULL,
+  `Mg` double DEFAULT NULL,
+  `Al` double DEFAULT NULL,
+  `Si` double DEFAULT NULL,
+  `P` double DEFAULT NULL,
+  `S` double DEFAULT NULL,
+  `Cl` double DEFAULT NULL,
+  `K` double DEFAULT NULL,
+  `Ca` double DEFAULT NULL,
+  `Ti` double DEFAULT NULL,
+  `V` double DEFAULT NULL,
+  `Mn` double DEFAULT NULL,
+  `Fe` double DEFAULT NULL,
+  `Co` double DEFAULT NULL,
+  `Ni` double DEFAULT NULL,
+  `Cu` double DEFAULT NULL,
+  `Zn` double DEFAULT NULL,
+  `As` double DEFAULT NULL,
+  `Ag` double DEFAULT NULL,
+  `Sn` double DEFAULT NULL,
+  `Sb` double DEFAULT NULL,
+  `Au` double DEFAULT NULL,
+  `Hg` double DEFAULT NULL,
+  `Pb` double DEFAULT NULL,
+  `other` double DEFAULT NULL COMMENT '其他',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='化学成分数据-单质';
 
--- Dump completed on 2022-09-23 22:53:26
+--
+-- Table structure for table `MinePhysicsInfo`
+--
+
+CREATE TABLE `MinePhysicsInfo` (
+  `id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '样品号',
+  `type` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
+  `trueDensity` double DEFAULT NULL COMMENT '密度',
+  `apparentPorosity` double DEFAULT NULL COMMENT '气孔率',
+  `waterAbsorption` double DEFAULT NULL COMMENT '吸水率',
+  `bending` double DEFAULT NULL COMMENT '高温抗折强度',
+  `resistance` double DEFAULT NULL COMMENT '热震稳定性系数',
+  `slag` double DEFAULT NULL COMMENT '抗渣性系数',
+  `alkali` double DEFAULT NULL COMMENT '耐碱性系数',
+  `refractoriness` double DEFAULT NULL COMMENT '荷重软化温度',
+  `heat` double DEFAULT NULL COMMENT '导热系数',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='物理性能数据';
+
+--
+-- Dumping data for table `MinePhysicsInfo`
+--
+
+LOCK TABLES `MinePhysicsInfo` WRITE;
+INSERT INTO `MinePhysicsInfo` VALUES ('11Y3:9-1','砂泥质大块炉衬',2.612,39.5,24.8,null,null,null,null,null,null);
+UNLOCK TABLES;
+
+--
+-- Table structure for table `MineThermalInfo`
+--
+
+CREATE TABLE `MineThermalInfo` (
+  `id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '样品号',
+  `melting` double DEFAULT NULL COMMENT '熔点',
+  `fireResis` double DEFAULT NULL COMMENT '耐火度',
+  `termTemper` double DEFAULT NULL COMMENT '烧成温度',
+  `data` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '原始数据（Excel）',
+  `surveImage` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '曲线图',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='热分析';
+
+--
+-- Dumping data for table `MineThermalInfo`
+--
+
+LOCK TABLES `MineThermalInfo` WRITE;
+INSERT INTO `MineThermalInfo` VALUES ('11Y3:9-1',null,1303,1015,null,null),('11Y3:9-2',null,1306,929,null,null),('11Y3:9-3',null,1307,1025,null,null);
+UNLOCK TABLES;
