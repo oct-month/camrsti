@@ -1,5 +1,3 @@
-import copy
-
 from factory import get_app
 
 __all__ = [
@@ -11,6 +9,7 @@ __all__ = [
     'MineSurveyInfo',
     'MineXRDInfo',
     'MineChemistryInfo',
+    'MineChemistryInfoSingle',
     'MinePhysicsInfo',
     'MineThermalInfo'
 ]
@@ -137,37 +136,40 @@ class MineContentInfo(db.Model):
     __tablename__ = 'MineContentInfo'
 
     id = db.Column('id', db.Unicode(30), primary_key=True)  # 样品号
-    sampleName = db.Column('sampleName', db.Unicode(50))    # 样品名称
-    clay = db.Column('clay', db.Float)                      # 粘土基质
-    quartz = db.Column('quartz', db.Float)                  # 石英粉砂
-    sand = db.Column('sand', db.JSON)                       # 砂
+    clay = db.Column('clay', db.Float)                      # 粘土
+    quartz = db.Column('quartz', db.Float)                  # 粉砂
+    sand_quartz = db.Column('sand_quartz', db.Float)        # 砂-石英
+    sand_feldspar = db.Column('sand_feldspar', db.Float)    # 砂-长石
+    sand_other = db.Column('sand_other', db.Float)          # 砂-其他矿物
     debris = db.Column('debris', db.Float)                  # 岩屑
-    hollow = db.Column('hollow', db.Float)                  # 空洞
-    other = db.Column('other', db.Float)                    # 其他
+    hollow_close = db.Column('hollow_close', db.Float)      # 空洞-闭气孔
+    hollow_open = db.Column('hollow_open', db.Float)        # 空洞-开气孔
+    hollow_through = db.Column('hollow_through', db.Float)  # 空洞-贯通气孔
 
-    def __init__(self, id=None, sampleName=None, clay=None, quartz=None, sand=None, debris=None, hollow=None, other=None):
+    def __init__(self, id=None, clay=None, quartz=None, sand_quartz=None, sand_feldspar=None, sand_other=None, debris=None, hollow_close=None, hollow_open=None, hollow_through=None):
         self.id = id
-        self.sampleName = sampleName
         self.clay = clay
         self.quartz = quartz
-        if sand is None:
-            self.sand = copy.deepcopy({'feldspar': None, 'Ominerals': None, 'quartz': None})
-        else:
-            self.sand = sand
+        self.sand_quartz = sand_quartz
+        self.sand_feldspar = sand_feldspar
+        self.sand_other = sand_other
         self.debris = debris
-        self.hollow = hollow
-        self.other = other
+        self.hollow_close = hollow_close
+        self.hollow_open = hollow_open
+        self.hollow_through = hollow_through
 
     def to_json(self):
         return {
             'id': self.id,
-            'sampleName': self.sampleName,
             'clay': self.clay,
             'quartz': self.quartz,
-            'sand': self.sand,
+            'sand_quartz': self.sand_quartz,
+            'sand_feldspar': self.sand_feldspar,
+            'sand_other': self.sand_other,
             'debris': self.debris,
-            'hollow': self.hollow,
-            'other': self.other
+            'hollow_close': self.hollow_close,
+            'hollow_open': self.hollow_open,
+            'hollow_through': self.hollow_through
         }
 
 # 矿物测量数据
@@ -175,41 +177,66 @@ class MineSurveyInfo(db.Model):
     __tablename__ = 'MineSurveyInfo'
 
     id = db.Column('id', db.Unicode(30), primary_key=True)  # 样品号
-    debrisData = db.Column('debrisData', db.JSON)           # 岩屑直径分布
-    hollowData = db.Column('hollowData', db.JSON)           # 空洞长度分布
+    debris_0um = db.Column('debris_0um', db.Float)          # 岩屑直径≤67μm
+    debris_67um = db.Column('debris_67um', db.Float)        # 岩屑直径67-167μm
+    debris_167um = db.Column('debris_167um', db.Float)      # 岩屑直径167-501μm
+    debris_501um = db.Column('debris_501um', db.Float)      # 岩屑直径501-1002μm
+    debris_1002um = db.Column('debris_1002um', db.Float)    # 岩屑直径≥1002μm
+    hollow_0um = db.Column('hollow_0um', db.Float)          # 岩屑直径≤67μm
+    hollow_67um = db.Column('hollow_67um', db.Float)        # 岩屑直径67-501μm
+    hollow_501um = db.Column('hollow_501um', db.Float)      # 岩屑直径501-1002μm
+    hollow_1002um = db.Column('hollow_1002um', db.Float)    # 岩屑直径1002-2004μm
+    hollow_2004um = db.Column('hollow_2004um', db.Float)    # 岩屑直径≥2004μm
 
-    def __init__(self, id, debrisData=None, hollowData=None):
+    def __init__(self, id=None, debris_0um=None, debris_67um=None, debris_167um=None, debris_501um=None, debris_1002um=None, hollow_0um=None, hollow_67um=None, hollow_501um=None, hollow_1002um=None, hollow_2004um=None):
         self.id = id
-        self.debrisData = debrisData
-        self.hollowData = hollowData
+        self.debris_0um = debris_0um
+        self.debris_67um = debris_67um
+        self.debris_167um = debris_167um
+        self.debris_501um = debris_501um
+        self.debris_1002um = debris_1002um
+        self.hollow_0um = hollow_0um
+        self.hollow_67um = hollow_67um
+        self.hollow_501um = hollow_501um
+        self.hollow_1002um = hollow_1002um
+        self.hollow_2004um = hollow_2004um
 
     def to_json(self):
         return {
             'id': self.id,
-            'debrisData': self.debrisData,
-            'hollowData': self.hollowData
+            'debris_0um': self.debris_0um,
+            'debris_67um': self.debris_67um,
+            'debris_167um': self.debris_167um,
+            'debris_501um': self.debris_501um,
+            'debris_1002um': self.debris_1002um,
+            'hollow_0um': self.hollow_0um,
+            'hollow_67um': self.hollow_67um,
+            'hollow_501um': self.hollow_501um,
+            'hollow_1002um': self.hollow_1002um,
+            'hollow_2004um': self.hollow_2004um
         }
 
 # XRD分析数据
 class MineXRDInfo(db.Model):
     __tablename__ = 'MineXRDInfo'
 
-    id = db.Column('id', db.Unicode(30), primary_key=True)  # 样品号
+    id = db.Column('id', db.Unicode(30), primary_key=True)  # 样品编号
     type = db.Column('type', db.Unicode(40))                # 类型
-    quartz = db.Column('quartz', db.Float)                # 石英
-    albite = db.Column('albite', db.Float)                # 钠长石
-    potashFeldspar = db.Column('potashFeldspar', db.Float)    # 钾长石
-    mica = db.Column('mica', db.Float)                    # 云母
-    amphibole = db.Column('amphibole', db.Float)          # 闪石
-    hematite = db.Column('hematite', db.Float)            # 赤铁矿
-    magnetite = db.Column('magnetite', db.Float)          # 磁铁矿
-    dolomite = db.Column('dolomite', db.Float)            # 白云石
-    analcite = db.Column('analcite', db.Float)            # 方沸石
-    tridymite = db.Column('tridymite', db.Float)          # 磷石英
-    cristobalite = db.Column('cristobalite', db.Float)    # 方石英
-    mullite = db.Column('mullite', db.Float)              # 莫来石
+    quartz = db.Column('quartz', db.Float)                  # 石英
+    albite = db.Column('albite', db.Float)                  # 钠长石
+    potashFeldspar = db.Column('potashFeldspar', db.Float)  # 钾长石
+    mica = db.Column('mica', db.Float)                      # 云母
+    amphibole = db.Column('amphibole', db.Float)            # 闪石
+    hematite = db.Column('hematite', db.Float)              # 赤铁矿
+    magnetite = db.Column('magnetite', db.Float)            # 磁铁矿
+    dolomite = db.Column('dolomite', db.Float)              # 白云石
+    analcite = db.Column('analcite', db.Float)              # 方沸石
+    tridymite = db.Column('tridymite', db.Float)            # 磷石英
+    cristobalite = db.Column('cristobalite', db.Float)      # 方石英
+    mullite = db.Column('mullite', db.Float)                # 莫来石
+    other = db.Column('other', db.Float)                    # 其他
 
-    def __init__(self, id=None, type=None, quartz=None, albite=None, potashFeldspar=None, mica=None, amphibole=None, hematite=None, magnetite=None, dolomite=None, analcite=None, tridymite=None, cristobalite=None, mullite=None):
+    def __init__(self, id=None, type=None, quartz=None, albite=None, potashFeldspar=None, mica=None, amphibole=None, hematite=None, magnetite=None, dolomite=None, analcite=None, tridymite=None, cristobalite=None, mullite=None, other=None):
         self.id = id
         self.type = type
         self.quartz = quartz
@@ -224,6 +251,7 @@ class MineXRDInfo(db.Model):
         self.tridymite = tridymite
         self.cristobalite = cristobalite
         self.mullite = mullite
+        self.other = other
 
     def to_json(self):
         return {
@@ -240,45 +268,165 @@ class MineXRDInfo(db.Model):
             'analcite': self.analcite,
             'tridymite': self.tridymite,
             'cristobalite': self.cristobalite,
-            'mullite': self.mullite
+            'mullite': self.mullite,
+            'other': self.other
         }
 
-# 化学成分数据
+# 化学成分数据（氧化物）
 class MineChemistryInfo(db.Model):
     __tablename__ = 'MineChemistryInfo'
 
     id = db.Column('id', db.Unicode(30), primary_key=True)  # 样品号
-    type = db.Column('type', db.Unicode(40))                # 类型
     Na2O = db.Column('Na2O', db.Float)
     MgO = db.Column('MgO', db.Float)
     Al2O3 = db.Column('Al2O3', db.Float)
     SiO2 = db.Column('SiO2', db.Float)
+    P2O5 = db.Column('P2O5', db.Float)
+    SO2 = db.Column('SO2', db.Float)
     K2O = db.Column('K2O', db.Float)
     CaO = db.Column('CaO', db.Float)
-    Fe2O3 = db.Column('Fe2O3', db.Float)
+    TiO2 = db.Column('TiO2', db.Float)
+    MnO = db.Column('MnO', db.Float)
+    FeO = db.Column('FeO', db.Float)
+    CuO = db.Column('CuO', db.Float)
+    ZnO = db.Column('ZnO', db.Float)
+    As2O3 = db.Column('As2O3', db.Float)
+    SnO2 = db.Column('SnO2', db.Float)
+    PbO = db.Column('PbO', db.Float)
+    other = db.Column('other', db.Float)                    # 其他
 
-    def __init__(self, id=None, type=None, Na2O=None, MgO=None, Al2O3=None, SiO2=None, K2O=None, CaO=None, Fe2O3=None):
+    def __init__(self, id=None, Na2O=None, MgO=None, Al2O3=None, SiO2=None, P2O5=None, SO2=None, K2O=None, CaO=None, TiO2=None, MnO=None, FeO=None, CuO=None, ZnO=None, As2O3=None, SnO2=None, PbO=None, other=None):
         self.id = id
-        self.type = type
         self.Na2O = Na2O
         self.MgO = MgO
         self.Al2O3 = Al2O3
         self.SiO2 = SiO2
+        self.P2O5 = P2O5
+        self.SO2 = SO2
         self.K2O = K2O
         self.CaO = CaO
-        self.Fe2O3 = Fe2O3
+        self.TiO2 = TiO2
+        self.MnO = MnO
+        self.FeO = FeO
+        self.CuO = CuO
+        self.ZnO = ZnO
+        self.As2O3 = As2O3
+        self.SnO2 = SnO2
+        self.PbO = PbO
+        self.other = other
     
     def to_json(self):
         return {
             'id': self.id,
-            'type': self.type,
             'Na2O': self.Na2O,
             'MgO': self.MgO,
             'Al2O3': self.Al2O3,
             'SiO2': self.SiO2,
+            'P2O5': self.P2O5,
+            'SO2': self.SO2,
             'K2O': self.K2O,
             'CaO': self.CaO,
-            'Fe2O3': self.Fe2O3
+            'TiO2': self.TiO2,
+            'MnO': self.MnO,
+            'FeO': self.FeO,
+            'CuO': self.CuO,
+            'ZnO': self.ZnO,
+            'As2O3': self.As2O3,
+            'SnO2': self.SnO2,
+            'PbO': self.PbO,
+            'other': self.other
+        }
+
+# 化学成分数据（单质）
+class MineChemistryInfoSingle(db.Model):
+    __tablename__ = 'MineChemistryInfoSingle'
+
+    id = db.Column('id', db.Unicode(30), primary_key=True)  # 样品号
+    C = db.Column('C', db.Float)
+    Na = db.Column('Na', db.Float)
+    Mg = db.Column('Mg', db.Float)
+    Al = db.Column('Al', db.Float)
+    Si = db.Column('Si', db.Float)
+    P = db.Column('P', db.Float)
+    S = db.Column('S', db.Float)
+    Cl = db.Column('Cl', db.Float)
+    K = db.Column('K', db.Float)
+    Ca = db.Column('Ca', db.Float)
+    Ti = db.Column('Ti', db.Float)
+    V = db.Column('V', db.Float)
+    Mn = db.Column('Mn', db.Float)
+    Fe = db.Column('Fe', db.Float)
+    Co = db.Column('Co', db.Float)
+    Ni = db.Column('Ni', db.Float)
+    Cu = db.Column('Cu', db.Float)
+    Zn = db.Column('Zn', db.Float)
+    As = db.Column('As', db.Float)
+    Ag = db.Column('Ag', db.Float)
+    Sn = db.Column('Sn', db.Float)
+    Sb = db.Column('Sb', db.Float)
+    Au = db.Column('Au', db.Float)
+    Hg = db.Column('Hg', db.Float)
+    Pb = db.Column('Pb', db.Float)
+    other = db.Column('other', db.Float)                    # 其他
+
+    def __init__(self, id=None, C=None, Na=None, Mg=None, Al=None, Si=None, P=None, S=None, Cl=None, K=None, Ca=None, Ti=None, V=None, Mn=None, Fe=None, Co=None, Ni=None, Cu=None, Zn=None, As=None, Ag=None, Sn=None, Sb=None, Au=None, Hg=None, Pb=None, other=None):
+        self.id = id
+        self.C = C
+        self.Na = Na
+        self.Mg = Mg
+        self.Al = Al
+        self.Si = Si
+        self.P = P
+        self.S = S
+        self.Cl = Cl
+        self.K = K
+        self.Ca = Ca
+        self.Ti = Ti
+        self.V = V
+        self.Mn = Mn
+        self.Fe = Fe
+        self.Co = Co
+        self.Ni = Ni
+        self.Cu = Cu
+        self.Zn = Zn
+        self.As = As
+        self.Ag = Ag
+        self.Sn = Sn
+        self.Sb = Sb
+        self.Au = Au
+        self.Hg = Hg
+        self.Pb = Pb
+        self.other = other
+    
+    def to_json(self):
+        return {
+            'id': self.id,
+            'C': self.C,
+            'Na': self.Na,
+            'Mg': self.Mg,
+            'Al': self.Al,
+            'Si': self.Si,
+            'P': self.P,
+            'S': self.S,
+            'Cl': self.Cl,
+            'K': self.K,
+            'Ca': self.Ca,
+            'Ti': self.Ti,
+            'V': self.V,
+            'Mn': self.Mn,
+            'Fe': self.Fe,
+            'Co': self.Co,
+            'Ni': self.Ni,
+            'Cu': self.Cu,
+            'Zn': self.Zn,
+            'As': self.As,
+            'Ag': self.Ag,
+            'Sn': self.Sn,
+            'Sb': self.Sb,
+            'Au': self.Au,
+            'Hg': self.Hg,
+            'Pb': self.Pb,
+            'other': self.other
         }
 
 # 物理结构数据
@@ -287,48 +435,69 @@ class MinePhysicsInfo(db.Model):
 
     id = db.Column('id', db.Unicode(30), primary_key=True)      # 样品号
     type = db.Column('type', db.Unicode(40))                    # 类型
-    apparentPorosity = db.Column('apparentPorosity', db.Float) # 显气孔率
-    trueDensity = db.Column('trueDensity', db.Float)           # 真密度
-    waterAbsorption = db.Column('waterAbsorption', db.Float)   # 吸水率
+    trueDensity = db.Column('trueDensity', db.Float)            # 密度
+    apparentPorosity = db.Column('apparentPorosity', db.Float)  # 气孔率
+    waterAbsorption = db.Column('waterAbsorption', db.Float)    # 吸水率
+    bending = db.Column('bending', db.Float)                    # 高温抗折强度
+    resistance = db.Column('resistance', db.Float)              # 热震稳定性系数
+    slag = db.Column('slag', db.Float)                          # 抗渣性系数
+    alkali = db.Column('alkali', db.Float)                      # 耐碱性系数
+    refractoriness = db.Column('refractoriness', db.Float)      # 荷重软化温度
+    heat = db.Column('heat', db.Float)                          # 导热系数
 
-    def __init__(self, id=None, type=None, apparentPorosity=None, trueDensity=None, waterAbsorption=None):
+    def __init__(self, id=None, type=None, trueDensity=None, apparentPorosity=None, waterAbsorption=None, bending=None, resistance=None, slag=None, alkali=None, refractoriness=None, heat=None):
         self.id = id
         self.type = type
-        self.apparentPorosity = apparentPorosity
         self.trueDensity = trueDensity
+        self.apparentPorosity = apparentPorosity
         self.waterAbsorption = waterAbsorption
+        self.bending = bending
+        self.resistance = resistance
+        self.slag = slag
+        self.alkali = alkali
+        self.refractoriness = refractoriness
+        self.heat = heat
     
     def to_json(self):
         return {
             'id': self.id,
             'type': self.type,
-            'apparentPorosity': self.apparentPorosity,
             'trueDensity': self.trueDensity,
-            'waterAbsorption': self.waterAbsorption
+            'apparentPorosity': self.apparentPorosity,
+            'waterAbsorption': self.waterAbsorption,
+            'bending': self.bending,
+            'resistance': self.resistance,
+            'slag': self.slag,
+            'alkali': self.alkali,
+            'refractoriness': self.refractoriness,
+            'heat': self.heat
         }
 
 # 热分析
 class MineThermalInfo(db.Model):
     __tablename__ = 'MineThermalInfo'
 
-    id = db.Column('id', db.Unicode(30), primary_key=True)   # 样品号
-    termTemper = db.Column('termTemper', db.Float)         # 终止温度
-    fireResis = db.Column('fireResis', db.Float)           # 耐火度
-    data = db.Column('data', db.Unicode(100))                       # 热分析数据
-    surveImage = db.Column('surveImage', db.Unicode(100))   # 热分析曲线
+    id = db.Column('id', db.Unicode(30), primary_key=True)  # 样品号
+    melting = db.Column('melting', db.Float)                # 熔点
+    fireResis = db.Column('fireResis', db.Float)            # 耐火度
+    termTemper = db.Column('termTemper', db.Float)          # 烧成温度
+    data = db.Column('data', db.Unicode(100))               # 原始数据
+    surveImage = db.Column('surveImage', db.Unicode(100))   # 曲线图
 
-    def __init__(self, id=None, termTemper=None, fireResis=None, data=None, surveImage=None):
+    def __init__(self, id=None, melting=None, fireResis=None, termTemper=None, data=None, surveImage=None):
         self.id = id
-        self.termTemper = termTemper
+        self.melting = melting
         self.fireResis = fireResis
+        self.termTemper = termTemper
         self.data = data
         self.surveImage = surveImage
     
     def to_json(self):
         return {
             'id': self.id,
-            'termTemper': self.termTemper,
+            'melting': self.melting,
             'fireResis': self.fireResis,
+            'termTemper': self.termTemper,
             'data': self.data,
             'surveImage': self.surveImage
         }
