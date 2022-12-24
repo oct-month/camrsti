@@ -41,11 +41,28 @@ const upload2 = multer({
     }
 })
 
+const upload3 = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 8 * 1024 * 1024   // 限制8MB
+    },
+    fileFilter(req, file, cb) {
+        var re = /(\.xls|\.xlsx)$/i
+        if (file.originalname.match(re)) {
+            cb(null, true)
+        }
+        else {
+            cb(new Error('仅支持txt文件'), false)
+        }
+    }
+})
+
 const app = express()
 
 // 静态资源 BaseUrl/api/image/*.png
 app.use('/api/image', express.static(__dirname + '/public/images'))
 app.use('/api/txt', express.static(__dirname + '/public/txts'))
+app.use('/api/excel', express.static(__dirname + '/public/excels'))
 
 // 跨域
 if (process.env.NODE_ENV !== 'product') {
@@ -60,7 +77,6 @@ app.post('/api/image', (req, res, next) => {
     upload.array('upload')(req, res, (err) => {
         if (err) {
             res.json({
-                status: 400,
                 msg: err.message
             }, 400)
         }
@@ -77,9 +93,8 @@ app.post('/api/image', (req, res, next) => {
                 fs.writeFileSync(filepath, v.buffer)
             })
             res.json({
-                status: 200,
                 data: filenames
-            })
+            }, 200)
         }
     })
 })
@@ -88,7 +103,6 @@ app.post('/api/txt', (req, res, next) => {
     upload2.single('upload')(req, res, (err) => {
         if (err) {
             res.json({
-                status: 400,
                 msg: err.message
             }, 400)
         }
@@ -101,13 +115,33 @@ app.post('/api/txt', (req, res, next) => {
             }
             fs.writeFileSync(filepath, req.file.buffer)
             res.json({
-                status: 200,
                 data: filename
-            })
+            }, 200)
         }
     })
 })
 
+app.post('/api/excel', (req, res, next) => {
+    upload3.single('upload')(req, res, (err) => {
+        if (err) {
+            res.json({
+                msg: err.message
+            }, 400)
+        }
+        else {
+            var date = new Date().toISOString().replaceAll(':', '')
+            var filename = `EXCEL_${date}` + path.extname(req.file.originalname)
+            var filepath = path.join(__dirname, 'public/excels', filename)
+            if (fs.existsSync(filepath)) {
+                logger.warn(`--${filepath}-- 已存在`)
+            }
+            fs.writeFileSync(filepath, req.file.buffer)
+            res.json({
+                data: filename
+            }, 200)
+        }
+    })
+})
 
 app.listen(config.serverPort, () => {
     logger.debug(`Server start on http://127.0.0.1:${config.serverPort}`)

@@ -139,11 +139,10 @@ def delete_sampleinfos():
     }, 200
 
 # 更改特定样本信息
-@app.route('/api/sampleinfo', methods=['PUT'])
+@app.route('/api/sampleinfo/<sampleId>', methods=['PUT'])
 @login_needed
-def modify_sampleinfo():
+def modify_sampleinfo(sampleId):
     sampleInfo_json = json.loads(request.data)
-    sampleId = sampleInfo_json.get('id')
     sampleInfo = get_sampleinfo_dao(sampleId)
     if sampleInfo is None:
         abort(404)
@@ -253,7 +252,7 @@ def add_microview_item(microId):
     }, 200
 
 # 修改特定显微数据的条目
-@app.route('/api/microview/<id>', methods=['PUT'])
+@app.route('/api/microviewdata/<id>', methods=['PUT'])
 @login_needed
 def set_microview_item(id):
     imD_json = json.loads(request.data)
@@ -268,7 +267,7 @@ def set_microview_item(id):
     return '', 200
 
 # 删除特定显微数据的条目
-@app.route('/api/microview/<id>', methods=['DELETE'])
+@app.route('/api/microviewdata/<id>', methods=['DELETE'])
 @login_needed
 def delete_microview_item(id):
     imD = MicroViewData.query.filter_by(id=id).first()
@@ -564,7 +563,7 @@ def delete_mine_chemistry_info_single(id):
     db.session.commit()
     return '', 200
 
-# 获取全部样本的物理结构数据
+# 获取全部样本的物理性能数据
 @app.route('/api/minephysicsinfo', methods=['GET'])
 @login_needed
 def get_mine_physics_all():
@@ -573,7 +572,7 @@ def get_mine_physics_all():
         'data': [physics_info.to_json() for physics_info in physics_infos] if physics_infos != None else []
     }, 200
 
-# 获取特定样本的物理结构数据
+# 获取特定样本的物理性能数据
 @app.route('/api/minephysicsinfo/<sampleId>', methods=['GET'])
 @login_needed
 def get_mine_physics_info(sampleId):
@@ -584,7 +583,7 @@ def get_mine_physics_info(sampleId):
         'data': physics_info.to_json()
     }, 200
 
-# 修改特定样本的物理结构数据
+# 修改特定样本的物理性能数据
 @app.route('/api/minephysicsinfo/<id>', methods=['PUT'])
 @login_needed
 def set_mine_physics_info(id):

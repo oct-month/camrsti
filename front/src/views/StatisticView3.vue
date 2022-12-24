@@ -84,7 +84,7 @@ export default {
           }
         })
           .then(res => {
-            if (res.status == 200 && res.data.status == 200) {
+            if (res.status == 200) {
               this.mineXRDInfos.push.apply(this.mineXRDInfos, res.data.data)
             }
             else {
@@ -100,7 +100,7 @@ export default {
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.mineXRDInfos = res.data.data
           }
           else {

@@ -86,7 +86,7 @@ export default {
           }
         })
           .then(res => {
-            if (res.status == 200 && res.data.status == 200) {
+            if (res.status == 200) {
               this.mineContentInfos.push.apply(this.mineContentInfos, res.data.data)
             }
             else {
@@ -102,7 +102,7 @@ export default {
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.mineContentInfos = res.data.data
           }
           else {

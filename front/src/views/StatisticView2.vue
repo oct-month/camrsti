@@ -87,7 +87,7 @@ export default {
           }
         })
           .then(res => {
-            if (res.status == 200 && res.data.status == 200) {
+            if (res.status == 200) {
               this.mineSurveyInfos.push.apply(this.mineSurveyInfos, res.data.data)
             }
             else {
@@ -103,7 +103,7 @@ export default {
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.mineSurveyInfos = res.data.data
           }
           else {

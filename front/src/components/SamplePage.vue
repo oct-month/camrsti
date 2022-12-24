@@ -1,9 +1,9 @@
 <template>
   <div id="SampleView">
-    <!-- 物理结构数据 -->
+    <!-- 物理性能数据 -->
     <el-descriptions
       class="margin-top"
-      title="物理结构数据"
+      title="物理性能数据"
       :column="2"
       :labelStyle="{width: '15%'}"
       :contentStyle="{width: '35%'}"
@@ -26,18 +26,18 @@
       <el-descriptions-item>
         <template slot="label">
           <i class="el-icon-document"></i>
-          显气孔率（%）
+          密度（g/cm3）
         </template>
-        <el-input v-if="physicalInfoFlag" v-model="physicalInfo_E.apparentPorosity" @change="phyInputValid('apparentPorosity')"></el-input>
-        <span v-else>{{ physicalInfo ? physicalInfo.apparentPorosity : '无' }}</span>
+        <el-input v-if="physicalInfoFlag" v-model="physicalInfo_E.trueDensity" @change="phyInputValid('trueDensity')"></el-input>
+        <span v-else>{{ physicalInfo ? physicalInfo.trueDensity : '无' }}</span>
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">
           <i class="el-icon-document"></i>
-          真密度（g/cm3）
+          气孔率（%）
         </template>
-        <el-input v-if="physicalInfoFlag" v-model="physicalInfo_E.trueDensity" @change="phyInputValid('trueDensity')"></el-input>
-        <span v-else>{{ physicalInfo ? physicalInfo.trueDensity : '无' }}</span>
+        <el-input v-if="physicalInfoFlag" v-model="physicalInfo_E.apparentPorosity" @change="phyInputValid('apparentPorosity')"></el-input>
+        <span v-else>{{ physicalInfo ? physicalInfo.apparentPorosity : '无' }}</span>
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">
@@ -46,6 +46,54 @@
         </template>
         <el-input v-if="physicalInfoFlag" v-model="physicalInfo_E.waterAbsorption" @change="phyInputValid('waterAbsorption')"></el-input>
         <span v-else>{{ physicalInfo ? physicalInfo.waterAbsorption : '无' }}</span>
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          <i class="el-icon-document"></i>
+          高温抗折强度
+        </template>
+        <el-input v-if="physicalInfoFlag" v-model="physicalInfo_E.bending" @change="phyInputValid('bending')"></el-input>
+        <span v-else>{{ physicalInfo ? physicalInfo.bending : '无' }}</span>
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          <i class="el-icon-document"></i>
+          热震稳定性系数
+        </template>
+        <el-input v-if="physicalInfoFlag" v-model="physicalInfo_E.resistance" @change="phyInputValid('resistance')"></el-input>
+        <span v-else>{{ physicalInfo ? physicalInfo.resistance : '无' }}</span>
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          <i class="el-icon-document"></i>
+          抗渣性系数
+        </template>
+        <el-input v-if="physicalInfoFlag" v-model="physicalInfo_E.slag" @change="phyInputValid('slag')"></el-input>
+        <span v-else>{{ physicalInfo ? physicalInfo.slag : '无' }}</span>
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          <i class="el-icon-document"></i>
+          耐碱性系数
+        </template>
+        <el-input v-if="physicalInfoFlag" v-model="physicalInfo_E.alkali" @change="phyInputValid('alkali')"></el-input>
+        <span v-else>{{ physicalInfo ? physicalInfo.alkali : '无' }}</span>
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          <i class="el-icon-document"></i>
+          荷重软化温度
+        </template>
+        <el-input v-if="physicalInfoFlag" v-model="physicalInfo_E.refractoriness" @change="phyInputValid('refractoriness')"></el-input>
+        <span v-else>{{ physicalInfo ? physicalInfo.refractoriness : '无' }}</span>
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          <i class="el-icon-document"></i>
+          导热系数
+        </template>
+        <el-input v-if="physicalInfoFlag" v-model="physicalInfo_E.heat" @change="phyInputValid('heat')"></el-input>
+        <span v-else>{{ physicalInfo ? physicalInfo.heat : '无' }}</span>
       </el-descriptions-item>
     </el-descriptions>
 
@@ -94,12 +142,13 @@
         <div v-else-if="jinxiang">
           <el-popover trigger="hover" placement="top" v-for="iid in jinxiang.sampleImage" :key="iid">
             <el-image
-                style="height: 200px"
-                :src="'/api/image/' + iid"
-                fit="contain">
-                <div slot="error" class="image-slot">
-                  <i class="el-icon-picture-outline"></i>
-                </div>
+              v-if="iid"
+              style="height: 200px"
+              :src="'/api/image/' + iid"
+              fit="contain">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline"></i>
+              </div>
             </el-image>
             <div slot="reference" class="name-wrapper">
               <span style="text-decoration: underline; color: #409EAF">{{ iid }} </span>
@@ -177,11 +226,11 @@
               :on-success="itemHandleUploadSuccess"
               :on-error="handleUploadError"
               :auto-upload="true">
-              <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+              <el-button slot="trigger" size="small" type="primary">选取图片</el-button>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过4MB</div>
             </el-upload>
             <el-image
-              v-else
+              v-else-if="scope.row.image"
               style="height: 200px"
               :src="'/api/image/' + scope.row.image"
               fit="contain">
@@ -273,12 +322,13 @@
         <div v-else-if="kuangxiang">
           <el-popover trigger="hover" placement="top" v-for="iid in kuangxiang.sampleImage" :key="iid">
             <el-image
-                style="height: 200px"
-                :src="'/api/image/' + iid"
-                fit="contain">
-                <div slot="error" class="image-slot">
-                  <i class="el-icon-picture-outline"></i>
-                </div>
+              v-if="iid"
+              style="height: 200px"
+              :src="'/api/image/' + iid"
+              fit="contain">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline"></i>
+              </div>
             </el-image>
             <div slot="reference" class="name-wrapper">
               <span style="text-decoration: underline; color: #409EAF">{{ iid }} </span>
@@ -360,7 +410,7 @@
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过4MB</div>
             </el-upload>
             <el-image
-              v-else
+              v-else-if="scope.row.image"
               style="height: 200px"
               :src="'/api/image/' + scope.row.image"
               fit="contain">
@@ -452,12 +502,13 @@
         <div v-else-if="dianzi">
           <el-popover trigger="hover" placement="top" v-for="iid in dianzi.sampleImage" :key="iid">
             <el-image
-                style="height: 200px"
-                :src="'/api/image/' + iid"
-                fit="contain">
-                <div slot="error" class="image-slot">
-                  <i class="el-icon-picture-outline"></i>
-                </div>
+              v-if="iid"
+              style="height: 200px"
+              :src="'/api/image/' + iid"
+              fit="contain">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline"></i>
+              </div>
             </el-image>
             <div slot="reference" class="name-wrapper">
               <span style="text-decoration: underline; color: #409EAF">{{ iid }} </span>
@@ -539,7 +590,7 @@
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过4MB</div>
             </el-upload>
             <el-image
-              v-else
+              v-else-if="scope.row.image"
               style="height: 200px"
               :src="'/api/image/' + scope.row.image"
               fit="contain">
@@ -671,7 +722,7 @@ export default {
       }
     })
       .then((res) => {
-        if (res.status == 200 && res.data.status == 200) {
+        if (res.status == 200) {
           var microInfos = res.data.data
           microInfos.forEach(v => {
             switch (v.type) {
@@ -700,7 +751,7 @@ export default {
       }
     })
       .then((res) => {
-        if (res.status == 200 && res.data.status == 200) {
+        if (res.status == 200) {
           this.physicalInfo = res.data.data
         }
         else {
@@ -715,11 +766,16 @@ export default {
       }
       else {
         this.physicalInfo_E = {
-          id: this.sampleId,
-          type: '',
-          apparentPorosity: '',
-          trueDensity: '',
-          waterAbsorption: ''
+          type: null,
+          trueDensity: null,
+          apparentPorosity: null,
+          waterAbsorption: null,
+          bending: null,
+          resistance: null,
+          slag: null,
+          alkali: null,
+          refractoriness: null,
+          heat: null
         }
       }
       this.physicalInfoFlag = true
@@ -742,19 +798,25 @@ export default {
     },
     submitPhysicalInfoEdit() {
       this.physicalInfo_E.type = this.physicalInfo_E.type.trim()
-      this.physicalInfo_E.apparentPorosity = Number(this.physicalInfo_E.apparentPorosity)
-      this.physicalInfo_E.trueDensity = Number(this.physicalInfo_E.trueDensity)
-      this.physicalInfo_E.waterAbsorption = Number(this.physicalInfo_E.waterAbsorption)
-      this.axios.put('/api/minephysicsinfo', this.physicalInfo_E, {
+      this.physicalInfo_E.trueDensity = this.physicalInfo_E.trueDensity ? Number(this.physicalInfo_E.trueDensity) : null
+      this.physicalInfo_E.apparentPorosity = this.physicalInfo_E.apparentPorosity ? Number(this.physicalInfo_E.apparentPorosity) : null
+      this.physicalInfo_E.waterAbsorption = this.physicalInfo_E.waterAbsorption ? Number(this.physicalInfo_E.waterAbsorption) : null
+      this.physicalInfo_E.bending = this.physicalInfo_E.bending ? Number(this.physicalInfo_E.bending) : null
+      this.physicalInfo_E.resistance = this.physicalInfo_E.resistance ? Number(this.physicalInfo_E.resistance) : null
+      this.physicalInfo_E.slag = this.physicalInfo_E.slag ? Number(this.physicalInfo_E.slag) : null
+      this.physicalInfo_E.alkali = this.physicalInfo_E.alkali ? Number(this.physicalInfo_E.alkali) : null
+      this.physicalInfo_E.refractoriness = this.physicalInfo_E.refractoriness ? Number(this.physicalInfo_E.refractoriness) : null
+      this.physicalInfo_E.heat = this.physicalInfo_E.heat ? Number(this.physicalInfo_E.heat) : null
+      this.axios.put('/api/minephysicsinfo/' + this.sampleId, this.physicalInfo_E, {
         params: {
           token: this.token
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.physicalInfo =this.physicalInfo_E
             this.physicalInfo_E = null
-            this.$message.success('修改' + this.sampleId+ '物理结构数据成功！')
+            this.$message.success('修改' + this.sampleId + '物理性能数据成功！')
           }
           else {
             this.$message.error('出错啦！')
@@ -776,8 +838,7 @@ export default {
           sampleImage: [],
           sampleDescribe: '',
           device: '',
-          imageData: [],
-          sampleId: this.sampleId
+          imageData: []
         }
       }
       this.jinxiangFlag = true
@@ -789,13 +850,13 @@ export default {
         this.jinxiang_E.sampleImage = this.jinxiang_E_up1
         this.jinxiang_E_up1 = []
       }
-      this.axios.put('/api/microview', this.jinxiang_E, {
+      this.axios.put('/api/microview/' + this.sampleId, this.jinxiang_E, {
         params: {
           token: this.token
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.jinxiang = this.jinxiang_E
             this.jinxiang.id = res.data.id
             this.jinxiang_E = null
@@ -829,8 +890,7 @@ export default {
           sampleImage: [],
           sampleDescribe: '',
           device: '',
-          imageData: [],
-          sampleId: this.sampleId
+          imageData: []
         }
       }
       this.kuangxiangFlag = true
@@ -842,13 +902,13 @@ export default {
         this.kuangxiang_E.sampleImage = this.kuangxiang_E_up1
         this.kuangxiang_E_up1 = []
       }
-      this.axios.put('/api/microview', this.kuangxiang_E, {
+      this.axios.put('/api/microview/' + this.sampleId, this.kuangxiang_E, {
         params: {
           token: this.token
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.kuangxiang = this.kuangxiang_E
             this.kuangxiang.id = res.data.id
             this.kuangxiang_E = null
@@ -879,8 +939,7 @@ export default {
           sampleImage: [],
           sampleDescribe: '',
           device: '',
-          imageData: [],
-          sampleId: this.sampleId
+          imageData: []
         }
       }
       this.dianziFlag = true
@@ -892,13 +951,13 @@ export default {
         this.dianzi_E.sampleImage = this.dianzi_E_up1
         this.dianzi_E_up1 = []
       }
-      this.axios.put('/api/microview', this.dianzi_E, {
+      this.axios.put('/api/microview/' + this.sampleId, this.dianzi_E, {
         params: {
           token: this.token
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.dianzi = this.dianzi_E
             this.dianzi.id = res.data.id
             this.dianzi_E = null
@@ -953,7 +1012,7 @@ export default {
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.jinxiangItem_E.id = res.data.id
             this.jinxiang.imageData.push(this.jinxiangItem_E)
             this.jinxiangItem_E = null
@@ -1005,7 +1064,7 @@ export default {
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.kuangxiangItem_E.id = res.data.id
             this.kuangxiang.imageData.push(this.kuangxiangItem_E)
             this.kuangxiangItem_E = null
@@ -1057,7 +1116,7 @@ export default {
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.dianziItem_E.id = res.data.id
             this.dianzi.imageData.push(this.dianziItem_E)
             this.dianziItem_E = null
@@ -1159,13 +1218,13 @@ export default {
       this.editItemModel[id] = false
     },
     deleteItem(id) {
-      this.axios.delete('/api/microview/' + id, {
+      this.axios.delete('/api/microviewdata/' + id, {
         params: {
           token: this.token
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.deleteDialogVisible[id] = false
             this.removeItem(id)
             this.$message.success('删除成功！')
@@ -1177,13 +1236,13 @@ export default {
     },
     submitItemEdit(id) {
       this.nowEditItem.zoom = Number(this.nowEditItem.zoom)
-      this.axios.put('/api/microview/' + id, this.nowEditItem, {
+      this.axios.put('/api/microviewdata/' + id, this.nowEditItem, {
         params: {
           token: this.token
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.setItem(this.nowEditItem)
             this.nowEditItem = null
             this.editItemModel[id] = false

@@ -23,6 +23,12 @@ module.exports = defineConfig({
         secure: false,
         changeOrigin: true
       },
+      '/api/excel': {
+        target: 'http://127.0.0.1:8082',
+        ws: false,
+        secure: false,
+        changeOrigin: true
+      },
       '/api': {
         target: 'http://127.0.0.1:8081',
         ws: true,

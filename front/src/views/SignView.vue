@@ -102,7 +102,7 @@ export default {
           passwd: this.passwd
         })
           .then(res => {
-            if (res.status == 200 && res.data.status == 200) {
+            if (res.status == 200) {
               this.token = res.data.token
               this.$message.success('登录成功!')
               this.$cookies.set('username', this.username)

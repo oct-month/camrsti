@@ -152,7 +152,7 @@ export default {
             }
           })
             .then(res => {
-              if (res.status == 200 && res.data.status == 200) {
+              if (res.status == 200) {
                 this.$message.success('添加成功!')
                 this.$refs.form.resetFields()
                 this.form = {

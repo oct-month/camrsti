@@ -429,7 +429,7 @@ class MineChemistryInfoSingle(db.Model):
             'other': self.other
         }
 
-# 物理结构数据
+# 物理性能数据
 class MinePhysicsInfo(db.Model):
     __tablename__ = 'MinePhysicsInfo'
 

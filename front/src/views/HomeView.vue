@@ -413,7 +413,7 @@ export default {
       }
     })
       .then(res => {
-        if (res.status ==200 && res.data.status == 200) {
+        if (res.status ==200) {
           this.sampleInfos = res.data.data.reverse()
           this.$store.commit('setSampleInfos', res.data.data)
           this.sampleInfos.forEach(v => {
@@ -606,7 +606,7 @@ export default {
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.sampleInfos = this.sampleInfos.filter(v => v.id != sampleId)
             this.$message.success('删除' + sampleId + '成功！')
           }
@@ -659,13 +659,13 @@ export default {
         this.nowEditSampleInfo.imageId = this.uploadFileList
       }
       this.uploadFileList = []
-      this.axios.put('/api/sampleinfo', this.nowEditSampleInfo, {
+      this.axios.put('/api/sampleinfo/' + this.nowEditSampleInfo.id, this.nowEditSampleInfo, {
         params: {
           token: this.token
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.sampleInfos.forEach((v, i) => {
               if (v.id == sampleId) {
                 this.$set(this.sampleInfos, i, this.nowEditSampleInfo)
@@ -937,7 +937,7 @@ export default {
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             let deleted_list = res.data.deleted_list
             this.sampleInfos = this.sampleInfos.filter(v => !deleted_list.includes(v.id))
             this.multiDeleteDialogVisible = false

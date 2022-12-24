@@ -5,3 +5,4 @@ node_modules/
 public/*
 !public/uploads/.keep
 !public/txts/.keep
+!public/excels/.keep

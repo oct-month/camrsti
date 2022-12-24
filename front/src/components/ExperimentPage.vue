@@ -7,16 +7,8 @@
       stripe
       border
       style="width: 100%">
-      <el-table-column prop="id" label="样品号" width="110"></el-table-column>
-      <el-table-column prop="sampleName" label="样品名称" width="90">
-        <template slot-scope="scope">
-          <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.sampleName"></el-input>
-          <span v-else>
-            {{ scope.row.sampleName }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="clay" label="黏土基质" miniwidth="100">
+      <el-table-column prop="id" label="样品号"></el-table-column>
+      <el-table-column prop="clay" label="黏土">
         <template slot-scope="scope">
           <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.clay"></el-input>
           <span v-else>
@@ -24,7 +16,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="quartz" label="石英粉砂" miniwidth="100">
+      <el-table-column prop="quartz" label="粉砂">
         <template slot-scope="scope">
           <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.quartz"></el-input>
           <span v-else>
@@ -33,37 +25,37 @@
         </template>
       </el-table-column>
       <el-table-column label="砂">
-        <el-table-column prop="sand.quartz" label="石英" miniwidth="100">
+        <el-table-column prop="sand_quartz" label="石英">
           <template slot-scope="scope">
-            <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.sand.quartz"></el-input>
+            <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.sand_quartz"></el-input>
             <span v-else>
-              {{ scope.row.sand.quartz }}
+              {{ scope.row.sand_quartz }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="sand.feldspar" label="长石" miniwidth="100">
+        <el-table-column prop="sand_feldspar" label="长石">
           <template slot-scope="scope">
-            <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.sand.feldspar"></el-input>
+            <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.sand_feldspar"></el-input>
             <span v-else>
-              {{ scope.row.sand.feldspar }}
+              {{ scope.row.sand_feldspar }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="sand.Ominerals" label="其他矿物" miniwidth="100">
+        <el-table-column prop="sand_other" label="其他矿物">
           <template slot-scope="scope">
-            <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.sand.Ominerals"></el-input>
+            <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.sand_other"></el-input>
             <span v-else>
-              {{ scope.row.sand.Ominerals }}
+              {{ scope.row.sand_other }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="小计" miniwidth="100">
+        <el-table-column label="小计">
           <template slot-scope="scope">
-            <span v-if="!editContentModel[scope.row.id]">{{ sum(Object.values(scope.row.sand)) }}</span>
+            <span v-if="!editContentModel[scope.row.id]">{{ sum([scope.row.sand_quartz, scope.row.sand_feldspar, scope.row.sand_other]) }}</span>
           </template>
         </el-table-column>
       </el-table-column>
-      <el-table-column prop="debris" label="岩屑" miniwidth="100">
+      <el-table-column prop="debris" label="岩屑">
         <template slot-scope="scope">
           <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.debris"></el-input>
           <span v-else>
@@ -71,23 +63,33 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="hollow" label="空洞" miniwidth="100">
-        <template slot-scope="scope">
-          <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.hollow"></el-input>
-          <span v-else>
-            {{ scope.row.hollow }}
-          </span>
-        </template>
+      <el-table-column label="空洞">
+        <el-table-column prop="hollow_close" label="闭气孔">
+          <template slot-scope="scope">
+            <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.hollow_close"></el-input>
+            <span v-else>
+              {{ scope.row.hollow_close }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="hollow_open" label="开气孔">
+          <template slot-scope="scope">
+            <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.hollow_open"></el-input>
+            <span v-else>
+              {{ scope.row.hollow_open }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="hollow_through" label="贯通气孔">
+          <template slot-scope="scope">
+            <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.hollow_through"></el-input>
+            <span v-else>
+              {{ scope.row.hollow_through }}
+            </span>
+          </template>
+        </el-table-column>
       </el-table-column>
-      <el-table-column prop="other" label="其他" miniwidth="100">
-        <template slot-scope="scope">
-          <el-input v-if="editContentModel[scope.row.id]" v-model="nowEditContent.other"></el-input>
-          <span v-else>
-            {{ scope.row.other }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="118">
+      <el-table-column label="操作" width="119">
         <template slot-scope="scope">
           <div v-if="!scope.row.temp">
             <div v-if="editContentModel[scope.row.id]" style="text-align:center;">
@@ -114,123 +116,97 @@
 
     <h4 align="left">矿物测量数据</h4>
 
-    岩屑直径分布
     <el-table
       :data="mineSurveyInfos"
       stripe
       border
       style="width: 100%">
-      <el-table-column prop="id" label="样品号" width="110"></el-table-column>
-      <el-table-column prop="debrisData.≤67μm" label="≤67μm" miniwidth="100">
-        <template slot-scope="scope">
-          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debrisData['≤67μm']"></el-input>
-          <span v-else>
-            {{ scope.row.debrisData['≤67μm'] }}
-          </span>
-        </template>
+      <el-table-column prop="id" label="样品号"></el-table-column>
+      <el-table-column label="岩屑直径分布">
+        <el-table-column prop="debris_0um" label="≤67μm">
+          <template slot-scope="scope">
+            <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debris_0um"></el-input>
+            <span v-else>
+              {{ scope.row.debris_0um }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="debris_67um" label="67-167μm">
+          <template slot-scope="scope">
+            <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debris_67um"></el-input>
+            <span v-else>
+              {{ scope.row.debris_67um }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="debris_167um" label="167-501μm">
+          <template slot-scope="scope">
+            <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debris_167um"></el-input>
+            <span v-else>
+              {{ scope.row.debris_167um }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="debris_501um" label="501-1002μm">
+          <template slot-scope="scope">
+            <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debris_501um"></el-input>
+            <span v-else>
+              {{ scope.row.debris_501um }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="debris_1002um" label="≥1002μm">
+          <template slot-scope="scope">
+            <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debris_1002um"></el-input>
+            <span v-else>
+              {{ scope.row.debris_1002um }}
+            </span>
+          </template>
+        </el-table-column>
       </el-table-column>
-      <el-table-column prop="debrisData.67-167μm" label="67-167μm" miniwidth="100">
-        <template slot-scope="scope">
-          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debrisData['67-167μm']"></el-input>
-          <span v-else>
-            {{ scope.row.debrisData['67-167μm'] }}
-          </span>
-        </template>
+      <el-table-column label="空洞长度分布">
+        <el-table-column prop="hollow_0um" label="≤67μm">
+          <template slot-scope="scope">
+            <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollow_0um"></el-input>
+            <span v-else>
+              {{ scope.row.hollow_0um }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="hollow_67um" label="67-501μm">
+          <template slot-scope="scope">
+            <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollow_67um"></el-input>
+            <span v-else>
+              {{ scope.row.hollow_67um }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="hollow_501um" label="501-1002μm">
+          <template slot-scope="scope">
+            <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollow_501um"></el-input>
+            <span v-else>
+              {{ scope.row.hollow_501um }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="hollow_1002um" label="1002-2004μm">
+          <template slot-scope="scope">
+            <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollow_1002um"></el-input>
+            <span v-else>
+              {{ scope.row.hollow_1002um }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="hollow_2004um" label="≥2004μm">
+          <template slot-scope="scope">
+            <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollow_2004um"></el-input>
+            <span v-else>
+              {{ scope.row.hollow_2004um }}
+            </span>
+          </template>
+        </el-table-column>
       </el-table-column>
-      <el-table-column prop="debrisData.167-501" label="167-501" miniwidth="100">
-        <template slot-scope="scope">
-          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debrisData['167-501']"></el-input>
-          <span v-else>
-            {{ scope.row.debrisData['167-501'] }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="debrisData.501-1002" label="501-1002" miniwidth="100">
-        <template slot-scope="scope">
-          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debrisData['501-1002']"></el-input>
-          <span v-else>
-            {{ scope.row.debrisData['501-1002'] }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="debrisData.≥1002" label="≥1002" miniwidth="100">
-        <template slot-scope="scope">
-          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.debrisData['≥1002']"></el-input>
-          <span v-else>
-            {{ scope.row.debrisData['≥1002'] }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="118">
-        <template slot-scope="scope">
-          <div v-if="!scope.row.temp">
-            <div v-if="editSurveyModel[scope.row.id]" style="text-align:center;">
-              <el-button size="small" type="success" icon="el-icon-check" circle @click="submitSurveyEdit(scope.row.id)"></el-button>
-              <el-button size="mini" type="danger" icon="el-icon-close" circle @click="cancelSurveyEdit(scope.row.id)"></el-button>
-            </div>
-            <div v-else style="text-align:center;">
-              <el-button size="mini" round plain type="warning" icon="el-icon-edit" @click="editSurvey(scope.row.id)"></el-button>
-              <el-button size="mini" round plain type="danger" icon="el-icon-delete" @click="deleteSurveyDialogVisible[scope.row.id]=true"></el-button>
-              <el-dialog title="确认" :visible.sync="deleteSurveyDialogVisible[scope.row.id]" width="30%">
-                <span>删除{{ scope.row.id }}?</span>
-                <span slot="footer" class="dialog-footer">
-                  <el-button @click="deleteSurveyDialogVisible[scope.row.id]=false">取 消</el-button>
-                  <el-button type="primary" @click="deleteSurvey(scope.row.id)">确 定</el-button>
-                </span>
-              </el-dialog>
-            </div>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
-    空洞长度分布
-    <el-table
-      :data="mineSurveyInfos"
-      stripe
-      border
-      style="width: 100%">
-      <el-table-column prop="id" label="样品号" width="110"></el-table-column>
-      <el-table-column prop="hollowData.≤167" label="≤167" miniwidth="100">
-        <template slot-scope="scope">
-          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollowData['≤167']"></el-input>
-          <span v-else>
-            {{ scope.row.hollowData['≤167'] }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="hollowData.167-501" label="167-501" miniwidth="100">
-        <template slot-scope="scope">
-          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollowData['167-501']"></el-input>
-          <span v-else>
-            {{ scope.row.hollowData['167-501'] }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="hollowData.501-1002" label="501-1002" miniwidth="100">
-        <template slot-scope="scope">
-          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollowData['501-1002']"></el-input>
-          <span v-else>
-            {{ scope.row.hollowData['501-1002'] }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="hollowData.1002-2004" label="1002-2004" miniwidth="100">
-        <template slot-scope="scope">
-          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollowData['1002-2004']"></el-input>
-          <span v-else>
-            {{ scope.row.hollowData['1002-2004'] }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="hollowData.＞2004" label="＞2004" miniwidth="100">
-        <template slot-scope="scope">
-          <el-input v-if="editSurveyModel[scope.row.id]" v-model="nowEditSurvey.hollowData['＞2004']"></el-input>
-          <span v-else>
-            {{ scope.row.hollowData['＞2004'] }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="118">
+      <el-table-column label="操作" width="119">
         <template slot-scope="scope">
           <div v-if="!scope.row.temp">
             <div v-if="editSurveyModel[scope.row.id]" style="text-align:center;">
@@ -262,86 +238,92 @@
       stripe
       border
       style="width: 100%">
-      <el-table-column prop="id" label="样品编号" width="110"></el-table-column>
-      <el-table-column prop="type" label="类型" width="90">
+      <el-table-column prop="id" label="样品编号"></el-table-column>
+      <el-table-column prop="type" label="类型">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.type"></el-input>
           <span v-else>{{ scope.row.type }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="quartz" label="石英" miniwidth="100">
+      <el-table-column prop="quartz" label="石英">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.quartz"></el-input>
           <span v-else>{{ scope.row.quartz ? scope.row.quartz * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="albite" label="钠长石" miniwidth="100">
+      <el-table-column prop="albite" label="钠长石">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.albite"></el-input>
           <span v-else>{{ scope.row.albite ? scope.row.albite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="potashFeldspar" label="钾长石" miniwidth="100">
+      <el-table-column prop="potashFeldspar" label="钾长石">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.potashFeldspar"></el-input>
           <span v-else>{{ scope.row.potashFeldspar ? scope.row.potashFeldspar * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="mica" label="云母" miniwidth="100">
+      <el-table-column prop="mica" label="云母">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.mica"></el-input>
           <span v-else>{{ scope.row.mica ? scope.row.mica * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="amphibole" label="闪石" miniwidth="100">
+      <el-table-column prop="amphibole" label="闪石">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.amphibole"></el-input>
           <span v-else>{{ scope.row.amphibole ? scope.row.amphibole * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="hematite" label="赤铁矿" miniwidth="100">
+      <el-table-column prop="hematite" label="赤铁矿">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.hematite"></el-input>
           <span v-else>{{ scope.row.hematite ? scope.row.hematite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="magnetite" label="磁铁矿" miniwidth="100">
+      <el-table-column prop="magnetite" label="磁铁矿">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.magnetite"></el-input>
           <span v-else>{{ scope.row.magnetite ? scope.row.magnetite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="dolomite" label="白云石" miniwidth="100">
+      <el-table-column prop="dolomite" label="白云石">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.dolomite"></el-input>
           <span v-else>{{ scope.row.dolomite ? scope.row.dolomite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="analcite" label="方沸石" miniwidth="100">
+      <el-table-column prop="analcite" label="方沸石">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.analcite"></el-input>
           <span v-else>{{ scope.row.analcite ? scope.row.analcite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="tridymite" label="磷石英" miniwidth="100">
+      <el-table-column prop="tridymite" label="磷石英">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.tridymite"></el-input>
           <span v-else>{{ scope.row.tridymite ? scope.row.tridymite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="cristobalite" label="方石英" miniwidth="100">
+      <el-table-column prop="cristobalite" label="方石英">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.cristobalite"></el-input>
           <span v-else>{{ scope.row.cristobalite ? scope.row.cristobalite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="mullite" label="莫来石" miniwidth="100">
+      <el-table-column prop="mullite" label="莫来石">
         <template slot-scope="scope">
           <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.mullite"></el-input>
           <span v-else>{{ scope.row.mullite ? scope.row.mullite * 100 + '%' : '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="118">
+      <el-table-column prop="other" label="其他">
+        <template slot-scope="scope">
+          <el-input v-if="editXRDModel[scope.row.id]" v-model="nowEditXRD.other"></el-input>
+          <span v-else>{{ scope.row.other ? scope.row.other * 100 + '%' : '' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="119">
         <template slot-scope="scope">
           <div v-if="editXRDModel[scope.row.id]" style="text-align:center;">
             <el-button size="small" type="success" icon="el-icon-check" circle @click="submitXRDEdit(scope.row.id)"></el-button>
@@ -363,7 +345,7 @@
     </el-table>
 
     <hr>
-
+    <!-- TODO 氧化物/单质 -->
     <h4 align="left">化学成分数据</h4>
 
     <el-table
@@ -420,7 +402,7 @@
           <span v-else>{{ scope.row.Fe2O3 }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="118">
+      <el-table-column label="操作" width="119">
         <template slot-scope="scope">
           <div v-if="editChemistryModel[scope.row.id]" style="text-align:center;">
             <el-button size="small" type="success" icon="el-icon-check" circle @click="submitChemistryEdit(scope.row.id)"></el-button>
@@ -441,6 +423,8 @@
       </el-table-column>
     </el-table>
 
+    <hr>
+
     <h4 align="left">热分析</h4>
 
     <el-table
@@ -449,39 +433,70 @@
       stripe
       border
       style="width: 100%">
-      <el-table-column prop="id" label="样品号" width="110"></el-table-column>
-      <el-table-column prop="termTemper" label="终止温度" miniwidth="100">
+      <el-table-column prop="id" label="样品号"></el-table-column>
+      <el-table-column prop="melting" label="熔点">
         <template slot-scope="scope">
-          <el-input v-if="editThermalModel[scope.row.id]" v-model="nowEditThermal.termTemper"></el-input>
-          <span v-else>{{ scope.row.termTemper }}</span>
+          <el-input v-if="editThermalModel[scope.row.id]" v-model="nowEditThermal.melting"></el-input>
+          <span v-else>{{ scope.row.melting }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="fireResis" label="耐火度" miniwidth="100">
+      <el-table-column prop="fireResis" label="耐火度">
         <template slot-scope="scope">
           <el-input v-if="editThermalModel[scope.row.id]" v-model="nowEditThermal.fireResis"></el-input>
           <span v-else>{{ scope.row.fireResis }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="data" label="热分析数据" miniwidth="100">
+      <el-table-column prop="termTemper" label="烧成温度">
+        <template slot-scope="scope">
+          <el-input v-if="editThermalModel[scope.row.id]" v-model="nowEditThermal.termTemper"></el-input>
+          <span v-else>{{ scope.row.termTemper }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="data" label="原始数据">
         <template slot-scope="scope">
           <el-upload
             v-if="editThermalModel[scope.row.id]"
-            action="/api/txt"
-            accept=".txt"
+            action="/api/excel"
+            accept=".xlsx, .xls"
             ref="upload"
             name="upload"
-            :on-success="handleTxtUploadSuccess"
-            :on-error="handleTxtUploadError"
+            :on-success="handleExcelUploadSuccess"
+            :on-error="handleExcelUploadError"
             :auto-upload="true">
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传txt文件，且不超过4MB</div>
+            <div slot="tip" class="el-upload__tip">只能上传xlsx/xls文件，且不超过8MB</div>
           </el-upload>
-          <el-link v-else type="primary" target="_blank" :href="'/api/txt/'+scope.row.data" :download="scope.row.data">
+          <el-link v-else type="primary" target="_blank" :href="'/api/excel/'+scope.row.data" :download="scope.row.data">
             {{ scope.row.data }}
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="118">
+      <el-table-column prop="surveImage" label="曲线图">
+        <template slot-scope="scope">
+          <el-upload
+            v-if="editThermalModel[scope.row.id]"
+            action="/api/image"
+            accept="image/png, image/jpeg"
+            ref="upload"
+            name="upload"
+            :on-success="handleImgUploadSuccess"
+            :on-error="handleImgUploadError"
+            :auto-upload="true">
+            <el-button slot="trigger" size="small" type="primary">选取图片</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过4MB</div>
+          </el-upload>
+          <el-image
+            v-else-if="scope.row.surveImage"
+            style="height: 200px"
+            :src="'/api/image/' + scope.row.surveImage"
+            fit="contain">
+            <div slot="error" class="image-slot">
+              <i class="el-icon-picture-outline"></i>
+            </div>
+          </el-image>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="119">
         <template slot-scope="scope">
           <div v-if="editThermalModel[scope.row.id]" style="text-align:center;">
             <el-button size="small" type="success" icon="el-icon-check" circle @click="submitThermalEdit(scope.row.id)"></el-button>
@@ -599,16 +614,11 @@ export default {
       }
     })
       .then((res) => {
-        if (res.status == 200 && res.data.status == 200) {
-          if (res.data.data.length <= 0) {
-            return
-          }
-          var temp = res.data.data
-          temp.forEach(v => {
-            this.$set(this.editContentModel, v.id, false)
-            this.$set(this.deleteContentDialogVisible, v.id, false)
-          })
-          this.mineContentInfos = temp
+        if (res.status == 200) {
+          var v = res.data.data
+          this.$set(this.editContentModel, v.id, false)
+          this.$set(this.deleteContentDialogVisible, v.id, false)
+          this.mineContentInfos = [v]
           this.mineContentCompute()
         }
         else {
@@ -621,12 +631,11 @@ export default {
       }
     })
       .then((res) => {
-        if (res.status == 200 && res.data.status == 200) {
-          this.mineSurveyInfos = res.data.data
-          this.mineSurveyInfos.forEach(v => {
-            this.$set(this.editSurveyModel, v.id, false)
-            this.$set(this.deleteSurveyDialogVisible, v.id, false)
-          })
+        if (res.status == 200) {
+          var v = res.data.data
+          this.$set(this.editSurveyModel, v.id, false)
+          this.$set(this.deleteSurveyDialogVisible, v.id, false)
+          this.mineSurveyInfos = [v]
         }
         else {
           this.$message.error('出错啦！')
@@ -638,12 +647,11 @@ export default {
       }
     })
       .then(res => {
-        if (res.status == 200 && res.data.status == 200) {
-          this.mineXRDInfos = res.data.data
-          this.mineXRDInfos.forEach(v => {
-            this.$set(this.editXRDModel, v.id, false)
-            this.$set(this.deleteXRDDialogVisible, v.id, false)
-          })
+        if (res.status == 200) {
+          var v = res.data.data
+          this.$set(this.editXRDModel, v.id, false)
+          this.$set(this.deleteXRDDialogVisible, v.id, false)
+          this.mineXRDInfos = [v]
         }
         else {
           this.$message.error('出错啦！')
@@ -655,12 +663,11 @@ export default {
       }
     })
       .then(res => {
-        if (res.status == 200 && res.data.status == 200) {
-          this.mineChemistryInfos = res.data.data
-          this.mineChemistryInfos.forEach(v => {
-            this.$set(this.editChemistryModel, v.id, false)
-            this.$set(this.deleteChemistryDialogVisible, v.id, false)
-          })
+        if (res.status == 200) {
+          var v = res.data.data
+          this.$set(this.editChemistryModel, v.id, false)
+          this.$set(this.deleteChemistryDialogVisible, v.id, false)
+          this.mineChemistryInfos = [v]
         }
         else {
           this.$message.error('出错啦！')
@@ -672,12 +679,11 @@ export default {
       }
     })
       .then(res => {
-        if (res.status == 200 && res.data.status == 200) {
-          this.mineThermalInfos = res.data.data
-          this.mineThermalInfos.forEach(v => {
-            this.$set(this.editThermalModel, v.id, false)
-            this.$set(this.deleteThermalDialogVisible, v.id, false)
-          })
+        if (res.status == 200) {
+          var v = res.data.data
+          this.$set(this.editThermalModel, v.id, false)
+          this.$set(this.deleteThermalDialogVisible, v.id, false)
+          this.mineThermalInfos = [v]
         }
         else {
           this.$message.error('出错啦！')
@@ -698,70 +704,70 @@ export default {
         var temp = this.mineContentInfos
         var obj = {
             id: '平均值',
-            sampleName: null,
             clay: 0,
-            debris: 0,
-            hollow: 0,
             quartz: 0,
-            sand: {
-              Ominerals: 0,
-              feldspar: 0,
-              quartz: 0
-            },
-            other: 0,
+            sand_quartz: 0,
+            sand_feldspar: 0,
+            sand_other: 0,
+            debris: 0,
+            hollow_close: 0,
+            hollow_open: 0,
+            hollow_through: 0,
             temp: true
           }
           temp.forEach(v => {
             obj.clay += v.clay
-            obj.debris += v.debris            
-            obj.hollow += v.hollow
-            obj.quartz += v.quartz 
-            obj.sand.Ominerals += v.sand.Ominerals
-            obj.sand.feldspar += v.sand.feldspar
-            obj.sand.quartz += v.sand.quartz
-            obj.other += v.other
+            obj.quartz += v.quartz
+            obj.sand_quartz += v.sand_quartz
+            obj.sand_feldspar += v.sand_feldspar
+            obj.sand_other += v.sand_other
+            obj.debris += v.debris
+            obj.hollow_close += v.hollow_close
+            obj.hollow_open += v.hollow_open
+            obj.hollow_through += v.hollow_through
           })
           obj.clay /= temp.length
-          obj.debris /= temp.length
-          obj.hollow /= temp.length
           obj.quartz /= temp.length
-          obj.sand.Ominerals /= temp.length
-          obj.sand.feldspar /= temp.length
-          obj.sand.quartz /= temp.length
-          obj.other /= temp.length
+          obj.sand_quartz /= temp.length
+          obj.sand_feldspar /= temp.length
+          obj.sand_other /= temp.length
+          obj.debris /= temp.length
+          obj.hollow_close /= temp.length
+          obj.hollow_open /= temp.length
+          obj.hollow_through /= temp.length
           var obj2 = {
             id: '变异系数',
             clay: 0,
-            debris: 0,
-            hollow: 0,
             quartz: 0,
-            sampleName: null,
-            sand: {
-              Ominerals: 0,
-              feldspar: 0,
-              quartz: 0
-            },
-            other: 0,
+            sand_quartz: 0,
+            sand_feldspar: 0,
+            sand_other: 0,
+            debris: 0,
+            hollow_close: 0,
+            hollow_open: 0,
+            hollow_through: 0,
             temp: true
           }
           temp.forEach(v => {
             obj2.clay += Math.pow(v.clay - obj.clay, 2)
+            obj2.quartz += Math.pow(v.quartz - obj.quartz, 2)
+            obj2.sand_quartz += Math.pow(v.sand_quartz - obj.sand_quartz, 2)
+            obj2.sand_feldspar += Math.pow(v.sand_feldspar - obj.sand_feldspar, 2)
+            obj2.sand_other += Math.pow(v.sand_other - obj.sand_other, 2)
             obj2.debris += Math.pow(v.debris - obj.debris, 2)
-            obj2.hollow += Math.pow(v.hollow - obj.hollow, 2)
-            obj2.quartz  += Math.pow(v.quartz  - obj.quartz, 2)
-            obj2.sand.Ominerals += Math.pow(v.sand.Ominerals - obj.sand.Ominerals, 2)
-            obj2.sand.feldspar += Math.pow(v.sand.feldspar - obj.sand.feldspar, 2)
-            obj2.sand.quartz += Math.pow(v.sand.quartz - obj.sand.quartz, 2)
-            obj2.other += Math.pow(v.other - obj.other, 2)
+            obj2.hollow_close += Math.pow(v.hollow_close - obj.hollow_close, 2)
+            obj2.hollow_open += Math.pow(v.hollow_open - obj.hollow_open, 2)
+            obj2.hollow_through += Math.pow(v.hollow_through - obj.hollow_through, 2)
           })
           obj2.clay = obj.clay ? Math.pow(obj2.clay / temp.length, 0.5) / obj.clay : null
+          obj2.quartz = obj.quartz ? Math.pow(obj2.quartz / temp.length, 0.5) / obj.quartz : null
+          obj2.sand_quartz = obj.sand_quartz ? Math.pow(obj2.sand_quartz / temp.length, 0.5) / obj.sand_quartz : null
+          obj2.sand_feldspar = obj.sand_feldspar ? Math.pow(obj2.sand_feldspar / temp.length, 0.5) / obj.sand_feldspar : null
+          obj2.sand_other = obj.sand_other ? Math.pow(obj2.sand_other / temp.length, 0.5) / obj.sand_other : null
           obj2.debris = obj.debris ? Math.pow(obj2.debris / temp.length, 0.5) / obj.debris : null
-          obj2.hollow = obj.hollow ? Math.pow(obj2.hollow / temp.length, 0.5) / obj.hollow : null
-          obj2.quartz  = obj.quartz  ? Math.pow(obj2.quartz  / temp.length, 0.5) / obj.quartz  : null
-          obj2.sand.Ominerals = obj.sand.Ominerals ? Math.pow(obj2.sand.Ominerals / temp.length, 0.5) / obj.sand.Ominerals : null
-          obj2.sand.feldspar = obj.sand.feldspar ? Math.pow(obj2.sand.feldspar / temp.length, 0.5) / obj.sand.feldspar : null
-          obj2.sand.quartz = obj.sand.quartz ? Math.pow(obj2.sand.quartz / temp.length, 0.5) / obj.sand.quartz : null
-          obj2.other = obj.other ? Math.pow(obj2.other / temp.length, 0.5) / obj.other : null
+          obj2.hollow_close = obj.hollow_close ? Math.pow(obj2.hollow_close / temp.length, 0.5) / obj.hollow_close : null
+          obj2.hollow_open = obj.hollow_open ? Math.pow(obj2.hollow_open / temp.length, 0.5) / obj.hollow_open : null
+          obj2.hollow_through = obj.hollow_through ? Math.pow(obj2.hollow_through / temp.length, 0.5) / obj.hollow_through : null
           this.mineContentInfos.push(obj)
           this.mineContentInfos.push(obj2)
       }
@@ -819,21 +825,22 @@ export default {
     },
     submitContentEdit(id) {
       let t = this.nowEditContent
-      t.clay = Number(t.clay)
-      t.debris = Number(t.debris)
-      t.hollow = Number(t.hollow)
-      t.quartz = Number(t.quartz)
-      t.sand.Ominerals = Number(t.sand.Ominerals)
-      t.sand.feldspar = Number(t.sand.feldspar)
-      t.sand.quartz = Number(t.sand.quartz)
-      t.other = Number(t.other)
+      t.clay = t.clay ? Number(t.clay) : null
+      t.quartz = t.quartz ? Number(t.quartz) : null
+      t.sand_quartz = t.sand_quartz ? Number(t.sand_quartz) : null
+      t.sand_feldspar = t.sand_feldspar ? Number(t.sand_feldspar) : null
+      t.sand_other = t.sand_other ? Number(t.sand_other) : null
+      t.debris = t.debris ? Number(t.debris) : null
+      t.hollow_close = t.hollow_close ? Number(t.hollow_close) : null
+      t.hollow_open = t.hollow_open ? Number(t.hollow_open) : null
+      t.hollow_through = t.hollow_through ? Number(t.hollow_through) : null
       this.axios.put('/api/minecontentinfo/' + id, t, {
         params: {
           token: this.token
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             for (let i = 0; i < this.mineContentInfos.length; ++ i) {
               if (this.mineContentInfos[i].id == id && !this.mineContentInfos[i].temp) {
                 this.$set(this.mineContentInfos, i, t)
@@ -861,7 +868,7 @@ export default {
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.mineContentInfos = this.mineContentInfos.filter(v => v.id != id || v.temp)
             this.mineContentCompute()
             this.$message.success('删除' + id + '成功！')
@@ -882,25 +889,27 @@ export default {
     },
     submitXRDEdit(id) {
       let t = this.nowEditXRD
-      t.quartz = Number(t.quartz)  
-      t.albite = Number(t.albite)  
-      t.potashFeldspar = Number(t.potashFeldspar)  
-      t.mica = Number(t.mica)  
-      t.amphibole = Number(t.amphibole)  
-      t.hematite = Number(t.hematite)  
-      t.magnetite = Number(t.magnetite)  
-      t.dolomite = Number(t.dolomite)  
-      t.analcite = Number(t.analcite)  
-      t.tridymite = Number(t.tridymite)  
-      t.cristobalite = Number(t.cristobalite)
-      t.mullite = Number(t.mullite)
+      t.type = t.type.trim()
+      t.quartz = t.quartz ? Number(t.quartz) : null
+      t.albite = t.albite ? Number(t.albite) : null
+      t.potashFeldspar = t.potashFeldspar ? Number(t.potashFeldspar) : null
+      t.mica = t.mica ? Number(t.mica) : null
+      t.amphibole = t.amphibole ? Number(t.amphibole) : null
+      t.hematite = t.hematite ? Number(t.hematite) : null
+      t.magnetite = t.magnetite ? Number(t.magnetite) : null
+      t.dolomite = t.dolomite ? Number(t.dolomite) : null
+      t.analcite = t.analcite ? Number(t.analcite) : null
+      t.tridymite = t.tridymite ? Number(t.tridymite) : null
+      t.cristobalite = t.cristobalite ? Number(t.cristobalite) : null
+      t.mullite = t.mullite ? Number(t.mullite) : null
+      t.other = t.other ? Number(t.other) : null
       this.axios.put('/api/minexrdinfo/' + id, t, {
         params: {
           token: this.token
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             for (let i = 0; i < this.mineXRDInfos.length; ++ i) {
               if (this.mineXRDInfos[i].id == id) {
                 this.$set(this.mineXRDInfos, i, t)
@@ -927,7 +936,7 @@ export default {
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.mineXRDInfos = this.mineXRDInfos.filter(v => v.id != id || v.temp)
             this.$message.success('删除' + id + '成功！')
           }
@@ -960,7 +969,7 @@ export default {
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             for (let i = 0; i < this.mineChemistryInfos.length; ++ i) {
               if (this.mineChemistryInfos[i].id == id) {
                 this.$set(this.mineChemistryInfos, i, t)
@@ -987,7 +996,7 @@ export default {
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.mineChemistryInfos = this.mineChemistryInfos.filter(v => v.id != id || v.temp)
             this.$message.success('删除' + id + '成功！')
           }
@@ -1007,15 +1016,18 @@ export default {
     },
     submitThermalEdit(id) {
       let t = this.nowEditThermal
-      t.termTemper = Number(t.termTemper)
-      t.fireResis = Number(t.fireResis)
+      t.melting = t.melting ? Number(t.melting) : null
+      t.fireResis = t.fireResis ? Number(t.fireResis) : null
+      t.termTemper = t.termTemper ? Number(t.termTemper) : null
+      t.data = t.data ? t.data : null
+      t.surveImage = t.surveImage ? t.surveImage : null
       this.axios.put('/api/minethermalinfo/' + id, t, {
         params: {
           token: this.token
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             for (let i = 0; i < this.mineThermalInfos.length; ++ i) {
               if (this.mineThermalInfos[i].id == id) {
                 this.$set(this.mineThermalInfos, i, t)
@@ -1042,7 +1054,7 @@ export default {
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.mineThermalInfos = this.mineThermalInfos.filter(v => v.id != id || v.temp)
             this.$message.success('删除' + id + '成功！')
           }
@@ -1051,12 +1063,16 @@ export default {
           }
         })
     },
-    handleTxtUploadSuccess(res) {
-      if (res.status == 200) {
-        this.nowEditThermal.data = res.data
-      }
+    handleExcelUploadSuccess(res) {
+      this.nowEditThermal.data = res.data
     },
-    handleTxtUploadError(err, file) {
+    handleExcelUploadError(err, file) {
+      this.$message.error(file.name + '没有上传成功：' + JSON.parse(err.message).msg)
+    },
+    handleImgUploadSuccess(res) {
+      this.nowEditThermal.surveImage = res.data[0]
+    },
+    handleImgUploadError(err, file) {
       this.$message.error(file.name + '没有上传成功：' + JSON.parse(err.message).msg)
     },
     editSurvey(id) {
@@ -1070,23 +1086,23 @@ export default {
     },
     submitSurveyEdit(id) {
       let t = this.nowEditSurvey
-      t.debrisData['167-501'] = Number(t.debrisData['167-501'])
-      t.debrisData['501-1002'] = Number(t.debrisData['501-1002'])
-      t.debrisData['67-167μm'] = Number(t.debrisData['67-167μm'])
-      t.debrisData['≤67μm'] = Number(t.debrisData['≤67μm'])
-      t.debrisData['≥1002'] = Number(t.debrisData['≥1002'])
-      t.hollowData['1002-2004'] = Number(t.hollowData['1002-2004'])
-      t.hollowData['167-501'] = Number(t.hollowData['167-501'])
-      t.hollowData['501-1002'] = Number(t.hollowData['501-1002'])
-      t.hollowData['≤167'] = Number(t.hollowData['≤167'])
-      t.hollowData['＞2004'] = Number(t.hollowData['＞2004'])
+      t.debris_0um = t.debris_0um ? Number(t.debris_0um) : null
+      t.debris_67um = t.debris_67um ? Number(t.debris_67um) : null
+      t.debris_167um = t.debris_167um ? Number(t.debris_167um) : null
+      t.debris_501um = t.debris_501um ? Number(t.debris_501um) : null
+      t.debris_1002um = t.debris_1002um ? Number(t.debris_1002um) : null
+      t.hollow_0um = t.hollow_0um ? Number(t.hollow_0um) : null
+      t.hollow_67um = t.hollow_67um ? Number(t.hollow_67um) : null
+      t.hollow_501um = t.hollow_501um ? Number(t.hollow_501um) : null
+      t.hollow_1002um = t.hollow_1002um ? Number(t.hollow_1002um) : null
+      t.hollow_2004um = t.hollow_2004um ? Number(t.hollow_2004um) : null
       this.axios.put('/api/minesurveyinfo/' + id, t, {
         params: {
           token: this.token
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             for (let i = 0; i < this.mineSurveyInfos.length; ++ i) {
               if (this.mineSurveyInfos[i].id == id) {
                 this.$set(this.mineSurveyInfos, i, t)
@@ -1113,7 +1129,7 @@ export default {
         }
       })
         .then(res => {
-          if (res.status == 200 && res.data.status == 200) {
+          if (res.status == 200) {
             this.mineSurveyInfos = this.mineSurveyInfos.filter(v => v.id != id || v.temp)
             this.$message.success('删除' + id + '成功！')
           }
@@ -1123,6 +1139,7 @@ export default {
         })
     },
     exportTableData() {
+      // TODO 导出方法修改
       var wb = xlsx.utils.book_new()
       var temp = []
       this.mineContentInfos.forEach(v => {
@@ -1131,9 +1148,9 @@ export default {
           '样品名称': v.sampleName,
           '黏土基质': v.clay,
           '石英粉砂': v.quartz,
-          '石英': v.sand.quartz,
-          '长石': v.sand.feldspar,
-          '其他矿物': v.sand.Ominerals,
+          '石英': v.sand_quartz,
+          '长石': v.sand_feldspar,
+          '其他矿物': v.sand_other,
           '小计': this.sum(Object.values(v.sand)),
           '岩屑': v.debris,
           '空洞': v.hollow,
