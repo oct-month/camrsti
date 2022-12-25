@@ -1,3 +1,5 @@
+set NAMES 'utf8mb4';
+
 USE camrstidb;
 
 UNLOCK TABLES;

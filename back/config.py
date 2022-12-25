@@ -5,7 +5,7 @@ __all__ = ['DATABASE_URI', 'SECRET_KEY', 'EXPIRATION_SEC']
 # MySQL
 mysql_host = os.getenv('MYSQL_HOST')
 if mysql_host:
-    DATABASE_URI = f'mysql://root:camrsti@{mysql_host}:3306/camrstidb'
+    DATABASE_URI = f'mysql://root:camrsti@{mysql_host}:3306/camrstidb?charset=utf8'
 else:
     DATABASE_URI = 'mysql://root:camrsti@127.0.0.1:3306/camrstidb'
 
