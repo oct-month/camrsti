@@ -57,7 +57,7 @@
                 <el-menu-item index="4-2">矿物测量</el-menu-item>
                 <el-menu-item index="4-3">XRD</el-menu-item>
                 <el-menu-item index="4-4">化学成分</el-menu-item>
-                <el-menu-item index="4-5">物理结构</el-menu-item>
+                <el-menu-item index="4-5">物理性能</el-menu-item>
                 <el-menu-item index="4-6">热分析</el-menu-item>
               </el-menu-item-group>
             </el-submenu>

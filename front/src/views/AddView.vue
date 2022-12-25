@@ -129,9 +129,7 @@ export default {
       }
     },
     handleUploadSuccess(res) {
-      if (res.status == 200) {
-        this.uploadFileList = this.uploadFileList.concat(res.data)
-      }
+      this.uploadFileList = this.uploadFileList.concat(res.data)
     },
     handleUploadError(err, file) {
       this.$message.error(file.name + '没有上传成功：' + JSON.parse(err.message).msg)

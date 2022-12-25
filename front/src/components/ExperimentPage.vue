@@ -1145,16 +1145,16 @@ export default {
       this.mineContentInfos.forEach(v => {
         temp.push({
           '样品号': v.id,
-          '样品名称': v.sampleName,
-          '黏土基质': v.clay,
-          '石英粉砂': v.quartz,
+          '黏土': v.clay,
+          '粉砂': v.quartz,
           '石英': v.sand_quartz,
           '长石': v.sand_feldspar,
           '其他矿物': v.sand_other,
-          '小计': this.sum(Object.values(v.sand)),
+          '小计': this.sum([v.sand_quartz, v.sand_feldspar, v.sand_other]),
           '岩屑': v.debris,
-          '空洞': v.hollow,
-          '其他': v.other
+          '闭气孔': v.hollow_close,
+          '开气孔': v.hollow_open,
+          '贯通气孔': v.hollow_through
         })
       })
       var ws = xlsx.utils.json_to_sheet(temp)

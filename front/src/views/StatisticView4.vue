@@ -7,15 +7,24 @@
       stripe
       border
       style="width: 100%">
-      <el-table-column prop="id" label="样品号" width="110"></el-table-column>
-      <el-table-column prop="type" label="类型" width="90"></el-table-column>
-      <el-table-column prop="Na2O" label="Na₂O" miniwidth="100"></el-table-column>
-      <el-table-column prop="MgO" label="MgO" miniwidth="100"></el-table-column>
-      <el-table-column prop="Al2O3" label="Al₂O₃" miniwidth="100"></el-table-column>
-      <el-table-column prop="SiO2" label="SiO₂" miniwidth="100"></el-table-column>
-      <el-table-column prop="K2O" label="K₂O" miniwidth="100"></el-table-column>
-      <el-table-column prop="CaO" label="CaO" miniwidth="100"></el-table-column>
-      <el-table-column prop="Fe2O3" label="Fe₂O₃" miniwidth="100"></el-table-column>
+      <el-table-column prop="id" label="样品号"></el-table-column>
+      <el-table-column prop="Na2O" label="Na₂O"></el-table-column>
+      <el-table-column prop="MgO" label="MgO"></el-table-column>
+      <el-table-column prop="Al2O3" label="Al₂O₃"></el-table-column>
+      <el-table-column prop="SiO2" label="SiO₂"></el-table-column>
+      <el-table-column prop="P2O5" label="P₂O₅"></el-table-column>
+      <el-table-column prop="SO2" label="SO₂"></el-table-column>
+      <el-table-column prop="K2O" label="K₂O"></el-table-column>
+      <el-table-column prop="CaO" label="CaO"></el-table-column>
+      <el-table-column prop="TiO2" label="TiO₂"></el-table-column>
+      <el-table-column prop="MnO" label="MnO"></el-table-column>
+      <el-table-column prop="FeO" label="FeO"></el-table-column>
+      <el-table-column prop="CuO" label="CuO"></el-table-column>
+      <el-table-column prop="ZnO" label="ZnO"></el-table-column>
+      <el-table-column prop="As2O3" label="As₂O₃"></el-table-column>
+      <el-table-column prop="SnO2" label="SnO₂"></el-table-column>
+      <el-table-column prop="PbO" label="PbO"></el-table-column>
+      <el-table-column prop="other" label="其他"></el-table-column>
     </el-table>
 
     <div style="float:right;">
@@ -80,7 +89,7 @@ export default {
         })
           .then(res => {
             if (res.status == 200) {
-              this.mineChemistryInfos.push.apply(this.mineChemistryInfos, res.data.data)
+              this.mineChemistryInfos.push(res.data.data)
             }
             else {
               this.$message.error('出错啦！')
@@ -119,14 +128,23 @@ export default {
         if (v != null) {
           temp.push({
             '样品号': v.id,
-            '类型': v.type,
             'Na₂O': v.Na2O,
             'MgO': v.MgO,
             'Al₂O₃': v.Al2O3,
             'SiO₂': v.SiO2,
+            'P₂O₅': v.P2O5,
+            'SO₂': v.SO2,
             'K₂O': v.K2O,
             'CaO': v.CaO,
-            'Fe₂O₃': v.Fe2O3
+            'TiO₂': v.TiO2,
+            'MnO': v.MnO,
+            'FeO': v.FeO,
+            'CuO': v.CuO,
+            'ZnO': v.ZnO,
+            'As₂O₃': v.As2O3,
+            'SnO₂': v.SnO2,
+            'PbO': v.PbO,
+            '其他': v.other
           })
         }
       })

@@ -6104,9 +6104,9 @@ ws@^8.4.2:
   resolved "https://registry.npmmirror.com/ws/-/ws-8.8.1.tgz#5dbad0feb7ade8ecc99b830c1d77c913d4955ff0"
   integrity sha512-bGy2JzvzkPowEJV++hF07hAD6niYSr0JzBNo/J29WsB57A2r7Wlc1UFcTR9IzrPvuNVO4B8LGqF8qcpsVOhJCA==
 
-"xlsx@https://cdn.sheetjs.com/xlsx-0.18.11/xlsx-0.18.11.tgz":
-  version "0.18.11"
-  resolved "https://cdn.sheetjs.com/xlsx-0.18.11/xlsx-0.18.11.tgz#0b841a5358fd6acc8392d8e46f57030e23069b65"
+"xlsx@https://cdn.sheetjs.com/xlsx-0.19.1/xlsx-0.19.1.tgz":
+  version "0.19.1"
+  resolved "https://cdn.sheetjs.com/xlsx-0.19.1/xlsx-0.19.1.tgz#26b48611bb82799de36add2f63b197bec4fc6a8d"
 
 y18n@^5.0.5:
   version "5.0.8"

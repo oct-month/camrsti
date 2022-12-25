@@ -43,7 +43,7 @@
           </el-table-column>
           <el-table-column width="100">
             <template slot="header" slot-scope="scope">
-              <el-button type="success" size="small" round plain @click="toStatisticPage('4-5')">物理结构</el-button>
+              <el-button type="success" size="small" round plain @click="toStatisticPage('4-5')">物理性能</el-button>
             </template>
           </el-table-column>
           <el-table-column width="88">
@@ -635,9 +635,7 @@ export default {
       }
     },
     handleUploadSuccess(res) {
-      if (res.status == 200) {
-        this.uploadFileList = this.uploadFileList.concat(res.data)
-      }
+      this.uploadFileList = this.uploadFileList.concat(res.data)
       // else {
       //   this.$message.error(file.name + '没有上传成功：' + res.data.msg)
       // }
@@ -759,21 +757,21 @@ export default {
       ws = xlsx.utils.json_to_sheet(temp2)
       xlsx.utils.book_append_sheet(wb, ws, '2.显微组织观察-矿相')
       ws = xlsx.utils.json_to_sheet(temp3)
-      xlsx.utils.book_append_sheet(wb, ws, '2.显微组织观察-金电子显微照片')
+      xlsx.utils.book_append_sheet(wb, ws, '2.显微组织观察-电子显微照片')
       temp = []
       ep.mineContentInfos.forEach(v => {
         temp.push({
           '样品号': v.id,
-          '样品名称': v.sampleName,
-          '黏土基质': v.clay,
-          '石英粉砂': v.quartz,
-          '石英': v.sand.quartz,
-          '长石': v.sand.feldspar,
-          '其他矿物': v.sand.Ominerals,
-          '小计': ep.sum(Object.values(v.sand)),
+          '黏土': v.clay,
+          '粉砂': v.quartz,
+          '砂-石英': v.sand_quartz,
+          '砂-长石': v.sand_feldspar,
+          '砂-其他矿物': v.sand_other,
+          '小计': ep.sum([v.sand_quartz, v.sand_feldspar, v.sand_other]),
           '岩屑': v.debris,
-          '空洞': v.hollow,
-          '其他': v.other
+          '空洞-闭气孔': v.hollow_close,
+          '空洞-开气孔': v.hollow_open,
+          '空洞-贯通气孔': v.hollow_through
         })
       })
       ws = xlsx.utils.json_to_sheet(temp)
@@ -783,19 +781,19 @@ export default {
       ep.mineSurveyInfos.forEach(v => {
         temp.push({
           '样品号': v.id,
-          '≤67μm': v.debrisData['≤67μm'],
-          '67-167μm': v.debrisData['67-167μm'],
-          '167-501': v.debrisData['167-501'],
-          '501-1002': v.debrisData['501-1002'],
-          '≥1002': v.debrisData['≥1002']
+          '≤67μm': v.debris_0um,
+          '67-167μm': v.debris_67um,
+          '167-501μm': v.debris_167um,
+          '501-1002μm': v.debris_501um,
+          '≥1002μm': v.debris_1002um
         })
         temp2.push({
           '样品号': v.id,
-          '≤167': v.hollowData['≤167'],
-          '167-501': v.hollowData['167-501'],
-          '501-1002': v.hollowData['501-1002'],
-          '1002-2004': v.hollowData['1002-2004'],
-          '＞2004': v.hollowData['＞2004']
+          '≤67μm': v.hollow_0um,
+          '67-501μm': v.hollow_67um,
+          '501-1002μm': v.hollow_501um,
+          '1002-2004μm': v.hollow_1002um,
+          '≥2004μm': v.hollow_2004um
         })
       })
       ws = xlsx.utils.json_to_sheet(temp)
@@ -818,7 +816,8 @@ export default {
           '方沸石': v.analcite,
           '磷石英': v.tridymite,
           '方石英': v.cristobalite,
-          '莫来石': v.mullite
+          '莫来石': v.mullite,
+          '其他': v.other
         })
       })
       ws = xlsx.utils.json_to_sheet(temp)
@@ -827,36 +826,52 @@ export default {
       ep.mineChemistryInfos.forEach(v => {
         temp.push({
           '样品号': v.id,
-          '类型': v.type,
           'Na₂O': v.Na2O,
           'MgO': v.MgO,
           'Al₂O₃': v.Al2O3,
           'SiO₂': v.SiO2,
+          'P₂O₅': v.P2O5,
+          'SO₂': v.SO2,
           'K₂O': v.K2O,
           'CaO': v.CaO,
-          'Fe₂O₃': v.Fe2O3
+          'TiO₂': v.TiO2,
+          'MnO': v.MnO,
+          'FeO': v.FeO,
+          'CuO': v.CuO,
+          'ZnO': v.ZnO,
+          'As₂O₃': v.As2O3,
+          'SnO₂': v.SnO2,
+          'PbO': v.PbO,
+          '其他': v.other
         })
       })
       ws = xlsx.utils.json_to_sheet(temp)
       xlsx.utils.book_append_sheet(wb, ws, '6.化学成分数据')
       temp = []
       temp.push({
-        '样品编号': sp.physicalInfo ? sp.physicalInfo.id : '',
+        '样品号': sp.physicalInfo ? sp.physicalInfo.id : '',
         '类型': sp.physicalInfo ? sp.physicalInfo.type : '',
-        '显气孔率': sp.physicalInfo ? sp.physicalInfo.apparentPorosity : '',
-        '真密度': sp.physicalInfo ? sp.physicalInfo.trueDensity : '',
-        '吸水率': sp.physicalInfo ? sp.physicalInfo.waterAbsorption : ''
+        '密度': sp.physicalInfo ? sp.physicalInfo.trueDensity : '',
+        '气孔率': sp.physicalInfo ? sp.physicalInfo.apparentPorosity : '',
+        '吸水率': sp.physicalInfo ? sp.physicalInfo.waterAbsorption : '',
+        '高温抗折强度': sp.physicalInfo ? sp.physicalInfo.bending : '',
+        '热震稳定性系数': sp.physicalInfo ? sp.physicalInfo.resistance : '',
+        '抗渣性系数': sp.physicalInfo ? sp.physicalInfo.slag : '',
+        '耐碱性系数': sp.physicalInfo ? sp.physicalInfo.alkali : '',
+        '荷重软化温度': sp.physicalInfo ? sp.physicalInfo.refractoriness : '',
+        '导热系数': sp.physicalInfo ? sp.physicalInfo.heat : ''
       })
       ws = xlsx.utils.json_to_sheet(temp)
-      xlsx.utils.book_append_sheet(wb, ws, '7.物理结构数据')
+      xlsx.utils.book_append_sheet(wb, ws, '7.物理性能数据')
       temp = []
       ep.mineThermalInfos.forEach(v => {
         temp.push({
           '样品号': v.id,
-          '终止温度': v.termTemper,
+          '熔点': v.melting,
           '耐火度': v.fireResis,
-          '热分析数据': v.data,
-          '热分析曲线': '' //v.surveImage
+          '烧成温度': v.termTemper,
+          // '原始数据': v.data,
+          // '曲线图': v.surveImage
         })
       })
       ws = xlsx.utils.json_to_sheet(temp)

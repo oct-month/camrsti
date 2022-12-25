@@ -7,22 +7,24 @@
       border
       style="width: 100%">
       <el-table-column prop="id" label="样品号" width="110"></el-table-column>
-      <el-table-column prop="sampleName" label="样品名称" width="90"></el-table-column>
       <el-table-column prop="clay" label="黏土基质" miniwidth="100"></el-table-column>
       <el-table-column prop="quartz" label="石英粉砂" miniwidth="100"></el-table-column>
       <el-table-column label="砂">
-        <el-table-column prop="sand.quartz" label="石英" miniwidth="100"></el-table-column>
-        <el-table-column prop="sand.feldspar" label="长石" miniwidth="100"></el-table-column>
-        <el-table-column prop="sand.Ominerals" label="其他矿物" miniwidth="100"></el-table-column>
+        <el-table-column prop="sand_quartz" label="石英" miniwidth="100"></el-table-column>
+        <el-table-column prop="sand_feldspar" label="长石" miniwidth="100"></el-table-column>
+        <el-table-column prop="sand_other" label="其他矿物" miniwidth="100"></el-table-column>
         <!-- <el-table-column label="小计" miniwidth="100">
           <template slot-scope="scope">
-            {{ sum(Object.values(scope.row.sand)) }}
+            {{ sum([scope.row.sand_quartz, ...]) }}
           </template>
         </el-table-column> -->
       </el-table-column>
       <el-table-column prop="debris" label="岩屑" miniwidth="100"></el-table-column>
-      <el-table-column prop="hollow" label="空洞" miniwidth="100"></el-table-column>
-      <el-table-column prop="other" label="其他" miniwidth="100"></el-table-column>
+      <el-table-column label="空洞">
+        <el-table-column prop="hollow_close" label="闭气孔" miniwidth="100"></el-table-column>
+        <el-table-column prop="hollow_open" label="开气孔" miniwidth="100"></el-table-column>
+        <el-table-column prop="hollow_through" label="贯通气孔" miniwidth="100"></el-table-column>
+      </el-table-column>
     </el-table>
 
     <div style="float:right;">
@@ -87,7 +89,7 @@ export default {
         })
           .then(res => {
             if (res.status == 200) {
-              this.mineContentInfos.push.apply(this.mineContentInfos, res.data.data)
+              this.mineContentInfos.push(res.data.data)
             }
             else {
               this.$message.error('出错啦！')
@@ -147,16 +149,16 @@ export default {
         if (v != null) {
           temp.push({
             '样品号': v.id,
-            '样品名称': v.sampleName,
-            '黏土基质': v.clay,
-            '石英粉砂': v.quartz,
-            '石英': v.sand.quartz,
-            '长石': v.sand.feldspar,
-            '其他矿物': v.sand.Ominerals,
-            '小计': this.sum(Object.values(v.sand)),
+            '黏土': v.clay,
+            '粉砂': v.quartz,
+            '砂-石英': v.sand_quartz,
+            '砂-长石': v.sand_feldspar,
+            '砂-其他矿物': v.sand_other,
+            '小计': this.sum([v.sand_quartz, v.sand_feldspar, v.sand_other]),
             '岩屑': v.debris,
-            '空洞': v.hollow,
-            '其他': v.other
+            '空洞-闭气孔': v.hollow_close,
+            '空洞-开气孔': v.hollow_open,
+            '空洞-贯通气孔': v.hollow_through
           })
         }
       })

@@ -670,6 +670,9 @@ def delete_mine_thermal_info(id):
 @app.route('/api/import', methods=['POST'])
 @login_needed
 def upload_and_import():
+    return {
+        'msg': '导入功能暂时不可用'
+    }, 502
     if 'upload' in request.files:
         cover_flag = request.form.get('cover', False)
         if cover_flag == 'true':

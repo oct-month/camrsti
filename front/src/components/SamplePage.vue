@@ -873,9 +873,7 @@ export default {
       this.jinxiangFlag = false
     },
     jinxiangHandleUploadSuccess(res) {
-      if (res.status == 200) {
-        this.jinxiang_E_up1 = this.jinxiang_E_up1.concat(res.data)
-      }
+      this.jinxiang_E_up1 = this.jinxiang_E_up1.concat(res.data)
     },
     handleUploadError(err, file) {
       this.$message.error(file.name + '没有上传成功：' + JSON.parse(err.message).msg)
@@ -925,9 +923,7 @@ export default {
       this.kuangxiangFlag = false
     },
     kuangxiangHandleUploadSuccess(res) {
-      if (res.status == 200) {
-        this.kuangxiang_E_up1 = this.kuangxiang_E_up1.concat(res.data)
-      }
+      this.kuangxiang_E_up1 = this.kuangxiang_E_up1.concat(res.data)
     },
     setdianzi() {
       if (this.dianzi) {
@@ -974,9 +970,7 @@ export default {
       this.dianziFlag = false
     },
     dianziHandleUploadSuccess(res) {
-      if (res.status == 200) {
-        this.dianzi_E_up1 = this.dianzi_E_up1.concat(res.data)
-      }
+      this.dianzi_E_up1 = this.dianzi_E_up1.concat(res.data)
     },
     jinxiangItemAdd() {
       if (this.jinxiangFlag) {
@@ -1000,9 +994,7 @@ export default {
       this.jinxiangItemFlag = true
     },
     jinxiangItemHandleUploadSuccess(res) {
-      if (res.status == 200) {
-        this.jinxiangItem_E.image = res.data[0]
-      }
+      this.jinxiangItem_E.image = res.data[0]
     },
     submitjinxiangItemEdit() {
       this.jinxiangItem_E.zoom = Number(this.jinxiangItem_E.zoom)
@@ -1052,9 +1044,7 @@ export default {
       this.kuangxiangItemFlag = true
     },
     kuangxiangItemHandleUploadSuccess(res) {
-      if (res.status == 200) {
-        this.kuangxiangItem_E.image = res.data[0]
-      }
+      this.kuangxiangItem_E.image = res.data[0]
     },
     submitkuangxiangItemEdit() {
       this.kuangxiangItem_E.zoom = Number(this.kuangxiangItem_E.zoom)
@@ -1104,9 +1094,7 @@ export default {
       this.dianziItemFlag = true
     },
     dianziItemHandleUploadSuccess(res) {
-      if (res.status == 200) {
-        this.dianziItem_E.image = res.data[0]
-      }
+      this.dianziItem_E.image = res.data[0]
     },
     submitdianziItemEdit() {
       this.dianziItem_E.zoom = Number(this.dianziItem_E.zoom)
@@ -1254,9 +1242,7 @@ export default {
         })
     },
     itemHandleUploadSuccess(res) {
-      if (res.status == 200) {
-        this.nowEditItem.image = res.data[0]
-      }
+      this.nowEditItem.image = res.data[0]
     }
   }
 }

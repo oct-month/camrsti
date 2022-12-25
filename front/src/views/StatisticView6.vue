@@ -8,13 +8,27 @@
       border
       style="width: 100%">
       <el-table-column prop="id" label="样品号" width="110"></el-table-column>
-      <el-table-column prop="termTemper" label="终止温度" miniwidth="100"></el-table-column>
+      <el-table-column prop="melting" label="熔点" miniwidth="100"></el-table-column>
       <el-table-column prop="fireResis" label="耐火度" miniwidth="100"></el-table-column>
-      <el-table-column prop="data" label="热分析数据" miniwidth="100">
+      <el-table-column prop="termTemper" label="烧成温度" miniwidth="100"></el-table-column>
+      <el-table-column prop="data" label="原始数据" miniwidth="100">
         <template slot-scope="scope">
-          <el-link type="primary" target="_blank" :href="'/api/txt/'+scope.row.data" :download="scope.row.data">
+          <el-link type="primary" target="_blank" :href="'/api/excel/'+scope.row.data" :download="scope.row.data">
             {{ scope.row.data }}
           </el-link>
+        </template>
+      </el-table-column>
+      <el-table-column prop="surveImage" label="曲线图" miniwidth="100">
+        <template slot-scope="scope">
+          <el-image
+            v-if="scope.row.surveImage"
+            style="height: 200px"
+            :src="'/api/image/' + scope.row.surveImage"
+            fit="contain">
+            <div slot="error" class="image-slot">
+              <i class="el-icon-picture-outline"></i>
+            </div>
+          </el-image>
         </template>
       </el-table-column>
     </el-table>
@@ -81,7 +95,7 @@ export default {
         })
           .then(res => {
             if (res.status == 200) {
-              this.mineThermalInfos.push.apply(this.mineThermalInfos, res.data.data)
+              this.mineThermalInfos.push(res.data.data)
             }
             else {
               this.$message.error('出错啦！')
@@ -120,10 +134,11 @@ export default {
         if (v != null) {
           temp.push({
             '样品号': v.id,
-            '终止温度': v.termTemper,
+            '熔点': v.melting,
             '耐火度': v.fireResis,
-            '热分析数据': v.data,
-            '热分析曲线': '' //v.surveImage
+            '烧成温度': v.termTemper,
+            // '原始数据': v.data,
+            // '曲线图': v.surveImage
           })
         }
       })

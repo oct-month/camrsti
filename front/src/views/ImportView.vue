@@ -98,16 +98,11 @@ export default {
       this.$refs.upload.submit()
     },
     handleUploadSuccess(res) {
-      if (res.status == 200) {
-        this.history.unshift(res.data)
-        this.$message.success(res.msg)
-      }
-      else {
-        this.$message.error(res.msg)
-      }
+      this.history.unshift(res.data)
+      this.$message.success(res.msg)
     },
-    handleUploadError(error, file) {
-      this.$message.error(file.name + '没有上传成功')
+    handleUploadError(err, file) {
+      this.$message.error(file.name + '没有上传成功：' + JSON.parse(err.message).msg)
     }
   }
 }

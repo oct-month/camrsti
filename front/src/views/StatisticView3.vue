@@ -21,6 +21,7 @@
       <el-table-column prop="tridymite" label="磷石英" miniwidth="100"></el-table-column>
       <el-table-column prop="cristobalite" label="方石英" miniwidth="100"></el-table-column>
       <el-table-column prop="mullite" label="莫来石" miniwidth="100"></el-table-column>
+      <el-table-column prop="other" label="其他" miniwidth="100"></el-table-column>
     </el-table>
 
     <div style="float:right;">
@@ -85,7 +86,7 @@ export default {
         })
           .then(res => {
             if (res.status == 200) {
-              this.mineXRDInfos.push.apply(this.mineXRDInfos, res.data.data)
+              this.mineXRDInfos.push(res.data.data)
             }
             else {
               this.$message.error('出错啦！')
@@ -136,7 +137,8 @@ export default {
             '方沸石': v.analcite,
             '磷石英': v.tridymite,
             '方石英': v.cristobalite,
-            '莫来石': v.mullite
+            '莫来石': v.mullite,
+            '其他': v.other
           })
         }
       })

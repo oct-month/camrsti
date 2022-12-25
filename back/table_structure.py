@@ -182,11 +182,11 @@ class MineSurveyInfo(db.Model):
     debris_167um = db.Column('debris_167um', db.Float)      # 岩屑直径167-501μm
     debris_501um = db.Column('debris_501um', db.Float)      # 岩屑直径501-1002μm
     debris_1002um = db.Column('debris_1002um', db.Float)    # 岩屑直径≥1002μm
-    hollow_0um = db.Column('hollow_0um', db.Float)          # 岩屑直径≤67μm
-    hollow_67um = db.Column('hollow_67um', db.Float)        # 岩屑直径67-501μm
-    hollow_501um = db.Column('hollow_501um', db.Float)      # 岩屑直径501-1002μm
-    hollow_1002um = db.Column('hollow_1002um', db.Float)    # 岩屑直径1002-2004μm
-    hollow_2004um = db.Column('hollow_2004um', db.Float)    # 岩屑直径≥2004μm
+    hollow_0um = db.Column('hollow_0um', db.Float)          # 空洞长度≤67μm
+    hollow_67um = db.Column('hollow_67um', db.Float)        # 空洞长度67-501μm
+    hollow_501um = db.Column('hollow_501um', db.Float)      # 空洞长度501-1002μm
+    hollow_1002um = db.Column('hollow_1002um', db.Float)    # 空洞长度1002-2004μm
+    hollow_2004um = db.Column('hollow_2004um', db.Float)    # 空洞长度≥2004μm
 
     def __init__(self, id=None, debris_0um=None, debris_67um=None, debris_167um=None, debris_501um=None, debris_1002um=None, hollow_0um=None, hollow_67um=None, hollow_501um=None, hollow_1002um=None, hollow_2004um=None):
         self.id = id
@@ -277,22 +277,22 @@ class MineChemistryInfo(db.Model):
     __tablename__ = 'MineChemistryInfo'
 
     id = db.Column('id', db.Unicode(30), primary_key=True)  # 样品号
-    Na2O = db.Column('Na2O', db.Float)
-    MgO = db.Column('MgO', db.Float)
-    Al2O3 = db.Column('Al2O3', db.Float)
-    SiO2 = db.Column('SiO2', db.Float)
-    P2O5 = db.Column('P2O5', db.Float)
-    SO2 = db.Column('SO2', db.Float)
-    K2O = db.Column('K2O', db.Float)
-    CaO = db.Column('CaO', db.Float)
-    TiO2 = db.Column('TiO2', db.Float)
-    MnO = db.Column('MnO', db.Float)
-    FeO = db.Column('FeO', db.Float)
-    CuO = db.Column('CuO', db.Float)
-    ZnO = db.Column('ZnO', db.Float)
-    As2O3 = db.Column('As2O3', db.Float)
-    SnO2 = db.Column('SnO2', db.Float)
-    PbO = db.Column('PbO', db.Float)
+    Na2O = db.Column('Na2O', db.Float)                      # Na₂O
+    MgO = db.Column('MgO', db.Float)                        # MgO
+    Al2O3 = db.Column('Al2O3', db.Float)                    # Al₂O₃
+    SiO2 = db.Column('SiO2', db.Float)                      # SiO₂
+    P2O5 = db.Column('P2O5', db.Float)                      # P₂O₅
+    SO2 = db.Column('SO2', db.Float)                        # SO₂
+    K2O = db.Column('K2O', db.Float)                        # K₂O
+    CaO = db.Column('CaO', db.Float)                        # CaO
+    TiO2 = db.Column('TiO2', db.Float)                      # TiO₂
+    MnO = db.Column('MnO', db.Float)                        # MnO
+    FeO = db.Column('FeO', db.Float)                        # FeO
+    CuO = db.Column('CuO', db.Float)                        # CuO
+    ZnO = db.Column('ZnO', db.Float)                        # ZnO
+    As2O3 = db.Column('As2O3', db.Float)                    # As₂O₃
+    SnO2 = db.Column('SnO2', db.Float)                      # SnO₂
+    PbO = db.Column('PbO', db.Float)                        # PbO
     other = db.Column('other', db.Float)                    # 其他
 
     def __init__(self, id=None, Na2O=None, MgO=None, Al2O3=None, SiO2=None, P2O5=None, SO2=None, K2O=None, CaO=None, TiO2=None, MnO=None, FeO=None, CuO=None, ZnO=None, As2O3=None, SnO2=None, PbO=None, other=None):

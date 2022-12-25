@@ -10,19 +10,19 @@
       <el-table-column prop="id" label="样品号" width="110"></el-table-column>
       <!-- 岩屑直径分布 -->
       <el-table-column label="岩屑直径分布">
-        <el-table-column prop="debrisData.≤67μm" label="≤67μm" miniwidth="100"></el-table-column>
-        <el-table-column prop="debrisData.67-167μm" label="67-167μm" miniwidth="100"></el-table-column>
-        <el-table-column prop="debrisData.167-501" label="167-501" miniwidth="100"></el-table-column>
-        <el-table-column prop="debrisData.501-1002" label="501-1002" miniwidth="100"></el-table-column>
-        <el-table-column prop="debrisData.≥1002" label="≥1002" miniwidth="100"></el-table-column>
+        <el-table-column prop="debris_0um" label="≤67μm" miniwidth="100"></el-table-column>
+        <el-table-column prop="debris_67um" label="67-167μm" miniwidth="100"></el-table-column>
+        <el-table-column prop="debris_167um" label="167-501μm" miniwidth="100"></el-table-column>
+        <el-table-column prop="debris_501um" label="501-1002μm" miniwidth="100"></el-table-column>
+        <el-table-column prop="debris_1002um" label="≥1002μm" miniwidth="100"></el-table-column>
       </el-table-column>
       <!-- 空洞长度分布 -->
       <el-table-column label="空洞长度分布">
-        <el-table-column prop="hollowData.≤167" label="≤167" miniwidth="100"></el-table-column>
-        <el-table-column prop="hollowData.167-501" label="167-501" miniwidth="100"></el-table-column>
-        <el-table-column prop="hollowData.501-1002" label="501-1002" miniwidth="100"></el-table-column>
-        <el-table-column prop="hollowData.1002-2004" label="1002-2004" miniwidth="100"></el-table-column>
-        <el-table-column prop="hollowData.＞2004" label="＞2004" miniwidth="100"></el-table-column>
+        <el-table-column prop="hollow_0um" label="≤67μm" miniwidth="100"></el-table-column>
+        <el-table-column prop="hollow_67um" label="67-501μm" miniwidth="100"></el-table-column>
+        <el-table-column prop="hollow_501um" label="501-1002μm" miniwidth="100"></el-table-column>
+        <el-table-column prop="hollow_1002um" label="1002-2004μm" miniwidth="100"></el-table-column>
+        <el-table-column prop="hollow_2004um" label="≥2004μm" miniwidth="100"></el-table-column>
       </el-table-column>
     </el-table>
 
@@ -88,7 +88,7 @@ export default {
         })
           .then(res => {
             if (res.status == 200) {
-              this.mineSurveyInfos.push.apply(this.mineSurveyInfos, res.data.data)
+              this.mineSurveyInfos.push(res.data.data)
             }
             else {
               this.$message.error('出错啦！')
@@ -128,19 +128,19 @@ export default {
         if (v != null) {
           temp.push({
             '样品号': v.id,
-            '≤67μm': v.debrisData['≤67μm'],
-            '67-167μm': v.debrisData['67-167μm'],
-            '167-501': v.debrisData['167-501'],
-            '501-1002': v.debrisData['501-1002'],
-            '≥1002': v.debrisData['≥1002']
+            '≤67μm': v.debris_0um,
+            '67-167μm': v.debris_67um,
+            '167-501μm': v.debris_167um,
+            '501-1002μm': v.debris_501um,
+            '≥1002μm': v.debris_1002um
           })
           temp2.push({
             '样品号': v.id,
-            '≤167': v.hollowData['≤167'],
-            '167-501': v.hollowData['167-501'],
-            '501-1002': v.hollowData['501-1002'],
-            '1002-2004': v.hollowData['1002-2004'],
-            '＞2004': v.hollowData['＞2004']
+            '≤67μm': v.hollow_0um,
+            '67-501μm': v.hollow_67um,
+            '501-1002μm': v.hollow_501um,
+            '1002-2004μm': v.hollow_1002um,
+            '≥2004μm': v.hollow_2004um
           })
         }
       })
