@@ -18,7 +18,7 @@
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column prop="surveImage" label="曲线图" width="350">
+      <el-table-column prop="surveImage" label="曲线图" miniwidth="350">
         <template slot-scope="scope">
           <el-image
             v-if="scope.row.surveImage"
