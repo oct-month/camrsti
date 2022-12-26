@@ -345,58 +345,54 @@
     </el-table>
 
     <hr>
-    <!-- TODO 氧化物/单质 -->
-    <h4 align="left">化学成分数据</h4>
+
+    <!-- <h4 align="left">化学成分数据</h4> -->
+    <h4 align="left" v-show="(mineChemistryInfos.length > 0) || (mineChemistryInfos.length + mineChemistryInfoSingle.length <= 0)">化学成分数据（氧化物）</h4>
 
     <el-table
+      v-show="(mineChemistryInfos.length > 0) || (mineChemistryInfos.length + mineChemistryInfoSingle.length <= 0)"
       :data="mineChemistryInfos"
       stripe
       border
       style="width: 100%">
-      <el-table-column prop="id" label="样品号" width="110"></el-table-column>
-      <el-table-column prop="type" label="类型" width="90">
-        <template slot-scope="scope">
-          <el-input v-if="editChemistryModel[scope.row.id]" v-model="nowEditChemistry.type"></el-input>
-          <span v-else>{{ scope.row.type }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="Na2O" label="Na₂O" miniwidth="100">
+      <el-table-column prop="id" label="样品号"></el-table-column>
+      <el-table-column prop="Na2O" label="Na₂O">
         <template slot-scope="scope">
           <el-input v-if="editChemistryModel[scope.row.id]" v-model="nowEditChemistry.Na2O"></el-input>
           <span v-else>{{ scope.row.Na2O }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="MgO" label="MgO" miniwidth="100">
+      <el-table-column prop="MgO" label="MgO">
         <template slot-scope="scope">
           <el-input v-if="editChemistryModel[scope.row.id]" v-model="nowEditChemistry.MgO"></el-input>
           <span v-else>{{ scope.row.MgO }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="Al2O3" label="Al₂O₃" miniwidth="100">
+      <el-table-column prop="Al2O3" label="Al₂O₃">
         <template slot-scope="scope">
           <el-input v-if="editChemistryModel[scope.row.id]" v-model="nowEditChemistry.Al2O3"></el-input>
           <span v-else>{{ scope.row.Al2O3 }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="SiO2" label="SiO₂" miniwidth="100">
+      <el-table-column prop="SiO2" label="SiO₂">
         <template slot-scope="scope">
           <el-input v-if="editChemistryModel[scope.row.id]" v-model="nowEditChemistry.SiO2"></el-input>
           <span v-else>{{ scope.row.SiO2 }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="K2O" label="K₂O" miniwidth="100">
+      <el-table-column prop="K2O" label="K₂O">
         <template slot-scope="scope">
           <el-input v-if="editChemistryModel[scope.row.id]" v-model="nowEditChemistry.K2O"></el-input>
           <span v-else>{{ scope.row.K2O }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="CaO" label="CaO" miniwidth="100">
+      <el-table-column prop="CaO" label="CaO">
         <template slot-scope="scope">
           <el-input v-if="editChemistryModel[scope.row.id]" v-model="nowEditChemistry.CaO"></el-input>
           <span v-else>{{ scope.row.CaO }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="Fe2O3" label="Fe₂O₃" miniwidth="100">
+      <el-table-column prop="Fe2O3" label="Fe₂O₃">
         <template slot-scope="scope">
           <el-input v-if="editChemistryModel[scope.row.id]" v-model="nowEditChemistry.Fe2O3"></el-input>
           <span v-else>{{ scope.row.Fe2O3 }}</span>
@@ -416,6 +412,192 @@
               <span slot="footer" class="dialog-footer">
                 <el-button @click="deleteChemistryDialogVisible[scope.row.id]=false">取 消</el-button>
                 <el-button type="primary" @click="deleteChemistry(scope.row.id)">确 定</el-button>
+              </span>
+            </el-dialog>
+          </div>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <h4 align="left" v-show="(mineChemistryInfoSingle.length > 0)">化学成分数据（单质）</h4>
+
+    <el-table
+      v-show="(mineChemistryInfoSingle.length > 0)"
+      :data="mineChemistryInfoSingle"
+      stripe
+      border
+      style="width: 100%">
+      <el-table-column prop="id" label="样品号"></el-table-column>
+      <el-table-column prop="C" label="C">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.C"></el-input>
+          <span v-else>{{ scope.row.C }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Na" label="Na">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Na"></el-input>
+          <span v-else>{{ scope.row.Na }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Mg" label="Mg">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Mg"></el-input>
+          <span v-else>{{ scope.row.Mg }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Al" label="Al">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Al"></el-input>
+          <span v-else>{{ scope.row.Al }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Si" label="Si">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Si"></el-input>
+          <span v-else>{{ scope.row.Si }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="P" label="P">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.P"></el-input>
+          <span v-else>{{ scope.row.P }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="S" label="S">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.S"></el-input>
+          <span v-else>{{ scope.row.S }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Cl" label="Cl">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Cl"></el-input>
+          <span v-else>{{ scope.row.Cl }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="K" label="K">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.K"></el-input>
+          <span v-else>{{ scope.row.K }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Ca" label="Ca">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Ca"></el-input>
+          <span v-else>{{ scope.row.Ca }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Ti" label="Ti">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Ti"></el-input>
+          <span v-else>{{ scope.row.Ti }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="V" label="V">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.V"></el-input>
+          <span v-else>{{ scope.row.V }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Mn" label="Mn">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Mn"></el-input>
+          <span v-else>{{ scope.row.Mn }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Fe" label="Fe">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Fe"></el-input>
+          <span v-else>{{ scope.row.Fe }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Co" label="Co">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Co"></el-input>
+          <span v-else>{{ scope.row.Co }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Ni" label="Ni">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Ni"></el-input>
+          <span v-else>{{ scope.row.Ni }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Cu" label="Cu">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Cu"></el-input>
+          <span v-else>{{ scope.row.Cu }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Zn" label="Zn">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Zn"></el-input>
+          <span v-else>{{ scope.row.Zn }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="As" label="As">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.As"></el-input>
+          <span v-else>{{ scope.row.As }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Ag" label="Ag">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Ag"></el-input>
+          <span v-else>{{ scope.row.Ag }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Sn" label="Sn">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Sn"></el-input>
+          <span v-else>{{ scope.row.Sn }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Sb" label="Sb">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Sb"></el-input>
+          <span v-else>{{ scope.row.Sb }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Au" label="Au">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Au"></el-input>
+          <span v-else>{{ scope.row.Au }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Hg" label="Hg">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Hg"></el-input>
+          <span v-else>{{ scope.row.Hg }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="Pb" label="Pb">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.Pb"></el-input>
+          <span v-else>{{ scope.row.Pb }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="other" label="其他">
+        <template slot-scope="scope">
+          <el-input v-if="editChemistrySingleModel[scope.row.id]" v-model="nowEditChemistrySingle.other"></el-input>
+          <span v-else>{{ scope.row.other }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="119">
+        <template slot-scope="scope">
+          <div v-if="editChemistrySingleModel[scope.row.id]" style="text-align:center;">
+            <el-button size="small" type="success" icon="el-icon-check" circle @click="submitChemistrySingleEdit(scope.row.id)"></el-button>
+            <el-button size="mini" type="danger" icon="el-icon-close" circle @click="cancelChemistrySingleEdit(scope.row.id)"></el-button>
+          </div>
+          <div v-else style="text-align:center;">
+            <el-button size="mini" round plain type="warning" icon="el-icon-edit" @click="editChemistrySingle(scope.row.id)"></el-button>
+            <el-button size="mini" round plain type="danger" icon="el-icon-delete" @click="deleteChemistrySingleDialogVisible[scope.row.id]=true"></el-button>
+            <el-dialog title="确认" :visible.sync="deleteChemistrySingleDialogVisible[scope.row.id]" width="30%">
+              <span>删除{{ scope.row.id }}?</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="deleteChemistrySingleDialogVisible[scope.row.id]=false">取 消</el-button>
+                <el-button type="primary" @click="deleteChemistrySingle(scope.row.id)">确 定</el-button>
               </span>
             </el-dialog>
           </div>
@@ -585,6 +767,10 @@ export default {
       editChemistryModel: {},
       deleteChemistryDialogVisible: {},
       nowEditChemistry: null,
+      mineChemistryInfoSingle: [],
+      editChemistrySingleModel: {},
+      deleteChemistrySingleDialogVisible: {},
+      nowEditChemistrySingle: null,
       mineThermalInfos: [],
       editThermalModel: {},
       deleteThermalDialogVisible: {},
@@ -960,9 +1146,19 @@ export default {
       t.MgO = Number(t.MgO)
       t.Al2O3 = Number(t.Al2O3)
       t.SiO2 = Number(t.SiO2)
+      t.P2O5 = Number(t.P2O5)
+      t.SO2 = Number(t.SO2)
       t.K2O = Number(t.K2O)
       t.CaO = Number(t.CaO)
-      t.Fe2O3 = Number(t.Fe2O3)
+      t.TiO2 = Number(t.TiO2)
+      t.MnO = Number(t.MnO)
+      t.FeO = Number(t.FeO)
+      t.CuO = Number(t.CuO)
+      t.ZnO = Number(t.ZnO)
+      t.As2O3 = Number(t.As2O3)
+      t.SnO2 = Number(t.SnO2)
+      t.PbO = Number(t.PbO)
+      t.other = Number(t.other)
       this.axios.put('/api/minechemistryinfo/' + id, t, {
         params: {
           token: this.token
@@ -998,6 +1194,85 @@ export default {
         .then(res => {
           if (res.status == 200) {
             this.mineChemistryInfos = this.mineChemistryInfos.filter(v => v.id != id || v.temp)
+            this.$message.success('删除' + id + '成功！')
+          }
+          else {
+            this.$message.error('出错啦！')
+          }
+        })
+    },
+    editChemistrySingle(id) {
+      if (this.nowEditChemistrySingle) {
+        this.$message.warning('您正在编辑' + this.nowEditChemistrySingle.id + '，请优先完成')
+        return
+      }
+      let mi = this.mineChemistrySingleInfos.filter(v => v.id == id)[0]
+      this.nowEditChemistrySingle = deepObjCopy(mi)
+      this.editChemistrySingleModel[id] = true
+    },
+    submitChemistrySingleEdit(id) {
+      let t = this.nowEditChemistrySingle
+      t.C = Number(t.C)
+      t.Na = Number(t.Na)
+      t.Mg = Number(t.Mg)
+      t.Al = Number(t.Al)
+      t.Si = Number(t.Si)
+      t.P = Number(t.P)
+      t.S = Number(t.S)
+      t.Cl = Number(t.Cl)
+      t.K = Number(t.K)
+      t.Ca = Number(t.Ca)
+      t.Ti = Number(t.Ti)
+      t.V = Number(t.V)
+      t.Mn = Number(t.Mn)
+      t.Fe = Number(t.Fe)
+      t.Co = Number(t.Co)
+      t.Ni = Number(t.Ni)
+      t.Cu = Number(t.Cu)
+      t.Zn = Number(t.Zn)
+      t.As = Number(t.As)
+      t.Ag = Number(t.Ag)
+      t.Sn = Number(t.Sn)
+      t.Sb = Number(t.Sb)
+      t.Au = Number(t.Au)
+      t.Hg = Number(t.Hg)
+      t.Pb = Number(t.Pb)
+      t.other = Number(t.other)
+      this.axios.put('/api/minechemistryinfosingle/' + id, t, {
+        params: {
+          token: this.token
+        }
+      })
+        .then(res => {
+          if (res.status == 200) {
+            for (let i = 0; i < this.mineChemistrySingleInfos.length; ++ i) {
+              if (this.mineChemistrySingleInfos[i].id == id) {
+                this.$set(this.mineChemistrySingleInfos, i, t)
+                break
+              }
+            }
+            this.$message.success('修改' + id + '成功！')
+          }
+          else {
+            this.$message.error('出错啦！')
+          }
+        })
+      this.editChemistrySingleModel[id] = false
+      this.nowEditChemistrySingle = null
+    },
+    cancelChemistrySingleEdit(id) {
+      this.editChemistrySingleModel[id] = false
+      this.nowEditChemistrySingle= null
+    },
+    deleteChemistrySingle(id) {
+      this.axios.delete('/api/minechemistryinfosingle/' + id, {
+        params: {
+          token: this.token
+        }
+      })
+        .then(res => {
+          if (res.status == 200) {
+            this.mineChemistrySingleInfos = this.mineChemistrySingleInfos.filter(v => v.id != id || v.temp)
             this.$message.success('删除' + id + '成功！')
           }
           else {
