@@ -82,7 +82,7 @@ export default {
     return {
       username: '',
       passwd: '',
-      remember: false,
+      remember: true,
       token: ''
     }
   },
@@ -129,8 +129,8 @@ export default {
               this.resetFields()
             }
           })
-          .catch(() => {
-            this.$message.error('出错啦！')
+          .catch(err => {
+            this.$message.error(err.response.data.msg)
             this.resetFields()
           })
       }
