@@ -846,7 +846,41 @@ export default {
         })
       })
       ws = xlsx.utils.json_to_sheet(temp)
-      xlsx.utils.book_append_sheet(wb, ws, '6.化学成分数据')
+      xlsx.utils.book_append_sheet(wb, ws, '6.化学成分数据(氧化物)')
+      temp = []
+      ep.mineChemistryInfoSingle.forEach(v => {
+        temp.push({
+          '样品号': v.id,
+          'C': v.C,
+          'Na': v.Na,
+          'Mg': v.Mg,
+          'Al': v.Al,
+          'Si': v.Si,
+          'P': v.P,
+          'S': v.S,
+          'Cl': v.Cl,
+          'K': v.K,
+          'Ca': v.Ca,
+          'Ti': v.Ti,
+          'V': v.V,
+          'Mn': v.Mn,
+          'Fe': v.Fe,
+          'Co': v.Co,
+          'Ni': v.Ni,
+          'Cu': v.Cu,
+          'Zn': v.Zn,
+          'As': v.As,
+          'Ag': v.Ag,
+          'Sn': v.Sn,
+          'Sb': v.Sb,
+          'Au': v.Au,
+          'Hg': v.Hg,
+          'Pb': v.Pb,
+          '其他': v.other
+        })
+      })
+      ws = xlsx.utils.json_to_sheet(temp)
+      xlsx.utils.book_append_sheet(wb, ws, '6.化学成分数据(单质)')
       temp = []
       temp.push({
         '样品号': sp.physicalInfo ? sp.physicalInfo.id : '',

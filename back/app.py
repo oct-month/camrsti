@@ -666,13 +666,13 @@ def delete_mine_thermal_info(id):
     db.session.commit()
     return '', 200
 
-# 导入功能 TODO 待定
+# 导入功能
 @app.route('/api/import', methods=['POST'])
 @login_needed
 def upload_and_import():
-    return {
-        'msg': '导入功能暂时不可用'
-    }, 502
+    # return {
+    #     'msg': '导入功能暂时不可用'
+    # }, 502
     if 'upload' in request.files:
         cover_flag = request.form.get('cover', False)
         if cover_flag == 'true':
@@ -686,8 +686,8 @@ def upload_and_import():
             file.save(path)
             wb = load_workbook(path)
             instance_list, sample_list, cover_num = get_instances(wb, cover_flag)
-            db.session.add_all(instance_list)
             db.session.add_all(sample_list)
+            db.session.add_all(instance_list)
             db.session.commit()
             return {
                 'msg': f'成功插入了{len(sample_list)}条数据，覆盖了{cover_num}条数据',

@@ -305,5 +305,5 @@ CREATE TABLE `MineThermalInfo` (
 --
 
 LOCK TABLES `MineThermalInfo` WRITE;
-INSERT INTO `MineThermalInfo` VALUES ('11Y3:9-1',null,1303,1015,null,null),('11Y3:9-2',null,1306,929,null,null),('11Y3:9-3',null,1307,1025,null,null);
+INSERT INTO `MineThermalInfo` VALUES ('11Y3:9-1',null,1303,1015,null,'图片1.png'),('11Y3:9-2',null,1306,929,null,'图片1.png'),('11Y3:9-3',null,1307,1025,null,'图片1.png');
 UNLOCK TABLES;

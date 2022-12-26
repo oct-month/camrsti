@@ -7,18 +7,18 @@
       stripe
       border
       style="width: 100%">
-      <el-table-column prop="id" label="样品号" width="110"></el-table-column>
-      <el-table-column prop="melting" label="熔点" miniwidth="100"></el-table-column>
-      <el-table-column prop="fireResis" label="耐火度" miniwidth="100"></el-table-column>
-      <el-table-column prop="termTemper" label="烧成温度" miniwidth="100"></el-table-column>
-      <el-table-column prop="data" label="原始数据" miniwidth="100">
+      <el-table-column prop="id" label="样品号"></el-table-column>
+      <el-table-column prop="melting" label="熔点"></el-table-column>
+      <el-table-column prop="fireResis" label="耐火度"></el-table-column>
+      <el-table-column prop="termTemper" label="烧成温度"></el-table-column>
+      <el-table-column prop="data" label="原始数据" width="266">
         <template slot-scope="scope">
           <el-link type="primary" target="_blank" :href="'/api/excel/'+scope.row.data" :download="scope.row.data">
             {{ scope.row.data }}
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column prop="surveImage" label="曲线图" miniwidth="100">
+      <el-table-column prop="surveImage" label="曲线图" width="350">
         <template slot-scope="scope">
           <el-image
             v-if="scope.row.surveImage"
